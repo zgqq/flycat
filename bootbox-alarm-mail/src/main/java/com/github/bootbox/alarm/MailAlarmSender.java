@@ -8,7 +8,7 @@ import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
 
-public class MailAlarmSender implements AlarmSender {
+public class MailAlarmSender extends AbstractAlarmSender {
 
     private static Mailer mailer;
     private static String receiver;
@@ -32,7 +32,7 @@ public class MailAlarmSender implements AlarmSender {
     }
 
     @Override
-    public void sendNotify(String message) {
+    public void doSendNotify(String message) {
         if (message != null) {
             if (mailer != null && receiver != null) {
                 Email email = EmailBuilder.startingBlank()
