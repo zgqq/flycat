@@ -1,0 +1,7 @@
+dependencies {
+    compile 'org.simplejavamail:simple-java-mail:5.2.0'
+    compile project(':bootbox-alarm')
+    compile project(':bootbox-util')
+}
+
+

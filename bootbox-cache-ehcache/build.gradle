@@ -1,0 +1,9 @@
+
+dependencies {
+    compile project(':bootbox-cache')
+    compile 'javax.cache:cache-api:1.1.1'
+    compile 'org.ehcache:ehcache:3.7.0'
+}
+
+
+

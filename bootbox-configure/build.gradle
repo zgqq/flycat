@@ -1,0 +1,24 @@
+
+dependencies {
+    compileOnly project(':bootbox-config-nacos')
+    compileOnly project(':bootbox-config-redis')
+
+    compileOnly project(':bootbox-cache-guava')
+    compileOnly project(':bootbox-cache-redis')
+    
+    compileOnly project(':bootbox-queue-ali')
+
+    compileOnly project(':bootbox-sms-qcloud')
+    
+    compileOnly project(':bootbox-alarm')
+
+    compileOnly project(':bootbox-wechat')
+    compileOnly project(':bootbox-web')
+
+    compileOnly project(':bootbox-mybatis')
+
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+}
+
+
+

@@ -1,0 +1,19 @@
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // Cache
+
+    compile project(':bootbox-alarm')
+
+    // util
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.12'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.8'
+    compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+    compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
+
+    compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+}

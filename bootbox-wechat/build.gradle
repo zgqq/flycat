@@ -1,0 +1,6 @@
+
+dependencies {
+    compile project(':bootbox-web')
+    compile project(':bootbox-util')
+    compileOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.4'
+}

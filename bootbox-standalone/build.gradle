@@ -1,0 +1,18 @@
+
+dependencies {
+    compile project(':bootbox-web')
+    compile project(':bootbox-redis')
+    compile project(':bootbox-config-redis')
+    compile project(':bootbox-cache-redis')
+    compile project(':bootbox-mybatis')
+    compile project(':bootbox-util')
+    compile project(':bootbox-configure')
+    compile project(':bootbox-alarm-mail')
+
+    compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    compile group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.6'
+}
+
+
+

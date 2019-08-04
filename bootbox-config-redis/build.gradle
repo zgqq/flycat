@@ -1,0 +1,9 @@
+
+dependencies {
+    compile project(':bootbox-config')
+    compile project(':bootbox-redis')
+    compile project(':bootbox-context')
+}
+
+
+

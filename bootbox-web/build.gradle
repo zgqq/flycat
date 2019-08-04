@@ -1,0 +1,9 @@
+
+dependencies {
+    compile project(':bootbox-util')
+    compile project(':bootbox-alarm')
+    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+    compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+}

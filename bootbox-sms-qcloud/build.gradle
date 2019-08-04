@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':bootbox-sms')
+    compile group: 'com.github.qcloudsms', name: 'qcloudsms', version: '1.0.6'
+}
+
+
