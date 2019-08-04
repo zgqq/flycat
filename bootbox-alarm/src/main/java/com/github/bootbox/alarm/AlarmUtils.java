@@ -1,12 +1,12 @@
 package com.github.bootbox.alarm;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AlarmUtils {
@@ -15,30 +15,23 @@ public class AlarmUtils {
     private static AlarmSender defaultSender;
 
     static {
-//        final String defaultSender = ServerEnvUtils
-//                .getProperty("bootbox.alarm.default.sender");
-        String defaultSender = "com.github.bootbox.alarm.MailAlarmSender";
-        if (StringUtils.isNotBlank(defaultSender)) {
-            try {
-                final Class<?> aClass = Class.forName(defaultSender);
-                final Object o = aClass.newInstance();
-                setDefaultSender((AlarmSender) o);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
+        final ServiceLoader<AlarmSender> load = ServiceLoader.load(AlarmSender.class);
+        final Iterator<AlarmSender> iterator = load.iterator();
+        while (iterator.hasNext()) {
+            final AlarmSender next = iterator.next();
+            registerSender(next.getClass().getName(),
+                    next
+            );
         }
     }
 
     public static void registerSender(String name, AlarmSender alarmSender) {
+        LOGGER.info("Registering sender, name:{}", name);
         SENDERS.put(name, alarmSender);
     }
 
     public static void setDefaultSender(AlarmSender defaultSender) {
-        LOGGER.info("Set default sender, {}", defaultSender.getClass().getName());
+        LOGGER.info("Setting default sender, {}", defaultSender.getClass().getName());
         if (AlarmUtils.defaultSender != null) {
             LOGGER.warn("Default alarm sender exists! before:{}, after:{}",
                     AlarmUtils.defaultSender.getClass().getName(),
