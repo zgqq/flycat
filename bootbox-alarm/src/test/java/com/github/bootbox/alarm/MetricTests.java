@@ -1,8 +1,11 @@
 package com.github.bootbox.alarm;
 
+import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class MetricTests {
 
@@ -26,6 +29,9 @@ public class MetricTests {
         Thread.sleep(2000L);
         final double oneMinuteRate3 = ok.getOneMinuteRate();
         System.out.println(oneMinuteRate3);
-
+        ConsoleReporter.forRegistry(registry).outputTo(System.out).build().start(
+                1, TimeUnit.SECONDS
+        );
+        Thread.sleep(10000L);
     }
 }

@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAlarmSender implements AlarmSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAlarmSender.class);
-    private static final MetricRegistry registry = new MetricRegistry();
+    private static final MetricRegistry REGISTRY = new MetricRegistry();
 
     @Override
     public void sendNotify(String message) {
-        final Meter meter = registry.meter(message);
+        final Meter meter = REGISTRY.meter("log." + message);
         meter.mark();
         if (meter.getOneMinuteRate() < 0.4) {
             doSendNotify(message);

@@ -1,6 +1,5 @@
-package com.github.bootbox.util.env;
+package com.github.bootbox.server.config;
 
-import com.github.bootbox.util.PropertiesUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.ref.WeakReference;

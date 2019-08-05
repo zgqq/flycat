@@ -4,23 +4,12 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
-import com.github.bootbox.alarm.AlarmUtils;
-import com.github.bootbox.util.env.ServerEnvUtils;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
 import java.util.Map;
 
 public class LogInterceptor extends TurboFilter {
-
-    private static String applicationName;
-    private static String packageName;
-
-    static {
-        applicationName = ServerEnvUtils.getProperty("spring.application.name");
-        packageName = ServerEnvUtils.getProperty("bootbox.alarm.log.package");
-        System.out.println("Alarm log package name " + packageName);
-    }
 
     @Override
     public FilterReply decide(Marker marker, Logger logger,
@@ -32,7 +21,7 @@ public class LogInterceptor extends TurboFilter {
                 final String message = getMessage(s, contextMap);
                 final String fqcn = Logger.FQCN;
                 if (level == Level.ERROR) {
-                    sendAlarm(logger, s, throwable);
+                    onError(logger, s, throwable);
                 }
                 final org.slf4j.event.Level level4j = org.slf4j.event.Level.valueOf(level.levelStr);
                 logger.log(marker, fqcn, level4j.toInt(), message, objects, throwable);
@@ -41,16 +30,16 @@ public class LogInterceptor extends TurboFilter {
             return FilterReply.NEUTRAL;
         } else {
             if (level == Level.ERROR) {
-                sendAlarm(logger, s, throwable);
+                onError(logger, s, throwable);
             }
             return FilterReply.NEUTRAL;
         }
     }
 
+    protected void onError(Logger logger, String s, Throwable throwable) { }
 
     public String getMessage(String s, Map<String, String> contextMap) {
         final String httpUri = contextMap.get(MDCUtils.HTTP_URI);
-
         String prefix = MDCUtils.LOG_MDC + ": ";
         if (httpUri != null) {
             String requestURI = httpUri;
@@ -68,28 +57,10 @@ public class LogInterceptor extends TurboFilter {
                 postfix += " " + entry.getKey() + ":" + entry.getValue() + ",";
             }
         }
+
         if (postfix.endsWith(",")) {
             postfix = postfix.substring(0, postfix.length() - 1);
         }
         return prefix + " " + s + ", context[" + postfix + "]";
-    }
-
-    private void sendAlarm(Logger logger, String s, Throwable throwable, Object... objects) {
-        if (!shouldSendAlarm(logger, s, throwable, objects)) {
-            return;
-        }
-        sendAlarm(logger, s, objects);
-    }
-
-    protected boolean shouldSendAlarm(Logger logger, String s, Throwable throwable, Object[] objects) {
-        return true;
-    }
-
-    private void sendAlarm(Logger logger, String s, Object... objects) {
-        final String name = logger.getName();
-        if (packageName != null && name.startsWith(packageName)) {
-            AlarmUtils.sendNotify("app:" + applicationName
-                    + " logger name:" + logger.getName() + " message:" + s);
-        }
     }
 }

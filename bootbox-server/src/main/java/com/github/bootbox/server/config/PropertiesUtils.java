@@ -1,4 +1,4 @@
-package com.github.bootbox.util;
+package com.github.bootbox.server.config;
 
 import java.io.IOException;
 import java.io.InputStream;

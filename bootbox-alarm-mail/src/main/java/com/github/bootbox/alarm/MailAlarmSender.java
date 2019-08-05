@@ -1,6 +1,6 @@
 package com.github.bootbox.alarm;
 
-import com.github.bootbox.util.env.ServerEnvUtils;
+import com.github.bootbox.server.config.ServerEnvUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
