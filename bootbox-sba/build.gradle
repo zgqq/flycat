@@ -6,6 +6,7 @@ startScripts {
 
 dependencies {
     compile project(':bootbox-context')
+    compile project(':bootbox-alarm')
 
     compile group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"

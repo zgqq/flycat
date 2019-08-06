@@ -2,13 +2,17 @@ package com.github.bootbox.sba;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
+import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
+import de.codecentric.boot.admin.server.notify.AbstractStatusChangeNotifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.thymeleaf.TemplateEngine;
 
 @Configuration
 @EnableAutoConfiguration
@@ -16,6 +20,13 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class SpringBootAdminApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringBootAdminApplication.class, args);
+    }
+
+    @Bean
+    public AbstractStatusChangeNotifier statusChangeNotifier(InstanceRepository repository,
+                                                             TemplateEngine templateEngine
+    ) {
+        return new CustomEventNotifier(repository, templateEngine);
     }
 
     @Configuration
