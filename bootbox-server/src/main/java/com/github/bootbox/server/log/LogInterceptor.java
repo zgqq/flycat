@@ -1,9 +1,10 @@
-package com.github.bootbox.util.log;
+package com.github.bootbox.server.log;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
+import com.github.bootbox.server.event.EventManager;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
@@ -36,7 +37,9 @@ public class LogInterceptor extends TurboFilter {
         }
     }
 
-    protected void onError(Logger logger, String s, Throwable throwable) { }
+    protected void onError(Logger logger, String message, Throwable throwable) {
+        EventManager.post(new LogErrorEvent(logger, message, throwable));
+    }
 
     public String getMessage(String s, Map<String, String> contextMap) {
         final String httpUri = contextMap.get(MDCUtils.HTTP_URI);

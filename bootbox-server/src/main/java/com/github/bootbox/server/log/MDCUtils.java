@@ -1,4 +1,4 @@
-package com.github.bootbox.util.log;
+package com.github.bootbox.server.log;
 
 import com.google.common.collect.Sets;
 
