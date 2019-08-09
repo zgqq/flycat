@@ -7,7 +7,10 @@ import java.lang.annotation.*;
 @Documented
 public @interface TableModel {
     String alias() default "";
-    String name() ;
+
+    String name();
+
     Class<?>[] manyToOne() default {};
+
     boolean isRecordTable() default false;
 }

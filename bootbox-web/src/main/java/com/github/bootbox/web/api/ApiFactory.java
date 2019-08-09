@@ -7,4 +7,12 @@ public interface ApiFactory {
     default Object createUnknownExceptionResult() {
         return null;
     }
+
+    default Object createInvalidTokenResult() {
+        return null;
+    }
+
+    default Object createAccessDeniedResult(Exception exception) {
+        return null;
+    }
 }

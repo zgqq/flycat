@@ -12,23 +12,15 @@ public final class HttpResponseUtils {
     private HttpResponseUtils() {
     }
 
-    public static void writeMessage(HttpServletResponse response, String message) {
+    public static void writeJson(HttpServletResponse response, String message) {
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/text; charset=utf-8");
+        response.setContentType("application/json; charset=utf-8");
         OutputStream out = null;
         try {
             out = response.getOutputStream();
             out.write(message.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
@@ -41,7 +33,7 @@ public final class HttpResponseUtils {
     public static void writeJson(HttpServletResponse response, String message, int errorCode) {
         final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
         String output = JSON.toJSONString(apiFactory.createApiResult(errorCode, message));
-        writeMessage(response, output);
+        writeJson(response, output);
     }
 
 //    public static void writeSuccess(HttpServletResponse response, String message) {

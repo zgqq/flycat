@@ -80,7 +80,7 @@ public class ContentCachingFilter implements Filter {
                 BusinessException e1 = (BusinessException) cause;
                 final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
                 String output = JSON.toJSONString(apiFactory.createApiResult(e1.getErrorCode(), e1.getMessage()));
-                response.getWriter().write(output);
+                responseWrapper.getWriter().write(output);
             } else {
                 LOGGER.error("System error! uri {}, params {}, method {}", uri, requestBody, method, e);
                 final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
@@ -89,7 +89,7 @@ public class ContentCachingFilter implements Filter {
                     unknownExceptionResult = apiFactory.createApiResult(500, "服务器傲娇了~");
                 }
                 String output = JSON.toJSONString(unknownExceptionResult);
-                response.getWriter().write(output);
+                responseWrapper.getWriter().write(output);
             }
         } finally {
 //            MDC.clear();

@@ -1,0 +1,6 @@
+
+dependencies {
+    compile project(':bootbox-web')
+    compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+}
