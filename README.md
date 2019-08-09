@@ -3,4 +3,9 @@ The framework is mainly aimed at start-up companies, which generally have a pain
 
 # Features
 - Out of the box
-- Customizable notifier
+* a complete system can be built with just a few configuration changes
+- Customizable notifier 
+- First-class support for JSON
+* especilally useful for mobile app, admin system.
+- Listen system events
+* easy to listen for useful system events, such as authentication failures, log error and so on.
