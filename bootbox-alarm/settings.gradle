@@ -1,0 +1,6 @@
+include 'bootbox-alarm-spi'
+include 'bootbox-alarm-mail'
+
+project (':bootbox-alarm-spi').projectDir = new File('./bootbox-alarm/bootbox-alarm-spi')
+project (':bootbox-alarm-mail').projectDir = new File('./bootbox-alarm/bootbox-alarm-mail')
+

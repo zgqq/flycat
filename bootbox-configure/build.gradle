@@ -10,7 +10,7 @@ dependencies {
 
     compileOnly project(':bootbox-sms-qcloud')
     
-    compileOnly project(':bootbox-alarm')
+    compileOnly project(':bootbox-alarm-spi')
 
     compileOnly project(':bootbox-wechat')
     compileOnly project(':bootbox-web')

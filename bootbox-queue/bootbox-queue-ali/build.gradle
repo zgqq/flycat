@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':bootbox-queue')
+    compile project(':bootbox-queue-spi')
     compile group: 'com.aliyun.mns', name: 'aliyun-sdk-mns', version: '1.1.8'
 }
 

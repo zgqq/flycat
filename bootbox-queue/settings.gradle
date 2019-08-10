@@ -1,0 +1,6 @@
+include 'bootbox-queue-spi'
+include 'bootbox-queue-ali'
+
+project (':bootbox-queue-spi').projectDir = new File('./bootbox-queue/bootbox-queue-spi')
+project (':bootbox-queue-ali').projectDir = new File('./bootbox-queue/bootbox-queue-ali')
+

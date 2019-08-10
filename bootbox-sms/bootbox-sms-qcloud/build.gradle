@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':bootbox-sms')
+    compile project(':bootbox-sms-spi')
     compile group: 'com.github.qcloudsms', name: 'qcloudsms', version: '1.0.6'
 }
 

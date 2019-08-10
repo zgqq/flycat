@@ -1,0 +1,6 @@
+include 'bootbox-sms-spi'
+include 'bootbox-sms-qcloud'
+
+project (':bootbox-sms-spi').projectDir = new File('./bootbox-sms/bootbox-sms-spi')
+project (':bootbox-sms-qcloud').projectDir = new File('./bootbox-sms/bootbox-sms-qcloud')
+

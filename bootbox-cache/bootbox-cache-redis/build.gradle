@@ -1,6 +1,6 @@
 
 dependencies {
-    compile project(':bootbox-cache')
+    compile project(':bootbox-cache-spi')
     compile project(':bootbox-redis')
 }
 
