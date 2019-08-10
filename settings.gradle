@@ -40,3 +40,4 @@ include 'bootbox-generator'
 
 include 'bootbox-security'
 
+rootProject.name = 'bootbox'

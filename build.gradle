@@ -35,10 +35,13 @@ ext.isProd = { env ->
 }
 
 
-
 configure(subprojects) { project ->
+    apply plugin: 'checkstyle'
     apply plugin: 'idea'
     apply plugin: "java"
+
+    group "com.github.bootbox"
+    version "0.0.1-SNAPSHOT"
 
     def vJavaLang = '1.8'
 
@@ -91,6 +94,20 @@ configure(subprojects) { project ->
         testCompile 'junit:junit:4.12'
     }
 
+    def configDir = "${project.rootDir}/config"
+    checkstyle {
+        toolVersion "8.21"
+        configFile file("$configDir/checkstyle/checkstyle.xml")
+        configProperties.checkstyleSuppressionsPath = file("$configDir/checkstyle/suppressions.xml").absolutePath
+    }
+
+    checkstyleMain {
+        source = 'src/main/java'
+    }
+
+    checkstyleTest {
+        source = 'src/test/java'
+    }
 }
 
 ext.bootProjects = subprojects.findAll {
