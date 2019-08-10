@@ -1,11 +1,13 @@
 buildscript {
     ext {
         springBootVersion = '2.1.6.RELEASE'
-//        springBootVersion = '2.2.0.M4'
-//        springRepo = 'http://repo.spring.io/libs-release'
-        springRepo = 'http://repo.spring.io/milestone'
-
+        springRepo = 'http://repo.spring.io/libs-release'
     }
+
+////        springBootVersion = '2.2.0.M4'
+//        springRepo = 'http://repo.spring.io/milestone'
+//
+//    }
     repositories {
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenLocal()
@@ -14,16 +16,19 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
+
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath 'org.springframework:springloaded:1.2.0.RELEASE'
     }
 }
 
+ext.configDir = "${project.rootDir}/config"
+ext.checkstyleDir = "${configDir}/checkstyle"
+ext.gradleConfigDir = "${configDir}/gradle"
 
-ext {
-    environment = "test"
-}
+
+ext.environment = "test"
 
 if (hasProperty("env")) {
     ext.environment = "$env"
@@ -34,11 +39,8 @@ ext.isProd = { env ->
     return "prod".equals(env.toString()) || "production".equals(env.toString())
 }
 
-
 configure(subprojects) { project ->
-    apply plugin: 'checkstyle'
-    apply plugin: 'idea'
-    apply plugin: "java"
+    apply from: "${gradleConfigDir}/javaProject.gradle"
 
     group "com.github.bootbox"
     version "0.0.1-SNAPSHOT"
@@ -69,84 +71,15 @@ configure(subprojects) { project ->
         }
     }
 
-    dependencies {
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
-
-        compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-        compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
-        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
-        compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
-        // vendor
-
-        testCompile 'junit:junit:4.12'
-    }
 
 
-    dependencies {
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
-
-        compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-        compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
-        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
-        compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
-        // vendor
-
-        testCompile 'junit:junit:4.12'
-    }
-
-    def configDir = "${project.rootDir}/config"
-    checkstyle {
-        toolVersion "8.21"
-        configFile file("$configDir/checkstyle/checkstyle.xml")
-        configProperties.checkstyleSuppressionsPath = file("$configDir/checkstyle/suppressions.xml").absolutePath
-    }
-
-    checkstyleMain {
-        source = 'src/main/java'
-    }
-
-    checkstyleTest {
-        source = 'src/test/java'
-    }
 }
 
 ext.bootProjects = subprojects.findAll {
-     it.name.startsWith("bootbox-sba")
+    it.name.startsWith("bootbox-sba")
 }
 
 configure(bootProjects) { project ->
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: "java"
-    apply plugin: 'application'
-//    apply from: '../tasks.gradle'
-
-    ext.springJvmArgs = ["-Dspring.profiles.active=$env"]
-    ext.appJvmArgs = ext.springJvmArgs + [
-            "-Dfile.encoding=UTF-8",
-            "-Xlog:gc*",
-            "-XX:-OmitStackTraceInFastThrow"]
-
-    if (!isProd(env)) {
-        appJvmArgs += ["-noverify"
-                       , "-XX:TieredStopAtLevel=1"
-                       , "-XX:+AlwaysPreTouch"]
-    }
-    defaultTasks 'compileJava', 'checkStyle', 'jar'
-
-    distZip.enabled = false
-    distTar.enabled = false
-    bootDistTar.enabled = false
-    bootDistZip.enabled = false
-
-//    processResources.dependsOn copyConfiguration
-
-    dependencies {
-//        testCompile "org.springframework:spring-test"
-//        testCompile "org.springframework.boot:spring-boot-test"
-        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-
-        testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
-    }
+    apply from: "${gradleConfigDir}/bootProject.gradle"
 }
 
