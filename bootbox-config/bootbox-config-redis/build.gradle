@@ -1,8 +1,8 @@
 
 dependencies {
-    compile project(':bootbox-config-spi')
-    compile project(':bootbox-redis')
-    compile project(':bootbox-context')
+    api project(':bootbox-config-spi')
+    implementation project(':bootbox-redis')
+    implementation project(':bootbox-context')
 }
 
 

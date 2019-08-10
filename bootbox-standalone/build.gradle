@@ -1,13 +1,14 @@
 
 dependencies {
-    compile project(':bootbox-web')
-    compile project(':bootbox-redis')
-    compile project(':bootbox-config-redis')
-    compile project(':bootbox-cache-redis')
-    compile project(':bootbox-mybatis')
-    compile project(':bootbox-util')
-    compile project(':bootbox-configure')
-    compile project(':bootbox-alarm-mail')
+    api project(':bootbox-web')
+    api project(':bootbox-context')
+    api project(':bootbox-redis')
+    api project(':bootbox-config-redis')
+    api project(':bootbox-cache-redis')
+    api project(':bootbox-mybatis')
+    api project(':bootbox-util')
+    api project(':bootbox-configure')
+    api project(':bootbox-alarm-mail')
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")

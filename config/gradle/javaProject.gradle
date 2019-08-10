@@ -1,6 +1,7 @@
 apply plugin: 'checkstyle'
 apply plugin: 'idea'
 apply plugin: "java"
+apply plugin: "java-library"
 
 dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'

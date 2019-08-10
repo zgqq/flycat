@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':bootbox-server')
-    compile project(':bootbox-util')
+    implementation project(':bootbox-server')
+    implementation project(':bootbox-util')
     compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'
     compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 }

@@ -1,7 +1,8 @@
 dependencies {
-    compile 'org.simplejavamail:simple-java-mail:5.2.0'
-    compile project(':bootbox-alarm-spi')
-    compile project(':bootbox-util')
+    api project(':bootbox-alarm-spi')
+    api 'org.simplejavamail:simple-java-mail:5.2.0'
+    implementation project(':bootbox-server')
+    implementation project(':bootbox-util')
 }
 
 

@@ -1,13 +1,20 @@
 
 dependencies {
+    compileOnly project(':bootbox-context')
+    compileOnly project(':bootbox-redis')
+
+    compileOnly project(':bootbox-config-spi')
     compileOnly project(':bootbox-config-nacos')
     compileOnly project(':bootbox-config-redis')
 
+    compileOnly project(':bootbox-cache-spi')
     compileOnly project(':bootbox-cache-guava')
     compileOnly project(':bootbox-cache-redis')
-    
+
+    compileOnly project(':bootbox-queue-spi')
     compileOnly project(':bootbox-queue-ali')
 
+    compileOnly project(':bootbox-sms-spi')
     compileOnly project(':bootbox-sms-qcloud')
     
     compileOnly project(':bootbox-alarm-spi')
