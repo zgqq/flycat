@@ -27,3 +27,23 @@ checkstyleMain {
 checkstyleTest {
     source = 'src/test/java'
 }
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/java/main")
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    mavenLocal()
+    maven {
+        url springRepo
+    }
+}
+
