@@ -26,6 +26,8 @@ include 'bootbox-generator'
 
 include 'bootbox-security'
 
+include 'bootbox-starter-app'
+
 
 apply from: "./bootbox-config/settings.gradle"
 apply from: "./bootbox-cache/settings.gradle"

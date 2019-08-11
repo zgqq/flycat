@@ -9,6 +9,7 @@ dependencies {
     api project(':bootbox-util')
     api project(':bootbox-configure')
     api project(':bootbox-alarm-mail')
+    api project(':bootbox-security')
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
