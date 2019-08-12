@@ -1,4 +1,4 @@
-package com.github.bootbox.starter.app.web.gateway.token;
+package com.github.bootbox.starter.app.web.auth.token;
 
 import com.github.bootbox.redis.RedisService;
 import com.github.bootbox.starter.app.redis.RedisKeys;

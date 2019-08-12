@@ -1,4 +1,4 @@
-package com.github.bootbox.starter.app.web.gateway.token;
+package com.github.bootbox.starter.app.web.auth.token;
 
 public class TokenInfo {
     private Integer uid;

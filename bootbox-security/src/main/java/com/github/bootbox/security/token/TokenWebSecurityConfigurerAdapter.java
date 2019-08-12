@@ -7,7 +7,7 @@ import org.springframework.security.web.session.SessionManagementFilter;
 
 public abstract class TokenWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-    public TokenWebSecurityConfigurerAdapter(boolean disableDefaults) {
+    public TokenWebSecurityConfigurerAdapter() {
         super(true);
     }
 
@@ -22,7 +22,8 @@ public abstract class TokenWebSecurityConfigurerAdapter extends WebSecurityConfi
         http.addFilterBefore(new RequireTokenAuthenticationFilter(tokenAuthenticationService),
                 SessionManagementFilter.class)
                 .exceptionHandling()
-                .accessDeniedHandler(new DefaultTokenAccessDeniedHandler());
+                .accessDeniedHandler(new DefaultTokenAccessDeniedHandler()).and()
+                .csrf().disable();
     }
 
     protected abstract TokenAuthenticationService tokenAuthenticationService();

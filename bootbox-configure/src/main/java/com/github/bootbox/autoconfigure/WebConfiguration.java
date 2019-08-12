@@ -4,6 +4,7 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.github.bootbox.web.BootboxWebConfiguration;
 import com.github.bootbox.web.BootboxWebHolder;
 import com.github.bootbox.web.filter.ContentCachingFilter;
+import com.github.bootbox.web.filter.FilterOrder;
 import com.github.bootbox.web.filter.WebCorsFilter;
 import com.github.bootbox.web.spring.WebExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class WebConfiguration {
         Filter customFilter = new ContentCachingFilter();
         registration.setFilter(customFilter);
         registration.addUrlPatterns("/*");
-        registration.setOrder(0);
+        registration.setOrder(FilterOrder.CONTENT_CACHING_FILTER);
         return registration;
     }
 
@@ -72,7 +73,7 @@ public class WebConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(BootboxWebConfiguration.class)
-    public BootboxWebConfiguration bootboxWebConfiguration() {
+    public BootboxWebConfiguration defaultBootboxWebConfiguration() {
         return new BootboxWebConfiguration() {
         };
     }

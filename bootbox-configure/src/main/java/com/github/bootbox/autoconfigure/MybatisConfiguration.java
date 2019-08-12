@@ -36,8 +36,9 @@ public class MybatisConfiguration {
 
 
     @Configuration
-    @AutoConfigureAfter(CreatePrimaryDataSourceConfiguration.class)
-    @ConditionalOnBean(CreatePrimaryDataSourceConfiguration.class)
+//    @AutoConfigureAfter(CreatePrimaryDataSourceConfiguration.class)
+//    @ConditionalOnBean(CreatePrimaryDataSourceConfiguration.class)
+    @ConditionalOnBean(name = "primaryDataSource")
     @ConditionalOnClass(MapperScannerConfigurer.class)
     public static class Mybatis1Configuration {
 
@@ -62,8 +63,9 @@ public class MybatisConfiguration {
 
 
     @Configuration
-    @ConditionalOnBean(CreateSecondaryDataSourceConfiguration.class)
-    @AutoConfigureAfter(CreateSecondaryDataSourceConfiguration.class)
+//    @ConditionalOnBean(CreateSecondaryDataSourceConfiguration.class)
+//    @AutoConfigureAfter(CreateSecondaryDataSourceConfiguration.class)
+    @ConditionalOnBean(name = "secondaryDataSource")
     @ConditionalOnClass(MapperScannerConfigurer.class)
     public static class MybatisSqlFactory2Configuration {
 
@@ -190,6 +192,18 @@ public class MybatisConfiguration {
         public HikariConfiguration configuration() {
             return new HikariConfiguration();
         }
-
     }
+
+//    @Primary
+//    @Bean(name = "primaryDataSource")
+//    @ConfigurationProperties("spring.datasource.druid.one")
+//    public DataSource dataSourceOne(){
+//        return DruidDataSourceBuilder.create().build();
+//    }
+//    @Bean("secondaryDataSource")
+//    @ConfigurationProperties("spring.datasource.druid.two")
+//    public DataSource dataSourceTwo(){
+
+//        return DruidDataSourceBuilder.create().build();
+//    }
 }

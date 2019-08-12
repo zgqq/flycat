@@ -6,8 +6,7 @@ import com.github.bootbox.security.token.TokenAuthenticationService;
 import com.github.bootbox.security.token.TokenInformation;
 import com.github.bootbox.starter.app.redis.RedisKeys;
 import com.github.bootbox.starter.app.web.api.AppRequest;
-import com.github.bootbox.starter.app.web.gateway.token.TokenInfo;
-import com.github.bootbox.starter.app.web.gateway.token.UserToken;
+import com.github.bootbox.starter.app.web.auth.token.TokenInfo;
 import com.github.bootbox.web.api.ApiHttpRequest;
 import com.github.bootbox.web.api.ApiRequestHolder;
 
@@ -25,6 +24,11 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
     public TokenInformation authenticateToken(HttpServletRequest httpServletRequest) {
         final ApiHttpRequest currentApiRequest = ApiRequestHolder.getCurrentApiRequest();
         final AppRequest apiRequest = (AppRequest) currentApiRequest.getApiRequest();
+        if (apiRequest == null) {
+            final TokenInformation tokenInformation = new TokenInformation(null,
+                    null, false);
+            return tokenInformation;
+        }
         final Optional<TokenInfo> tokenOpt = findToken(apiRequest.getUid());
         final String token = apiRequest.getToken();
         final String uid = apiRequest.getUid() + "";
@@ -52,15 +56,15 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
         if (tokenInfoStr != null && tokenInfoStr instanceof String) {
             return Optional.of(JSON.parseObject(tokenInfoStr, TokenInfo.class));
         }
-        UserToken user = findUserToken(uid);
+        TokenInfo user = findTokenInfo(uid);
         if (user == null) {
             return Optional.empty();
         }
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setToken(user.getToken());
-        tokenInfo.setExpire(user.getExpire().getTime());
+        tokenInfo.setExpire(user.getExpire());
         return Optional.of(tokenInfo);
     }
 
-    protected abstract UserToken findUserToken(Integer uid);
+    protected abstract TokenInfo findTokenInfo(Integer uid);
 }

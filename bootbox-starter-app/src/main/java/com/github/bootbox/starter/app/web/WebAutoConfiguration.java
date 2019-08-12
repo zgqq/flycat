@@ -10,11 +10,13 @@ import com.github.bootbox.web.api.ApiFactory;
 import com.github.bootbox.web.api.ApiHttpRequest;
 import com.github.bootbox.web.api.ApiRequestHolder;
 import com.github.bootbox.web.filter.ContentCachingHandler;
+import com.github.bootbox.web.filter.FilterOrder;
 import com.github.bootbox.web.filter.PostFilterAction;
 import com.github.bootbox.web.util.HttpRequestWrapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.Filter;
@@ -82,16 +84,15 @@ public class WebAutoConfiguration {
         };
     }
 
-    @Configuration
-    public static class HolderFilterConfiguration {
 
-        @Bean
-        public FilterRegistrationBean tokenFilter() {
-            FilterRegistrationBean registration = new FilterRegistrationBean();
-            Filter customFilter = new RequestHolderFilter();
-            registration.setFilter(customFilter);
-            registration.addUrlPatterns("/*");
-            return registration;
-        }
+    @Bean
+    public FilterRegistrationBean requestHolderFilter() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        Filter customFilter = new RequestHolderFilter();
+        registration.setFilter(customFilter);
+        registration.setOrder(FilterOrder.CONTENT_CACHING_FILTER + 1);
+        registration.addUrlPatterns("/*");
+        return registration;
     }
+
 }

@@ -1,10 +1,10 @@
 package com.github.bootbox.starter.app.web.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.bootbox.starter.app.web.api.AppRequest;
 import com.github.bootbox.web.api.ApiHttpRequest;
 import com.github.bootbox.web.api.ApiRequestHolder;
 import com.github.bootbox.web.util.HttpRequestWrapper;
-import com.github.bootbox.starter.app.web.api.AppRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -24,7 +24,6 @@ import java.util.concurrent.ScheduledExecutorService;
 public class RequestHolderFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestHolderFilter.class);
 
-    private static final String TOKEN = "whosyourdaddy";
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     public RequestHolderFilter() {
