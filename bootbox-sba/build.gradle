@@ -1,8 +1,6 @@
-
 startScripts {
     mainClassName = 'com.github.bootbox.sba.SpringBootAdminApplication'
 }
-
 
 dependencies {
     implementation project(':bootbox-context')

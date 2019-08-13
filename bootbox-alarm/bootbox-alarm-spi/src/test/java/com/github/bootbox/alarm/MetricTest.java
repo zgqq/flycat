@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class MetricTests {
+public class MetricTest {
 
     @Test
     public void testMetric() throws InterruptedException {

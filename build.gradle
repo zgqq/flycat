@@ -21,12 +21,18 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath 'org.springframework:springloaded:1.2.0.RELEASE'
     }
+
+}
+
+plugins {
+    id "com.github.hierynomus.license" version "0.15.0"
 }
 
 ext.configDir = "${project.rootDir}/config"
 ext.checkstyleDir = "${configDir}/checkstyle"
 ext.gradleConfigDir = "${configDir}/gradle"
 
+wrapper.gradleVersion = '5.4.1'
 
 ext.environment = "test"
 
@@ -38,6 +44,7 @@ ext.env = ext.environment
 ext.isProd = { env ->
     return "prod".equals(env.toString()) || "production".equals(env.toString())
 }
+
 
 configure(subprojects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
@@ -71,8 +78,21 @@ configure(subprojects) { project ->
         }
     }
 
+    apply plugin: 'com.github.hierynomus.license'
 
+    license {
+        header rootProject.file("LICENSE")
+    }
 
+    license {
+        header = rootProject.file('LICENSE')
+        ext.year = Calendar.getInstance().get(Calendar.YEAR)
+        ext.name = 'zgqq'
+        ext.email = 'zgqjava@gmail.com'
+        exclude "**/*Test.java"
+        include "**/*.groovy"
+        includes(["**/*.java", "**/*.properties"])
+    }
 }
 
 ext.bootProjects = subprojects.findAll {
