@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Result<T> {
-    private int errno;
-    private String desc;
+    private int code;
+    private String message;
 
     private Object data;
 
     public Result() {
     }
 
-    public Result(int errno, String desc) {
-        this.errno = errno;
-        this.desc = desc;
+    public Result(int code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
     public static <R> Result<R> success() {
@@ -48,13 +48,13 @@ public class Result<T> {
     }
 
     public static <F, T> Result<T> error(Result<F> s) {
-        Result<T> r = new Result<>(s.getErrno(), s.getDesc());
+        Result<T> r = new Result<>(s.getCode(), s.getMessage());
         return r;
     }
 
 
     public boolean isSuccess() {
-        return errno == ResultCode.OK;
+        return code == ResultCode.OK;
     }
 
     public Result putToMap(String key, Object value) {
@@ -81,20 +81,20 @@ public class Result<T> {
         return this;
     }
 
-    public int getErrno() {
-        return errno;
+    public int getCode() {
+        return code;
     }
 
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getMessage() {
+        return message;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Result setData(Object data) {
