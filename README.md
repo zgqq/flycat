@@ -9,3 +9,5 @@ The framework is mainly aimed at start-up companies, which generally have a pain
 *especilally useful for mobile app, admin system.*
 - Listen system events <br>
 *easy to listen for useful system events, such as authentication failures, log error and so on.*
+- Friendly API <br>
+*clear error code design helps you quickly locate errors, error results can be customized.*
