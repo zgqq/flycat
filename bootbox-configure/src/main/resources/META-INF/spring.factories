@@ -8,4 +8,5 @@ com.github.bootbox.autoconfigure.RedisConfiguration,\
 com.github.bootbox.autoconfigure.WechatConfiguration,\
 com.github.bootbox.autoconfigure.WebConfiguration,\
 com.github.bootbox.autoconfigure.MybatisConfiguration,\
+com.github.bootbox.autoconfigure.ValidationConfiguration,\
 com.github.bootbox.autoconfigure.QcloudSmsConfiguration

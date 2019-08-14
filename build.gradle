@@ -60,7 +60,7 @@ configure(subprojects) { project ->
 
     configurations {
 
-        all*.exclude group: 'org.hibernate.validator'
+//        all*.exclude group: 'org.hibernate.validator'
 
         // use fastjson
 //        all*.exclude group: 'com.fasterxml.jackson.core'

@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,8 @@ package com.github.bootbox.web.spring;
 import com.codahale.metrics.MetricRegistry;
 import com.github.bootbox.web.api.ApiFactory;
 import com.github.bootbox.web.api.ApiFactoryHolder;
+import com.github.bootbox.web.api.ApiResponseCode;
+import com.github.bootbox.web.api.ApiResponseCodeUtils;
 import com.github.bootbox.web.exception.BusinessException;
 import com.github.bootbox.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
@@ -27,23 +29,58 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.Set;
 
 @ControllerAdvice
 public class WebExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionHandler.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseBody
+    public Object handleBizException(ValidationException exception, HttpServletRequest request) {
+        REGISTRY.meter(request.getRequestURI()).mark();
+        String requestBody = ((HttpRequestWrapper) request).getRequestBody();
+        LOGGER.error("Validation exception! uri:{}, body:{}",
+                request.getRequestURL(),
+                requestBody,
+                exception);
+        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
+        Object validationExceptionResult = apiFactory.createValidationExceptionResult(exception);
+        if (validationExceptionResult == null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (exception instanceof ConstraintViolationException) {
+                ConstraintViolationException exs = (ConstraintViolationException) exception;
+                Set<ConstraintViolation<?>> violations = exs.getConstraintViolations();
+                for (ConstraintViolation<?> item : violations) {
+                    final String message = item.getMessage();
+                    stringBuilder.append(message);
+                    stringBuilder.append("\n");
+                }
+            }
+
+            final int businessErrorCode = ApiResponseCodeUtils.getBusinessErrorCode(ApiResponseCode.CLIENT_VALIDATION_ERROR);
+            validationExceptionResult = apiFactory.createApiResult(businessErrorCode, stringBuilder.toString());
+        }
+
+        return validationExceptionResult;
+    }
+
+
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public Object handleBizException(BusinessException biz, HttpServletRequest request) {
+    public Object handleBizException(BusinessException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
         String requestBody = ((HttpRequestWrapper) request).getRequestBody();
         LOGGER.error("Business exception! uri:{}, body:{}",
                 request.getRequestURL(),
                 requestBody,
-                biz);
+                exception);
         final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-        return apiFactory.createApiResult(biz.getErrorCode(), biz.getMessage());
+        return apiFactory.createApiResult(exception.getErrorCode(), exception.getMessage());
     }
 
     @ExceptionHandler(Throwable.class)
@@ -52,11 +89,7 @@ public class WebExceptionHandler {
         REGISTRY.meter(request.getRequestURI()).mark();
         String requestBody = ((HttpRequestWrapper) request).getRequestBody();
         LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURL(), requestBody, ex);
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-        final Object unknownExceptionResult = apiFactory.createUnknownExceptionResult();
-        if (unknownExceptionResult != null) {
-            return unknownExceptionResult;
-        }
-        return apiFactory.createApiResult(500, "服务器傲娇了!");
+        final Object unknownExceptionResult = ApiResponseCodeUtils.getUnknownExceptionResult(ex);
+        return unknownExceptionResult;
     }
 }

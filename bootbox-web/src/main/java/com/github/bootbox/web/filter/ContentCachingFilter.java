@@ -17,10 +17,7 @@ package com.github.bootbox.web.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.github.bootbox.web.BootboxWebHolder;
-import com.github.bootbox.web.api.ApiFactory;
-import com.github.bootbox.web.api.ApiFactoryHolder;
-import com.github.bootbox.web.api.ApiHttpRequest;
-import com.github.bootbox.web.api.ApiRequestHolder;
+import com.github.bootbox.web.api.*;
 import com.github.bootbox.web.exception.BusinessException;
 import com.github.bootbox.web.util.HttpRequestWrapper;
 import com.google.common.base.Stopwatch;
@@ -98,11 +95,7 @@ public class ContentCachingFilter implements Filter {
                 responseWrapper.getWriter().write(output);
             } else {
                 LOGGER.error("System error! uri {}, params {}, method {}", uri, requestBody, method, e);
-                final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-                Object unknownExceptionResult = apiFactory.createUnknownExceptionResult();
-                if (unknownExceptionResult == null) {
-                    unknownExceptionResult = apiFactory.createApiResult(500, "服务器傲娇了~");
-                }
+                final Object unknownExceptionResult = ApiResponseCodeUtils.getUnknownExceptionResult(e);
                 String output = JSON.toJSONString(unknownExceptionResult);
                 responseWrapper.getWriter().write(output);
             }
