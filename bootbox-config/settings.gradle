@@ -1,7 +1,0 @@
-include 'bootbox-config-spi'
-include 'bootbox-config-redis'
-include 'bootbox-config-nacos'
-
-project (':bootbox-config-spi').projectDir = new File('./bootbox-config/bootbox-config-spi')
-project (':bootbox-config-redis').projectDir = new File('./bootbox-config/bootbox-config-redis')
-project (':bootbox-config-nacos').projectDir = new File('./bootbox-config/bootbox-config-nacos')

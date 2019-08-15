@@ -1,9 +1,0 @@
-
-dependencies {
-    api project(':bootbox-config-spi')
-    implementation project(':bootbox-redis')
-    implementation project(':bootbox-context')
-}
-
-
-

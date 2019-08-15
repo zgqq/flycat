@@ -1,0 +1,6 @@
+
+dependencies {
+    api project(':flycat-config-spi')
+    compile group: 'com.alibaba.nacos', name: 'nacos-client', version: '0.9.1'
+}
+

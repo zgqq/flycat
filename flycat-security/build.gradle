@@ -1,0 +1,7 @@
+
+dependencies {
+    implementation project(':flycat-server')
+    implementation project(':flycat-web')
+    api ("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+}

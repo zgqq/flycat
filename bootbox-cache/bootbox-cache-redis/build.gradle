@@ -1,8 +1,0 @@
-
-dependencies {
-    api project(':bootbox-cache-spi')
-    implementation project(':bootbox-redis')
-}
-
-
-

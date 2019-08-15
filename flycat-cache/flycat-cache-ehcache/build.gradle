@@ -1,0 +1,8 @@
+
+dependencies {
+    api project(':flycat-cache-spi')
+    api 'org.ehcache:ehcache:3.7.0'
+    implementation 'javax.cache:cache-api:1.1.1'
+}
+
+

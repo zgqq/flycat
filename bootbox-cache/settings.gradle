@@ -1,9 +1,0 @@
-include 'bootbox-cache-spi'
-include 'bootbox-cache-guava'
-include 'bootbox-cache-ehcache'
-include 'bootbox-cache-redis'
-
-project (':bootbox-cache-spi').projectDir = new File('./bootbox-cache/bootbox-cache-spi')
-project (':bootbox-cache-guava').projectDir = new File('./bootbox-cache/bootbox-cache-guava')
-project (':bootbox-cache-ehcache').projectDir = new File('./bootbox-cache/bootbox-cache-ehcache')
-project (':bootbox-cache-redis').projectDir = new File('./bootbox-cache/bootbox-cache-redis')

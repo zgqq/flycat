@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':flycat-server')
+    implementation project(':flycat-util')
+    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'
+    compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+}

@@ -1,0 +1,9 @@
+
+dependencies {
+    api project(':flycat-config-spi')
+    implementation project(':flycat-redis')
+    implementation project(':flycat-context')
+}
+
+
+

@@ -49,7 +49,7 @@ ext.isProd = { env ->
 configure(subprojects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
 
-    group "com.github.bootbox"
+    group "com.github.flycat"
     version "0.0.1-SNAPSHOT"
 
     def vJavaLang = '1.8'
@@ -96,7 +96,7 @@ configure(subprojects) { project ->
 }
 
 ext.bootProjects = subprojects.findAll {
-    it.name.startsWith("bootbox-sba")
+    it.name.startsWith("flycat-sba")
 }
 
 configure(bootProjects) { project ->

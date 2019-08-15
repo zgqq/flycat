@@ -1,0 +1,9 @@
+include 'flycat-cache-spi'
+include 'flycat-cache-guava'
+include 'flycat-cache-ehcache'
+include 'flycat-cache-redis'
+
+project (':flycat-cache-spi').projectDir = new File('./flycat-cache/flycat-cache-spi')
+project (':flycat-cache-guava').projectDir = new File('./flycat-cache/flycat-cache-guava')
+project (':flycat-cache-ehcache').projectDir = new File('./flycat-cache/flycat-cache-ehcache')
+project (':flycat-cache-redis').projectDir = new File('./flycat-cache/flycat-cache-redis')

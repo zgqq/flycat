@@ -1,36 +1,36 @@
-rootProject.name = 'bootbox'
+rootProject.name = 'flycat'
 
-include 'bootbox-util'
+include 'flycat-util'
 
-include 'bootbox-redis'
+include 'flycat-redis'
 
-include 'bootbox-configure'
-
-
-include 'bootbox-context'
+include 'flycat-configure'
 
 
-include 'bootbox-web'
-
-include 'bootbox-wechat'
-
-include 'bootbox-mybatis'
-
-include 'bootbox-sba'
-
-include 'bootbox-standalone'
-
-include 'bootbox-server'
-
-include 'bootbox-generator'
-
-include 'bootbox-security'
-
-include 'bootbox-starter-app'
+include 'flycat-context'
 
 
-apply from: "./bootbox-config/settings.gradle"
-apply from: "./bootbox-cache/settings.gradle"
-apply from: "./bootbox-alarm/settings.gradle"
-apply from: "./bootbox-sms/settings.gradle"
-apply from: "./bootbox-queue/settings.gradle"
+include 'flycat-web'
+
+include 'flycat-wechat'
+
+include 'flycat-mybatis'
+
+include 'flycat-sba'
+
+include 'flycat-standalone'
+
+include 'flycat-server'
+
+include 'flycat-generator'
+
+include 'flycat-security'
+
+include 'flycat-starter-app'
+
+
+apply from: "./flycat-config/settings.gradle"
+apply from: "./flycat-cache/settings.gradle"
+apply from: "./flycat-alarm/settings.gradle"
+apply from: "./flycat-sms/settings.gradle"
+apply from: "./flycat-queue/settings.gradle"
