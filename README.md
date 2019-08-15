@@ -11,3 +11,12 @@
 - 友好的API接口 <br>
 *清晰的错误码设计方便定位问题, 支持自定义各种错误返回结果.*
 
+# Design
+- 框架整合了Spring Boot常用starter，提供一站式技术栈
+- 重复造轮子是没有意义的，框架本身依赖其他生产级别的类库，比如
+guava, apache common等
+
+# Best practices
+- 排查线上问题 https://alibaba.github.io/arthas/
+
+
