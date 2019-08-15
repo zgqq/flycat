@@ -1,13 +1,13 @@
 # Bootbox
-The framework is mainly aimed at start-up companies, which generally have a pain point, that is, how to smoothly upgrade the stand-alone app into micro-service architecture with the increase of traffic.
+设计这个框架为了快速开发一个项目用于市场验证，如果后续流量上来了，能够快速修改成分布式应用
 
 # Features
-- Out of the box <br>
-*a complete system can be built with just a few configuration changes*
-- Customizable notifier 
-- First-class support for JSON <br>
-*especilally useful for mobile app, admin system.*
-- Listen system events <br>
-*easy to listen for useful system events, such as authentication failures, log error and so on.*
-- Friendly API <br>
-*clear error code design helps you quickly locate errors, error results can be customized.*
+- 开箱即用 <br>
+*框架集成了很多实用的类库，只要专注业务本身就可以*
+- 报警器 <br>
+*目前只支持邮件形式*
+- 事件管理器 <br>
+*内置事件管理器，可以很方便监听认证失败，日志报错等事件，支持自定义事件*
+- 友好的API接口 <br>
+*清晰的错误码设计方便定位问题, 支持自定义各种错误返回结果.*
+
