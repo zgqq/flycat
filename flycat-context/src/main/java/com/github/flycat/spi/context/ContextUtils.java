@@ -20,26 +20,26 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class ContainerUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ContainerUtils.class);
+public final class ContextUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextUtils.class);
 
     private static final AtomicReference<ApplicationContext> CONTAINER_HOLDER = new AtomicReference<>();
 
-    private ContainerUtils() {
+    private ContextUtils() {
     }
 
-    public static synchronized void setContainerHolder(ApplicationContext containerHolder) {
+    public static synchronized void setContextHolder(ApplicationContext containerHolder) {
         if (containerHolder == null) {
             throw new UnsupportedOperationException("Container holder is null");
         }
-        if (ContainerUtils.CONTAINER_HOLDER.get() != null) {
+        if (ContextUtils.CONTAINER_HOLDER.get() != null) {
             throw new UnsupportedOperationException("Already set container");
         }
-        ContainerUtils.CONTAINER_HOLDER.set(containerHolder);
+        ContextUtils.CONTAINER_HOLDER.set(containerHolder);
         LOGGER.info("Set container holder, container:{}", containerHolder);
     }
 
-    public static synchronized ApplicationContext getContainerHolder() {
-        return ContainerUtils.CONTAINER_HOLDER.get();
+    public static synchronized ApplicationContext getContextHolder() {
+        return ContextUtils.CONTAINER_HOLDER.get();
     }
 }

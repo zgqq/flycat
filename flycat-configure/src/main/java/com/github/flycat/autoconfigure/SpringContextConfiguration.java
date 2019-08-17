@@ -16,7 +16,7 @@
 package com.github.flycat.autoconfigure;
 
 import com.github.flycat.spi.context.ApplicationContext;
-import com.github.flycat.spi.context.ContainerUtils;
+import com.github.flycat.spi.context.ContextUtils;
 import com.github.flycat.spi.context.spring.SpringContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -30,7 +30,7 @@ public class SpringContextConfiguration {
     @Bean
     public ApplicationContext containerHolder(@Autowired org.springframework.context.ApplicationContext webApplicationContext) {
         SpringContext springContainer = new SpringContext(webApplicationContext);
-        ContainerUtils.setContainerHolder(springContainer);
+        ContextUtils.setContextHolder(springContainer);
         return springContainer;
     }
 }
