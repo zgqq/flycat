@@ -16,7 +16,7 @@
 package com.github.flycat.config.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.github.flycat.redis.RedisService;
+import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.config.ConfigException;
 import com.github.flycat.config.ConfigService;
 import org.slf4j.Logger;

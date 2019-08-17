@@ -16,10 +16,10 @@
 package com.github.flycat.autoconfigure;
 
 import com.aliyun.mns.client.CloudAccount;
-import com.github.flycat.queue.QueueFactory;
-import com.github.flycat.queue.ali.AliConnectConfig;
-import com.github.flycat.queue.ali.CloudAccountHolder;
-import com.github.flycat.queue.ali.QueueFactoryImpl;
+import com.github.flycat.spi.queue.QueueFactory;
+import com.github.flycat.spi.queue.ali.AliConnectConfig;
+import com.github.flycat.spi.queue.ali.CloudAccountHolder;
+import com.github.flycat.spi.queue.ali.QueueFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

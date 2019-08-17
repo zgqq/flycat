@@ -15,13 +15,13 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.cache.CacheService;
-import com.github.flycat.cache.redis.RedisCacheService;
+import com.github.flycat.spi.cache.CacheService;
+import com.github.flycat.spi.cache.redis.RedisCacheService;
 import com.github.flycat.config.ConfigService;
 import com.github.flycat.config.redis.RedisConfigService;
-import com.github.flycat.redis.PrimaryRedisService;
-import com.github.flycat.redis.RedisService;
-import com.github.flycat.redis.SpringRedisProviderAdapter;
+import com.github.flycat.spi.redis.PrimaryRedisService;
+import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.spi.redis.SpringRedisProviderAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

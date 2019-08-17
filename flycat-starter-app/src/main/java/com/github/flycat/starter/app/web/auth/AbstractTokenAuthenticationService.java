@@ -16,7 +16,7 @@
 package com.github.flycat.starter.app.web.auth;
 
 import com.alibaba.fastjson.JSON;
-import com.github.flycat.redis.RedisService;
+import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.security.token.TokenAuthenticationService;
 import com.github.flycat.security.token.TokenInformation;
 import com.github.flycat.starter.app.redis.RedisKeys;

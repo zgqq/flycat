@@ -1,1 +1,1 @@
-com.github.flycat.alarm.MailAlarmSender
+com.github.flycat.spi.alarm.MailAlarmSender

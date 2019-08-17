@@ -15,22 +15,21 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.container.ApplicationContainer;
-import com.github.flycat.container.ContainerUtils;
-import com.github.flycat.container.spring.SpringContainer;
+import com.github.flycat.spi.context.ApplicationContext;
+import com.github.flycat.spi.context.ContainerUtils;
+import com.github.flycat.spi.context.spring.SpringContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnMissingBean(ApplicationContainer.class)
+@ConditionalOnMissingBean(ApplicationContext.class)
 public class SpringContextConfiguration {
 
     @Bean
-    public ApplicationContainer containerHolder(@Autowired ApplicationContext webApplicationContext) {
-        SpringContainer springContainer = new SpringContainer(webApplicationContext);
+    public ApplicationContext containerHolder(@Autowired org.springframework.context.ApplicationContext webApplicationContext) {
+        SpringContext springContainer = new SpringContext(webApplicationContext);
         ContainerUtils.setContainerHolder(springContainer);
         return springContainer;
     }

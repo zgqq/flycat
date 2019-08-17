@@ -15,8 +15,8 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.cache.CacheService;
-import com.github.flycat.cache.guava.GuavaCacheService;
+import com.github.flycat.spi.cache.CacheService;
+import com.github.flycat.spi.cache.guava.GuavaCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

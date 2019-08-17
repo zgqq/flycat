@@ -15,7 +15,7 @@
  */
 package com.github.flycat.sba;
 
-import com.github.flycat.alarm.AlarmUtils;
+import com.github.flycat.spi.alarm.AlarmUtils;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;

@@ -15,8 +15,8 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.alarm.AlarmSender;
-import com.github.flycat.alarm.LogAlarmSender;
+import com.github.flycat.spi.alarm.AlarmSender;
+import com.github.flycat.spi.alarm.LogAlarmSender;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

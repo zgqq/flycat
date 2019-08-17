@@ -15,7 +15,7 @@
  */
 package com.github.flycat.starter.app.web.auth.token;
 
-import com.github.flycat.redis.RedisService;
+import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.redis.RedisKeys;
 import com.github.flycat.util.CommonUtils;
 import com.github.flycat.util.DateTimeUtils;

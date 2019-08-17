@@ -17,8 +17,8 @@ package com.github.flycat.starter.app.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.github.flycat.redis.RedisService;
-import com.github.flycat.container.ApplicationContainer;
+import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.spi.context.ApplicationContext;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.config.MaintainConf;
 import com.google.common.collect.Lists;
@@ -37,9 +37,9 @@ public class RefreshRedisConfTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(RefreshRedisConfTask.class);
 
     private final RedisService redisClient;
-    private final ApplicationContainer applicationContainer;
+    private final ApplicationContext applicationContainer;
 
-    public RefreshRedisConfTask(ApplicationContainer applicationContainer, RedisService redisClient) {
+    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient) {
         this.redisClient = redisClient;
         this.applicationContainer = applicationContainer;
     }

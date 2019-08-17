@@ -16,7 +16,7 @@
 package com.github.flycat.web.log;
 
 import ch.qos.logback.classic.Logger;
-import com.github.flycat.alarm.LogErrorListener;
+import com.github.flycat.spi.alarm.LogErrorListener;
 import com.github.flycat.web.exception.BusinessException;
 
 public class WebLogAlarmListener extends LogErrorListener {
