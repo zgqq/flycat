@@ -5,10 +5,21 @@ apply plugin: 'application'
 //    apply from: '../tasks.gradle'
 
 ext.springJvmArgs = ["-Dspring.profiles.active=$env"]
-ext.appJvmArgs = ext.springJvmArgs + [
-        "-Dfile.encoding=UTF-8",
-        "-Xlog:gc*",
-        "-XX:-OmitStackTraceInFastThrow"]
+
+if (vJavaLang == '1.11') {
+    ext.appJvmArgs = ext.springJvmArgs + [
+            "-Dfile.encoding=UTF-8",
+            "-Xlog:gc*",
+
+            "-XX:-OmitStackTraceInFastThrow"]
+} else {
+    ext.appJvmArgs = ext.springJvmArgs + [
+            "-Dfile.encoding=UTF-8",
+            "-XX:+PrintGCDetails",
+            "-XX:+PrintGCTimeStamps",
+            "-XX:-OmitStackTraceInFastThrow"]
+}
+
 
 if (!isProd(env)) {
     appJvmArgs += ["-noverify"

@@ -31,6 +31,7 @@ plugins {
 ext.configDir = "${project.rootDir}/config"
 ext.checkstyleDir = "${configDir}/checkstyle"
 ext.gradleConfigDir = "${configDir}/gradle"
+ext.vJavaLang = '1.8'
 
 wrapper.gradleVersion = '5.4.1'
 
@@ -52,11 +53,9 @@ configure(subprojects) { project ->
     group "com.github.flycat"
     version "0.0.1-SNAPSHOT"
 
-    def vJavaLang = '1.8'
 
     targetCompatibility = vJavaLang
     sourceCompatibility = vJavaLang
-
 
     configurations {
 

@@ -19,6 +19,7 @@ import com.github.flycat.spi.annotation.Primary;
 import com.github.flycat.spi.context.ApplicationContext;
 import com.github.flycat.spi.context.ContextUtils;
 import com.github.flycat.spi.impl.context.SpringContext;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -32,7 +33,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(value = {"com.github.flycat.spi.impl"})
+@ComponentScan("com.github.flycat.spi.impl")
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
@@ -45,37 +46,41 @@ public class SpringContextConfiguration {
         return springContainer;
     }
 
-    @Bean
-    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
-        return new BeanDefinitionRegistryPostProcessor() {
-            @Override
-            public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
-                    throws BeansException {
-                final String[] beanDefinitionNames = registry.getBeanDefinitionNames();
-                for (int i = 0; i < beanDefinitionNames.length; i++) {
-                    final String beanDefinitionName = beanDefinitionNames[i];
-                    final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
-                    final String beanClassName = beanDefinition.getBeanClassName();
-                    final Primary annotation;
-                    try {
-                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
-                        if (annotation != null) {
-                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
-                            beanDefinition.setPrimary(true);
-                        }
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                final BeanDefinition beanDefinition = registry.getBeanDefinition("");
-                beanDefinition.setPrimary(true);
-            }
-
-            @Override
-            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-
-            }
-        };
-    }
+//    @Bean
+//    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
+//        return new BeanDefinitionRegistryPostProcessor() {
+//            @Override
+//            public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
+//                    throws BeansException {
+//                final String[] beanDefinitionNames = registry.getBeanDefinitionNames();
+//                for (int i = 0; i < beanDefinitionNames.length; i++) {
+//                    final String beanDefinitionName = beanDefinitionNames[i];
+//                    final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
+//                    final String beanClassName = beanDefinition.getBeanClassName();
+//                    if (StringUtils.isBlank(beanClassName)) {
+//                        continue;
+//                    }
+//                    LOGGER.info("Check bean class name, {}", beanClassName);
+//                    final Primary annotation;
+//                    try {
+//                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
+//                        if (annotation != null) {
+//                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
+//                            beanDefinition.setPrimary(true);
+//                        }
+//                    } catch (ClassNotFoundException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+//
+//                final BeanDefinition beanDefinition = registry.getBeanDefinition("");
+//                beanDefinition.setPrimary(true);
+//            }
+//
+//            @Override
+//            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+//
+//            }
+//        };
+//    }
 }
