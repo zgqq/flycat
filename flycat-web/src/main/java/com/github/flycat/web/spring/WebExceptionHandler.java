@@ -62,7 +62,8 @@ public class WebExceptionHandler {
                 }
             }
 
-            final int businessErrorCode = ApiResponseCodeUtils.getBusinessErrorCode(ApiResponseCode.CLIENT_VALIDATION_ERROR);
+            final int businessErrorCode =
+                    ApiResponseCodeUtils.getBusinessErrorCode(ApiResponseCode.CLIENT_VALIDATION_ERROR);
             validationExceptionResult = apiFactory.createApiResult(businessErrorCode, stringBuilder.toString());
         }
 

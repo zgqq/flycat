@@ -43,10 +43,12 @@ public class ValidationConfiguration {
 
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
-        final MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor() {
+        final MethodValidationPostProcessor methodValidationPostProcessor =
+                new MethodValidationPostProcessor() {
             @Override
             protected Advice createMethodValidationAdvice(Validator validator) {
-                final OrderedMethodValidationInterceptor orderedMethodValidationInterceptor = new OrderedMethodValidationInterceptor(validator());
+                final OrderedMethodValidationInterceptor orderedMethodValidationInterceptor =
+                        new OrderedMethodValidationInterceptor(validator());
                 return orderedMethodValidationInterceptor;
             }
         };

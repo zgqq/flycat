@@ -17,4 +17,6 @@ package com.github.flycat.spi.context;
 
 public interface ApplicationConfiguration {
     String getString(String key);
+
+    Integer getInteger(String key);
 }

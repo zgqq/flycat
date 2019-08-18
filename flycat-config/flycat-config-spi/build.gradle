@@ -1,7 +1,7 @@
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"
-//    compile project(':dubbo-api')
+    api "org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"
+    api project(':flycat-context')
 //    compile project(':base-core')
 }
 

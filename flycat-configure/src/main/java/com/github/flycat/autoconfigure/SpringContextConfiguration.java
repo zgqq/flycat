@@ -15,22 +15,67 @@
  */
 package com.github.flycat.autoconfigure;
 
+import com.github.flycat.spi.annotation.Primary;
 import com.github.flycat.spi.context.ApplicationContext;
 import com.github.flycat.spi.context.ContextUtils;
-import com.github.flycat.spi.context.spring.SpringContext;
+import com.github.flycat.spi.impl.context.SpringContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnMissingBean(ApplicationContext.class)
+@ComponentScan(value = {"com.github.flycat.spi.impl"})
 public class SpringContextConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
+
 
     @Bean
-    public ApplicationContext containerHolder(@Autowired org.springframework.context.ApplicationContext webApplicationContext) {
+    public ApplicationContext applicationContext(@Autowired org.springframework.context.ApplicationContext
+                                                             webApplicationContext) {
         SpringContext springContainer = new SpringContext(webApplicationContext);
         ContextUtils.setContextHolder(springContainer);
         return springContainer;
+    }
+
+    @Bean
+    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
+        return new BeanDefinitionRegistryPostProcessor() {
+            @Override
+            public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
+                    throws BeansException {
+                final String[] beanDefinitionNames = registry.getBeanDefinitionNames();
+                for (int i = 0; i < beanDefinitionNames.length; i++) {
+                    final String beanDefinitionName = beanDefinitionNames[i];
+                    final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
+                    final String beanClassName = beanDefinition.getBeanClassName();
+                    final Primary annotation;
+                    try {
+                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
+                        if (annotation != null) {
+                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
+                            beanDefinition.setPrimary(true);
+                        }
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                final BeanDefinition beanDefinition = registry.getBeanDefinition("");
+                beanDefinition.setPrimary(true);
+            }
+
+            @Override
+            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+            }
+        };
     }
 }

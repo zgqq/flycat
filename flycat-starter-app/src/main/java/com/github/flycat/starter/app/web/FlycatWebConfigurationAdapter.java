@@ -17,7 +17,6 @@ package com.github.flycat.starter.app.web;
 
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.web.api.AppRequest;
-import com.github.flycat.starter.app.web.api.Result;
 import com.github.flycat.util.StringReplacer;
 import com.github.flycat.web.FlycatWebConfiguration;
 import com.github.flycat.web.api.ApiFactory;

@@ -16,17 +16,26 @@
 package com.github.flycat.spi.sms.qcloud;
 
 import com.alibaba.fastjson.JSON;
+import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.sms.SmsService;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QcloudSmsSender implements SmsService {
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
+@Singleton
+public class QcloudSmsSender implements SmsService, SpiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QcloudSmsSender.class);
 
-    private final int appid;
-    private final String appkey;
+    private int appid;
+    private String appkey;
+    private SmsSingleSender ssender;
+
+    public QcloudSmsSender() {
+    }
 
     public QcloudSmsSender(int appid, String appkey) {
         this.appid = appid;
@@ -36,7 +45,6 @@ public class QcloudSmsSender implements SmsService {
     @Override
     public void send(String phone, String msg) {
         try {
-            SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
             SmsSingleSenderResult result = ssender.send(0, "86", phone,
                     msg, "", "");
             LOGGER.info("Qcloud sms, phone:{}, msg:{}, result:{}", phone, msg,
@@ -45,6 +53,13 @@ public class QcloudSmsSender implements SmsService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostConstruct
+    public void createService() {
+        this.appid = getInteger("flycat.sms.qcloud.appid");
+        this.appkey = getString("flycat.sms.qcloud.appKey");
+        ssender = new SmsSingleSender(appid, appkey);
     }
 }
 

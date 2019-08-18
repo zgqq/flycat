@@ -15,24 +15,24 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.spi.sms.SmsService;
-import com.github.flycat.spi.sms.qcloud.QcloudSmsSender;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-@ConditionalOnClass(QcloudSmsSender.class)
-@ConditionalOnProperty(name = {"sms.qcloud.appid",
-
-})
-public class QcloudSmsConfiguration {
-
-    @Bean
-    public SmsService smsSender(@Value("${sms.qcloud.appid}") int appid,
-                                @Value("${sms.qcloud.appkey}") String appkey) {
-        return new QcloudSmsSender(appid, appkey);
-    }
-}
+//import com.github.flycat.spi.sms.SmsService;
+//import com.github.flycat.spi.sms.qcloud.QcloudSmsSender;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+//import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//
+//@Configuration
+//@ConditionalOnClass(QcloudSmsSender.class)
+//@ConditionalOnProperty(name = {"sms.qcloud.appid",
+//
+//})
+//public class QcloudSmsConfiguration {
+//
+//    @Bean
+//    public SmsService smsSender(@Value("${sms.qcloud.appid}") int appid,
+//                                @Value("${sms.qcloud.appkey}") String appkey) {
+//        return new QcloudSmsSender(appid, appkey);
+//    }
+//}

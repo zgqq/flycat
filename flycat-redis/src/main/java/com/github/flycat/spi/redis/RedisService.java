@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface RedisService {
+
     String hget(String redisKey, String key);
 
     Set<String> smembers(String key);

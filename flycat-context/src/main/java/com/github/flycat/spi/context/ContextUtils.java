@@ -42,4 +42,10 @@ public final class ContextUtils {
     public static synchronized ApplicationContext getContextHolder() {
         return ContextUtils.CONTAINER_HOLDER.get();
     }
+
+    public static ApplicationConfiguration getApplicationConfiguration() {
+        final ApplicationContext contextHolder = getContextHolder();
+        final ApplicationConfiguration bean = contextHolder.getBean(ApplicationConfiguration.class);
+        return bean;
+    }
 }

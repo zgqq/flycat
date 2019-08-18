@@ -19,7 +19,7 @@ import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.redis.RedisKeys;
 import com.github.flycat.util.CommonUtils;
 import com.github.flycat.util.DateTimeUtils;
-import org.jetbrains.annotations.NotNull;
+
 
 public class TokenService {
 
@@ -34,7 +34,6 @@ public class TokenService {
         redisClient.hsetAsJson(RedisKeys.USER_REQ_TOKEN, uid + "", tokenInfo);
     }
 
-    @NotNull
     private TokenInfo generateTokenInfo() {
         final TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setExpire(DateTimeUtils.currentTimeMillisPlusDays(30));
