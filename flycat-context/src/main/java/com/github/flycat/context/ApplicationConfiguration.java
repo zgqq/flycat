@@ -34,7 +34,8 @@ public interface ApplicationConfiguration {
                 ConfigurationException configurationException = (ConfigurationException) e;
                 throw configurationException;
             } else {
-                throw new ConfigurationException("Unable to load config, prefix:" + prefix + ", class:" + clazz.getName(),
+                throw new ConfigurationException("Unable to load config," +
+                        " prefix:" + prefix + ", class:" + clazz.getName(),
                         e);
             }
         }
@@ -48,7 +49,8 @@ public interface ApplicationConfiguration {
             final Class<?> type = declaredField.getType();
             try {
 
-                final Method method = clazz.getMethod("set" + StringUtils.capitalize(name), declaredField.getType());
+                final Method method = clazz.getMethod("set" + StringUtils.capitalize(name),
+                        declaredField.getType());
                 final String key = prefix + "." + name;
                 if (Integer.class.isAssignableFrom(type)) {
                     method.invoke(instance, getInteger(key));

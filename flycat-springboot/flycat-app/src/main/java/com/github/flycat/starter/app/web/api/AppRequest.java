@@ -16,7 +16,6 @@
 package com.github.flycat.starter.app.web.api;
 
 import com.github.flycat.spi.json.JsonUtils;
-import com.github.flycat.util.MapWrapper;
 import com.github.flycat.util.bean.CommonParameters;
 
 import java.util.Map;

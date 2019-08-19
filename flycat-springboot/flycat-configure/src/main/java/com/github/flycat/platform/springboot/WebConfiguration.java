@@ -124,7 +124,8 @@ public class WebConfiguration {
     public static class JacksonConfiguration {
 
         @Bean
-        public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(Jackson2ObjectMapperBuilder build,
+        public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(Jackson2ObjectMapperBuilder
+                                                                                               build,
                                                                                        ObjectMapper objectMapper) {
             if (ContextUtils.isTestProfile()) {
                 final ObjectMapper prettyMapper = build.createXmlMapper(false)

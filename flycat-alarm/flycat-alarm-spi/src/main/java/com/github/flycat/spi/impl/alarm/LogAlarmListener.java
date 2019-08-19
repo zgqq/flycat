@@ -37,7 +37,8 @@ public class LogAlarmListener extends LogErrorListener {
 
     @Inject
     public LogAlarmListener(AlarmSender alarmSender, ApplicationConfiguration applicationConfiguration) {
-        super(applicationConfiguration.getString("app.name"), applicationConfiguration.getString("flycat.alarm.log.package"));
+        super(applicationConfiguration.getString("app.name"),
+                applicationConfiguration.getString("flycat.alarm.log.package"));
         this.alarmSender = alarmSender;
     }
 

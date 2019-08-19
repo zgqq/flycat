@@ -38,7 +38,9 @@ public class RefreshRedisConfTask {
     private final JsonService jsonService;
     private final TaskService taskService;
 
-    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient, JsonService jsonService, TaskService taskService) {
+    public RefreshRedisConfTask(ApplicationContext applicationContainer,
+                                RedisService redisClient,
+                                JsonService jsonService, TaskService taskService) {
         this.redisClient = redisClient;
         this.applicationContainer = applicationContainer;
         this.jsonService = jsonService;

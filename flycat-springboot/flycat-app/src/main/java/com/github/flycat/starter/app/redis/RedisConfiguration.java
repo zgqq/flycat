@@ -32,7 +32,8 @@ public class RedisConfiguration {
             JsonService jsonService,
             TaskService taskService
     ) {
-        RefreshRedisConfTask refreshRedisConfTask = new RefreshRedisConfTask(applicationContainer, redisClient, jsonService, taskService);
+        RefreshRedisConfTask refreshRedisConfTask = new RefreshRedisConfTask(applicationContainer,
+                redisClient, jsonService, taskService);
         return refreshRedisConfTask;
     }
 }

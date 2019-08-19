@@ -29,14 +29,14 @@ import java.net.UnknownHostException;
 public abstract class AbstractAlarmSender implements AlarmSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAlarmSender.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();
-    private static final RateLimiter rateLimiter = RateLimiter.create(1.0);
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
 
     @Override
     public void sendNotify(String message) {
         if (StringUtils.isBlank(message)) {
             return;
         }
-        final boolean require = rateLimiter.tryAcquire();
+        final boolean require = RATE_LIMITER.tryAcquire();
         if (require) {
             final Meter meter = REGISTRY.meter("log." + message);
             meter.mark();

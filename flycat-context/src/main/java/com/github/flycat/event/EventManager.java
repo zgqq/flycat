@@ -37,8 +37,7 @@ public class EventManager {
                     new ThreadPoolExecutor(4, 10,
                             60, TimeUnit.SECONDS,
                             new LinkedBlockingQueue<Runnable>(1024), threadFactory,
-                            new ThreadPoolExecutor.AbortPolicy())
-                    , (exception, context)
+                            new ThreadPoolExecutor.AbortPolicy()), (exception, context)
                     -> LOGGER.error("Unable to handle event, event:{}, subscriber:{}", context.getEvent(),
                     context.getSubscriberMethod().getName(),
                     exception));

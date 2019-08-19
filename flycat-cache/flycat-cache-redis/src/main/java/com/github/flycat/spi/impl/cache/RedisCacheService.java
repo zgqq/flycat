@@ -26,7 +26,6 @@ import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,9 +215,11 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules, List<K> keys,
-                                                                 Function<List<K>, Map<String, Map<K, T>>> callable) throws CacheException {
-
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules,
+                                                                 List<K> keys,
+                                                                 Function<List<K>,
+                                                                         Map<String, Map<K, T>>> callable)
+            throws CacheException {
         final ArrayList<Object> notFoundKeys = Lists.newArrayList();
         final Map<String, Map<K, T>> results = Maps.newHashMap();
         for (String module : modules) {

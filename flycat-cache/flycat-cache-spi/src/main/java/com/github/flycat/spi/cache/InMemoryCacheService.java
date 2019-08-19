@@ -106,7 +106,7 @@ public interface InMemoryCacheService extends CacheOperation {
     default <T extends Number, K> CountMaps getCountMapsByModules(List<String> module,
                                                                                List<K> keys,
                                                                                Function<List<K>,
-                                                                                                     Map<String, Map<K, T>>>
+                                                                                       Map<String, Map<K, T>>>
                                                                                                      callable)
             throws CacheException {
         throw new UnsupportedOperationException();
@@ -116,11 +116,13 @@ public interface InMemoryCacheService extends CacheOperation {
     default <T extends Number, K> Map<K, T> getCountMap(String module,
                                                                        List<K> keys,
                                                                        Function<List<K>,
-                                                                               Map<K, T>> callable) throws CacheException {
+                                                                               Map<K, T>> callable)
+            throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default long getCount(String module, Object key, Callable<Number> callable) throws CacheException {
+    default long getCount(String module, Object key, Callable<Number> callable)
+            throws CacheException {
         throw new UnsupportedOperationException();
     }
 

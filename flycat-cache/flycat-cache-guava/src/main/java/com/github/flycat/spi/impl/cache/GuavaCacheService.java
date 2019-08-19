@@ -193,7 +193,8 @@ public class GuavaCacheService implements StandaloneCacheService {
 
 
     @Override
-    public <T extends Number, K> Map<K, T> getCountMap(String module, List<K> keys, Function<List<K>, Map<K, T>> callable) throws CacheException {
+    public <T extends Number, K> Map<K, T> getCountMap(String module, List<K> keys,
+                                                       Function<List<K>, Map<K, T>> callable) throws CacheException {
         final HashMap<Object, Number> result = Maps.newHashMap();
         final ArrayList<Object> notFoundKeys = Lists.newArrayList();
         for (Object key : keys) {
@@ -220,9 +221,11 @@ public class GuavaCacheService implements StandaloneCacheService {
     }
 
     @Override
-    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules, List<K> keys,
-                                                                                           Function<List<K>,
-                                                                                     Map<String, Map<K, T>>> callable) throws CacheException {
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules,
+                                                                 List<K> keys,
+                                                                 Function<List<K>,
+                                                                         Map<String, Map<K, T>>> callable)
+            throws CacheException {
         final ArrayList<Object> notFoundKeys = Lists.newArrayList();
         final Map<String, Map<K, T>> results = Maps.newHashMap();
         for (String module : modules) {

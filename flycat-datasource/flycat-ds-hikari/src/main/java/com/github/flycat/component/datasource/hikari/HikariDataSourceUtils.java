@@ -25,7 +25,8 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class HikariDataSourceUtils {
 
-    public static HikariDataSource createDataSource(DataSourceConfig dataSourceConfig, HikariConfiguration configuration) {
+    public static HikariDataSource createDataSource(DataSourceConfig dataSourceConfig,
+                                                    HikariConfiguration configuration) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(dataSourceConfig.getUrl());
         config.setUsername(dataSourceConfig.getUsername());

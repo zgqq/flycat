@@ -66,7 +66,6 @@ public class MybatisConfiguration {
 
     public static class MybatisPlusAutoConfiguration {
 
-        private static final Logger logger = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
 
         private final MybatisPlusProperties properties;
 
@@ -87,8 +86,10 @@ public class MybatisConfiguration {
                                             ObjectProvider<Interceptor[]> interceptorsProvider,
                                             ResourceLoader resourceLoader,
                                             ObjectProvider<DatabaseIdProvider> databaseIdProvider,
-                                            ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                            ObjectProvider<List<MybatisPlusPropertiesCustomizer>> mybatisPlusPropertiesCustomizerProvider,
+                                            ObjectProvider<List<ConfigurationCustomizer>>
+                                                    configurationCustomizersProvider,
+                                            ObjectProvider<List<MybatisPlusPropertiesCustomizer>>
+                                                    mybatisPlusPropertiesCustomizerProvider,
                                             ApplicationContext applicationContext) {
             this.properties = properties;
             this.interceptors = interceptorsProvider.getIfAvailable();
@@ -190,10 +191,14 @@ public class MybatisConfiguration {
                                      ObjectProvider<Interceptor[]> interceptorsProvider,
                                      ResourceLoader resourceLoader,
                                      ObjectProvider<DatabaseIdProvider> databaseIdProvider,
-                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                     ObjectProvider<List<MybatisPlusPropertiesCustomizer>> mybatisPlusPropertiesCustomizerProvider,
+                                     ObjectProvider<List<ConfigurationCustomizer>>
+                                             configurationCustomizersProvider,
+                                     ObjectProvider<List<MybatisPlusPropertiesCustomizer>>
+                                             mybatisPlusPropertiesCustomizerProvider,
                                      ApplicationContext applicationContext) {
-            super(properties, interceptorsProvider, resourceLoader, databaseIdProvider, configurationCustomizersProvider, mybatisPlusPropertiesCustomizerProvider, applicationContext);
+            super(properties, interceptorsProvider, resourceLoader,
+                    databaseIdProvider, configurationCustomizersProvider,
+                    mybatisPlusPropertiesCustomizerProvider, applicationContext);
         }
 
         // http://www.importnew.com/25940.html
@@ -244,9 +249,14 @@ public class MybatisConfiguration {
                                                ObjectProvider<Interceptor[]> interceptorsProvider,
                                                ResourceLoader resourceLoader,
                                                ObjectProvider<DatabaseIdProvider> databaseIdProvider,
-                                               ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                               ObjectProvider<List<MybatisPlusPropertiesCustomizer>> mybatisPlusPropertiesCustomizerProvider, ApplicationContext applicationContext) {
-            super(properties, interceptorsProvider, resourceLoader, databaseIdProvider, configurationCustomizersProvider, mybatisPlusPropertiesCustomizerProvider, applicationContext);
+                                               ObjectProvider<List<ConfigurationCustomizer>>
+                                                       configurationCustomizersProvider,
+                                               ObjectProvider<List<MybatisPlusPropertiesCustomizer>>
+                                                       mybatisPlusPropertiesCustomizerProvider,
+                                               ApplicationContext applicationContext) {
+            super(properties, interceptorsProvider, resourceLoader,
+                    databaseIdProvider, configurationCustomizersProvider,
+                    mybatisPlusPropertiesCustomizerProvider, applicationContext);
         }
 
         // http://www.importnew.com/25940.html

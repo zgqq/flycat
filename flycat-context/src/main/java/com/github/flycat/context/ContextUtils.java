@@ -60,21 +60,21 @@ public final class ContextUtils {
         return bean;
     }
 
-    static final List<String> productEnvWords = Lists.newArrayList("production", "product", "prod", "ali");
+    static final List<String> PRODUCT_ENV_WORDS = Lists.newArrayList("production", "product", "prod", "ali");
 
     public static boolean isTestProfile() {
         final String property = getCurrentProfile();
-        return productEnvWords.stream().noneMatch(word -> word.equals(property));
+        return PRODUCT_ENV_WORDS.stream().noneMatch(word -> word.equals(property));
     }
 
     private static String getCurrentProfile() {
         return System.getProperty("spring.profiles.active");
     }
 
-    static final List<String> serverEnvWords = Lists.newArrayList(productEnvWords);
+    static final List<String> STRING_ARRAY_LIST = Lists.newArrayList(PRODUCT_ENV_WORDS);
 
     static {
-        serverEnvWords.add("test");
+        STRING_ARRAY_LIST.add("test");
     }
 
     public static boolean isTestServerProfile() {
@@ -84,7 +84,7 @@ public final class ContextUtils {
 
     public static boolean isLocalProfile() {
         final String currentProfile = getCurrentProfile();
-        return serverEnvWords.stream().noneMatch(word -> word.equals(currentProfile));
+        return STRING_ARRAY_LIST.stream().noneMatch(word -> word.equals(currentProfile));
     }
 
     public static String getApplicationName() {
