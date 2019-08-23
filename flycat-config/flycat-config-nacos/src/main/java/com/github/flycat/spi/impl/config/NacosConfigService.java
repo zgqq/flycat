@@ -32,6 +32,7 @@ public class NacosConfigService implements ConfigService, SpiService {
     private com.alibaba.nacos.api.config.ConfigService configService;
 
     public NacosConfigService() {
+        createConfigService();
     }
 
     public NacosConfigService(com.alibaba.nacos.api.config.ConfigService configService) {
@@ -81,7 +82,6 @@ public class NacosConfigService implements ConfigService, SpiService {
         });
     }
 
-    @PostConstruct
     public void createConfigService() {
         final String addr = getString("flycat.nacos.config.server-addr");
         configService = NacosUtils.createConfigService(addr);

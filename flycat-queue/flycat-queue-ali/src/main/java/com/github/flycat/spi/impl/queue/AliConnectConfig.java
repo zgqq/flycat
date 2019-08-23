@@ -17,7 +17,6 @@ package com.github.flycat.spi.impl.queue;
 
 import com.github.flycat.spi.context.ApplicationConfiguration;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -29,8 +28,13 @@ public class AliConnectConfig {
     private String yourAccessId;
     private String topicName;
     private String env;
+    private final ApplicationConfiguration applicationConfiguration;
+
     @Inject
-    private ApplicationConfiguration applicationConfiguration;
+    public AliConnectConfig(ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+        createConfig();
+    }
 
     public String getEndpoint() {
         return endpoint;
@@ -72,7 +76,6 @@ public class AliConnectConfig {
         this.env = env;
     }
 
-    @PostConstruct
     public void createConfig() {
         final String endPoint = this.applicationConfiguration.getString("flycat.queue.ali.endpoint");
         this.endpoint = endPoint;

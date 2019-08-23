@@ -23,25 +23,19 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class MultipleRedisService implements SpiService {
-    @Inject
-    PrimaryRedisService primaryRedisService;
-    @Inject
-    SecondaryRedisService secondaryRedisService;
+    private final PrimaryRedisService primaryRedisService;
+    private final SecondaryRedisService secondaryRedisService;
 
-//    @ConditionalOnProperty(name = "redis.primary.enable", havingValue = "true")
-//    public static class PrimaryConfig {
-//        @Value("${redis.primary.host}")
-//        private String host;
-//        @Value("${redis.primary.port}")
-//        private int port;
-//        @Value("${redis.primary.password}")
+    public MultipleRedisService(PrimaryRedisService primaryRedisService, SecondaryRedisService secondaryRedisService) {
+        this.primaryRedisService = primaryRedisService;
+        this.secondaryRedisService = secondaryRedisService;
+        createRedis();
+    }
 
-    @PostConstruct
     public void createRedis() {
         final String primaryHost = getString("flycat.redis.primary.host");
         final Integer primaryPort = getInteger("flycat.redis.primary.port");

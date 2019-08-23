@@ -23,7 +23,6 @@ import com.github.qcloudsms.SmsSingleSenderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
 @Singleton
@@ -35,6 +34,7 @@ public class QcloudSmsSender implements SmsService, SpiService {
     private SmsSingleSender ssender;
 
     public QcloudSmsSender() {
+        createSender();
     }
 
     public QcloudSmsSender(int appid, String appkey) {
@@ -55,8 +55,7 @@ public class QcloudSmsSender implements SmsService, SpiService {
         }
     }
 
-    @PostConstruct
-    public void createService() {
+    public void createSender() {
         this.appid = getInteger("flycat.sms.qcloud.appid");
         this.appkey = getString("flycat.sms.qcloud.appKey");
         ssender = new SmsSingleSender(appid, appkey);
