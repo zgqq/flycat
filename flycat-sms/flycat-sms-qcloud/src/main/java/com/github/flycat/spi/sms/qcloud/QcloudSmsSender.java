@@ -17,29 +17,40 @@ package com.github.flycat.spi.sms.qcloud;
 
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.spi.SpiService;
+import com.github.flycat.spi.context.ApplicationConfiguration;
 import com.github.flycat.spi.sms.SmsService;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class QcloudSmsSender implements SmsService, SpiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(QcloudSmsSender.class);
 
     private int appid;
     private String appkey;
     private SmsSingleSender ssender;
+    private final ApplicationConfiguration applicationConfiguration;
 
-    public QcloudSmsSender() {
+    public QcloudSmsSender(ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
         createSender();
+    }
+
+    @Override
+    public ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
     }
 
     public QcloudSmsSender(int appid, String appkey) {
         this.appid = appid;
         this.appkey = appkey;
+        this.applicationConfiguration = null;
     }
 
     @Override

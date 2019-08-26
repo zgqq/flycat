@@ -18,9 +18,11 @@ package com.github.flycat.spi.impl.queue;
 import com.aliyun.mns.client.CloudAccount;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class CloudAccountHolder {
     private final CloudAccount account;
 

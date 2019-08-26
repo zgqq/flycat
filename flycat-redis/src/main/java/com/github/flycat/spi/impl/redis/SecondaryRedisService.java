@@ -17,9 +17,11 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.redis.AbstractRedisService;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class SecondaryRedisService extends AbstractRedisService  {
     public SecondaryRedisService() {
     }

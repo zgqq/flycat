@@ -18,9 +18,11 @@ package com.github.flycat.spi.impl.queue;
 import com.github.flycat.spi.context.ApplicationConfiguration;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class AliConnectConfig {
 
     private String endpoint;

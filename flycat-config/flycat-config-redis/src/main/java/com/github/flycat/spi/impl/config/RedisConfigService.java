@@ -24,11 +24,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
+@Named
 public class RedisConfigService implements ConfigService {
 
     private final ConcurrentHashMap<String, RedisConfig>

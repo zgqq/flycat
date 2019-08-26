@@ -22,11 +22,13 @@ import com.github.flycat.spi.redis.RedisService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @Singleton
+@Named
 public class RedisCacheService implements DistributedCacheService {
 
     public static final String CACHE_NULL = "CACHE_NULL_" + RedisCacheService.class.getName();

@@ -39,7 +39,7 @@ public class SpringConfiguration implements ApplicationConfiguration, Applicatio
 
     @Override
     public Integer getInteger(String key) {
-        return NumberUtils.createInteger(key);
+        return NumberUtils.createInteger(getString(key));
     }
 
     @Override

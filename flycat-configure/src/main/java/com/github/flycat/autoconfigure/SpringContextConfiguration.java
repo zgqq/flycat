@@ -46,41 +46,38 @@ public class SpringContextConfiguration {
         return springContainer;
     }
 
-//    @Bean
-//    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
-//        return new BeanDefinitionRegistryPostProcessor() {
-//            @Override
-//            public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
-//                    throws BeansException {
-//                final String[] beanDefinitionNames = registry.getBeanDefinitionNames();
-//                for (int i = 0; i < beanDefinitionNames.length; i++) {
-//                    final String beanDefinitionName = beanDefinitionNames[i];
-//                    final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
-//                    final String beanClassName = beanDefinition.getBeanClassName();
-//                    if (StringUtils.isBlank(beanClassName)) {
-//                        continue;
-//                    }
-//                    LOGGER.info("Check bean class name, {}", beanClassName);
-//                    final Primary annotation;
-//                    try {
-//                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
-//                        if (annotation != null) {
-//                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
-//                            beanDefinition.setPrimary(true);
-//                        }
-//                    } catch (ClassNotFoundException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//
-//                final BeanDefinition beanDefinition = registry.getBeanDefinition("");
-//                beanDefinition.setPrimary(true);
-//            }
-//
-//            @Override
-//            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-//
-//            }
-//        };
-//    }
+    @Bean
+    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
+        return new BeanDefinitionRegistryPostProcessor() {
+            @Override
+            public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
+                    throws BeansException {
+                final String[] beanDefinitionNames = registry.getBeanDefinitionNames();
+                for (int i = 0; i < beanDefinitionNames.length; i++) {
+                    final String beanDefinitionName = beanDefinitionNames[i];
+                    final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
+                    final String beanClassName = beanDefinition.getBeanClassName();
+                    if (StringUtils.isBlank(beanClassName)) {
+                        continue;
+                    }
+                    LOGGER.info("Check bean class name, {}", beanClassName);
+                    final Primary annotation;
+                    try {
+                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
+                        if (annotation != null) {
+                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
+                            beanDefinition.setPrimary(true);
+                        }
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+
+            }
+        };
+    }
 }

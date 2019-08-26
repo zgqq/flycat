@@ -16,24 +16,36 @@
 package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.SpiService;
+import com.github.flycat.spi.context.ApplicationConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class MultipleRedisService implements SpiService {
     private final PrimaryRedisService primaryRedisService;
     private final SecondaryRedisService secondaryRedisService;
+    private final ApplicationConfiguration applicationConfiguration;
 
-    public MultipleRedisService(PrimaryRedisService primaryRedisService, SecondaryRedisService secondaryRedisService) {
+    @Inject
+    public MultipleRedisService(PrimaryRedisService primaryRedisService,
+                                SecondaryRedisService secondaryRedisService, ApplicationConfiguration applicationConfiguration) {
         this.primaryRedisService = primaryRedisService;
         this.secondaryRedisService = secondaryRedisService;
+        this.applicationConfiguration = applicationConfiguration;
         createRedis();
+    }
+
+    @Override
+    public ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
     }
 
     public void createRedis() {
@@ -47,10 +59,11 @@ public class MultipleRedisService implements SpiService {
         final String secondaryHost = getString("flycat.redis.secondary.host");
         final Integer secondaryPort = getInteger("flycat.redis.secondary.port");
         final String secondaryPassword = getString("flycat.redis.secondary.password");
-
-        final StringRedisTemplate secondaryRedisTemplate =
-                createRedisTemplate(secondaryHost, secondaryPort, secondaryPassword);
-        secondaryRedisService.setProvider(new SpringRedisProviderAdapter(secondaryRedisTemplate));
+        if (StringUtils.isNotBlank(secondaryHost)) {
+            final StringRedisTemplate secondaryRedisTemplate =
+                    createRedisTemplate(secondaryHost, secondaryPort, secondaryPassword);
+            secondaryRedisService.setProvider(new SpringRedisProviderAdapter(secondaryRedisTemplate));
+        }
     }
 
     public StringRedisTemplate createRedisTemplate(String host, Integer port, String password) {

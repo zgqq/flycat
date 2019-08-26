@@ -16,22 +16,28 @@
 package com.github.flycat.spi.impl.queue;
 
 
+import com.github.flycat.spi.context.ApplicationConfiguration;
 import com.github.flycat.spi.queue.MessageHandler;
 import com.github.flycat.spi.queue.Queue;
 import com.github.flycat.spi.queue.QueueFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class QueueFactoryImpl implements QueueFactory {
     private final CloudAccountHolder cloudAccountHolder;
     private final String topicName;
     private final String env;
 
-    public QueueFactoryImpl(CloudAccountHolder cloudAccountHolder, String topicName, String env) {
+    @Inject
+    public QueueFactoryImpl(CloudAccountHolder cloudAccountHolder,
+                            ApplicationConfiguration applicationConfiguration) {
         this.cloudAccountHolder = cloudAccountHolder;
-        this.topicName = topicName;
-        this.env = env;
+        this.topicName = applicationConfiguration.getString("flycat.ali.topicName");
+        this.env = applicationConfiguration.getString("env");
     }
 
     @Override

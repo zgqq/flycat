@@ -20,11 +20,13 @@ import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.concurrent.*;
 
 @Singleton
+@Named
 public class GuavaCacheService implements StandaloneCacheService {
 
     private ConcurrentMap moduleMap = new ConcurrentHashMap();

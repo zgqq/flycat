@@ -17,13 +17,20 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.annotation.Primary;
 import com.github.flycat.spi.redis.AbstractRedisService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
-@Singleton
 @Primary
+@Named
+@Singleton
 public class PrimaryRedisService extends AbstractRedisService  {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrimaryRedisService.class);
+
     public PrimaryRedisService() {
+        LOGGER.info("Creating primary redis");
     }
 
     public PrimaryRedisService(SpringRedisProviderAdapter provider) {

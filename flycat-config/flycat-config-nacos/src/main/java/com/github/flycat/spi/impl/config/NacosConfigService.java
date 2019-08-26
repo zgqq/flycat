@@ -22,21 +22,31 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
+import com.github.flycat.spi.context.ApplicationConfiguration;
 
-import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.concurrent.Callable;
 
 @Singleton
+@Named
 public class NacosConfigService implements ConfigService, SpiService {
     private com.alibaba.nacos.api.config.ConfigService configService;
+    private final ApplicationConfiguration applicationConfiguration;
 
-    public NacosConfigService() {
+    public NacosConfigService(ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
         createConfigService();
     }
 
-    public NacosConfigService(com.alibaba.nacos.api.config.ConfigService configService) {
+    @Override
+    public ApplicationConfiguration getApplicationConfiguration() {
+        return applicationConfiguration;
+    }
+
+    public NacosConfigService(com.alibaba.nacos.api.config.ConfigService configService, ApplicationConfiguration applicationConfiguration) {
         this.configService = configService;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
