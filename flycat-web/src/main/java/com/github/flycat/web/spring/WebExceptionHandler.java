@@ -20,7 +20,7 @@ import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.api.ApiResponseCode;
 import com.github.flycat.web.api.ApiResponseCodeUtils;
-import com.github.flycat.web.exception.BusinessException;
+import com.github.flycat.exception.BusinessException;
 import com.github.flycat.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

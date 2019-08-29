@@ -20,7 +20,7 @@ import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.api.ApiParameterResolver;
 import com.github.flycat.web.filter.ContentCachingHandler;
-import com.github.flycat.web.log.WebLogAlarmListener;
+import com.github.flycat.spi.impl.alarm.LogAlarmListener;
 
 public class FlycatWebHolder {
     private static volatile ContentCachingHandler contentCachingHandler;
@@ -50,7 +50,7 @@ public class FlycatWebHolder {
 
         contentCachingHandler = configuration.contentCachingHandler();
         apiParameterResolver = configuration.createParameterResolver();
-        EventManager.register(new WebLogAlarmListener());
+//        EventManager.register(new LogAlarmListener(alarmSender));
     }
 
     public static ContentCachingHandler getContentCachingHandler() {

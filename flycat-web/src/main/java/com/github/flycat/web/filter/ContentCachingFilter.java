@@ -18,7 +18,7 @@ package com.github.flycat.web.filter;
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.web.FlycatWebHolder;
 import com.github.flycat.web.api.*;
-import com.github.flycat.web.exception.BusinessException;
+import com.github.flycat.exception.BusinessException;
 import com.github.flycat.web.util.HttpRequestWrapper;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;

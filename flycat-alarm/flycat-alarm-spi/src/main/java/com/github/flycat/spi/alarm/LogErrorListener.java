@@ -48,7 +48,7 @@ public class LogErrorListener {
         return true;
     }
 
-    private void sendAlarm(Logger logger, String s, Object... objects) {
+    protected void sendAlarm(Logger logger, String s, Object... objects) {
         final String name = logger.getName();
         if (packageName != null && name.startsWith(packageName)) {
             AlarmUtils.sendNotify("app:" + applicationName

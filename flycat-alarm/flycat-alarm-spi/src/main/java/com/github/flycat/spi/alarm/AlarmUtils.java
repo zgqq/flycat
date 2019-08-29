@@ -60,7 +60,7 @@ public class AlarmUtils {
     public static void sendNotify(String message) {
         AlarmSender alarmSender = getDefaultAlarmSender();
         if (alarmSender == null) {
-            LOGGER.error("Not found any alarm sender, message:{}", message);
+            LOGGER.warn("Not found any alarm sender, message:{}", message);
         } else {
             alarmSender.sendNotify(message);
         }

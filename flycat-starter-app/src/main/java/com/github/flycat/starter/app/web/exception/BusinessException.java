@@ -15,10 +15,9 @@
  */
 package com.github.flycat.starter.app.web.exception;
 
-import com.github.flycat.web.exception.BaseException;
+import com.github.flycat.exception.BaseException;
 
 public class BusinessException extends BaseException {
-
 
     public BusinessException() {
         super();

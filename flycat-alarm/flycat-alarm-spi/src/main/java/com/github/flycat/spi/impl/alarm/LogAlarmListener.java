@@ -13,18 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.log;
+package com.github.flycat.spi.impl.alarm;
 
 import ch.qos.logback.classic.Logger;
+import com.github.flycat.exception.BusinessException;
+import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
-import com.github.flycat.web.exception.BusinessException;
 
-public class WebLogAlarmListener extends LogErrorListener {
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+@Singleton
+@Named
+public class LogAlarmListener extends LogErrorListener {
+    private final AlarmSender alarmSender;
+
+    @Inject
+    public LogAlarmListener(AlarmSender alarmSender) {
+        this.alarmSender = alarmSender;
+    }
 
     @Override
     protected boolean shouldSendAlarm(Logger logger, String s, Throwable throwable, Object[] objects) {
         return !(throwable instanceof BusinessException
                 ||
                 (throwable != null && throwable.getCause() instanceof BusinessException));
+    }
+
+    @Override
+    protected void sendAlarm(Logger logger, String s, Object... objects) {
+        this.alarmSender.sendNotify(s);
     }
 }

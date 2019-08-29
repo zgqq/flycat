@@ -1,6 +1,7 @@
 
 dependencies {
     implementation project(':flycat-server')
+    implementation project(':flycat-context')
     implementation project(':flycat-alarm-spi')
     implementation project(':flycat-util')
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"

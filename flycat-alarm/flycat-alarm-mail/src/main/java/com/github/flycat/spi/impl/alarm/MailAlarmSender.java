@@ -24,9 +24,11 @@ import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Singleton
+@Named
 public class MailAlarmSender extends AbstractAlarmSender {
 
     private static Mailer mailer;
