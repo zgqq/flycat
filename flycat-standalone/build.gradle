@@ -7,7 +7,7 @@ dependencies {
     api project(':flycat-cache-redis')
     api project(':flycat-mybatis')
     api project(':flycat-util')
-    api project(':flycat-configure')
+    api project(':flycat-springboot')
     api project(':flycat-alarm-mail')
     api project(':flycat-security')
 

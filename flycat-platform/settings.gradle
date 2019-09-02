@@ -1,0 +1,3 @@
+include 'flycat-springboot'
+
+project (':flycat-springboot').projectDir = new File('./flycat-platform/flycat-springboot')
