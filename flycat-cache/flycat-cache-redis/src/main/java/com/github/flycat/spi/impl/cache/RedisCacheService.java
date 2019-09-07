@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 package com.github.flycat.spi.impl.cache;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.redis.RedisService;
@@ -24,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -40,11 +43,14 @@ public class RedisCacheService implements DistributedCacheService {
         this.redisService = redisService;
     }
 
+
     @Override
-    public <T> Optional<T> queryNullableCacheString(String module, String key, Callable<T> callable, int seconds)
+    public <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                                    Type type,
+                                                    Callable<T> callable, int seconds)
             throws CacheException {
         try {
-            String redisKey = module + "_" + key + "_" + seconds;
+            String redisKey = "cache:" + module + ":" + key + ":" + seconds;
             final String cacheValue = redisService.get(redisKey);
             if (CACHE_NULL.equals(cacheValue)) {
                 return Optional.empty();
@@ -53,13 +59,13 @@ public class RedisCacheService implements DistributedCacheService {
             if (StringUtils.isBlank(cacheValue)) {
                 result = callable.call();
                 if (result == null) {
-                    redisService.setex(redisKey, CACHE_NULL, seconds);
+                    redisService.setex(redisKey, seconds, CACHE_NULL);
                 } else {
                     final String jsonString = JSON.toJSONString(result);
-                    redisService.setex(redisKey, jsonString, seconds);
+                    redisService.setex(redisKey, seconds, jsonString);
                 }
             } else {
-                result = (T) JSON.parse(cacheValue);
+                result = (T) JSON.parseObject(cacheValue, type);
             }
             return Optional.ofNullable(result);
         } catch (Exception e) {
@@ -68,25 +74,38 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public <T> Optional<T> queryNullableCacheString(String module, String key, Callable<T> callable)
+    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable)
             throws CacheException {
-        return queryNullableCacheString(module, key, callable, 300);
+        return queryNullableCacheObject(module, key, type, callable, 300);
     }
 
     @Override
-    public <T> T queryCacheString(String module, String key, Callable<T> callable) throws CacheException {
-        return queryCacheString(module, key, callable, 300);
+    public <T> T queryCacheObject(String module, String key, Type type, Callable<T> callable) throws CacheException {
+        return queryCacheObject(module, key, type, callable, 300);
     }
 
     @Override
-    public <T> T queryCacheString(String module, String key, Callable<T> callable, int seconds)
+    public <T> T queryCacheObject(String module, String key, Type type, Callable<T> callable, int seconds)
             throws CacheException {
-        return queryNullableCacheString(module, key, callable, seconds).orElseThrow(() -> new CacheException(
+        return queryNullableCacheObject(module, key, type, callable, seconds).orElseThrow(() -> new CacheException(
                 "Cache value is null, module:" + module + ", key:" + key));
     }
 
     @Override
-    public <T> T queryAllCacheString(String module, Callable<T> callable) throws CacheException {
-        return queryCacheString(module, "ALL", callable);
+    public <T> T queryAllCacheObjects(String module, Type returnType, Callable<T> callable) throws CacheException {
+        return queryCacheObject(module, "ALL", returnType, callable);
+    }
+
+
+    public final static Type LIST_INTEGER = new TypeReference<List<String>>() {
+    }.getType();
+
+    @Override
+    public List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds) {
+        return queryCacheObject(module,
+                key,
+                LIST_INTEGER,
+                () -> callable.call(), seconds
+        );
     }
 }

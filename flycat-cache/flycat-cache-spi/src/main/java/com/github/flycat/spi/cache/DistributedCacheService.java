@@ -15,5 +15,45 @@
  */
 package com.github.flycat.spi.cache;
 
-public interface DistributedCacheService extends CacheService {
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+
+public interface DistributedCacheService {
+
+    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                                     Type type,
+                                                     Callable<T> callable, int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                                     Type type,
+                                                     Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> T queryCacheObject(String module, String key,
+                                   Type type,
+                                   Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> T queryCacheObject(String module, String key,
+                                   Type type,
+                                   Callable<T> callable,
+                                   int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <T> T queryAllCacheObjects(String module,
+                                       Type type,
+                                       Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds);
+
 }
