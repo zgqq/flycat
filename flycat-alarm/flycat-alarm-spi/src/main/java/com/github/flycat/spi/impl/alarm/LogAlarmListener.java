@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Logger;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
+import com.github.flycat.spi.context.ApplicationConfiguration;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,7 +31,8 @@ public class LogAlarmListener extends LogErrorListener {
     private final AlarmSender alarmSender;
 
     @Inject
-    public LogAlarmListener(AlarmSender alarmSender) {
+    public LogAlarmListener(AlarmSender alarmSender, ApplicationConfiguration applicationConfiguration) {
+        super(applicationConfiguration.getString("app.name"), applicationConfiguration.getString("flycat.alarm.log.package"));
         this.alarmSender = alarmSender;
     }
 

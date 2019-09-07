@@ -16,20 +16,29 @@
 package com.github.flycat.spi.alarm;
 
 import ch.qos.logback.classic.Logger;
-import com.github.flycat.server.config.ServerEnvUtils;
 import com.github.flycat.server.log.LogErrorEvent;
 import com.google.common.eventbus.Subscribe;
 
 public class LogErrorListener {
 
-    private static String applicationName;
-    private static String packageName;
+//    private static String applicationName;
+//    private static String packageName;
+//
+//    static {
+//        applicationName = ServerEnvUtils.getProperty("spring.application.name");
+//        packageName = ServerEnvUtils.getProperty("flycat.alarm.log.package");
+//        System.out.println("Alarm log package name " + packageName);
+//    }
 
-    static {
-        applicationName = ServerEnvUtils.getProperty("spring.application.name");
-        packageName = ServerEnvUtils.getProperty("flycat.alarm.log.package");
-        System.out.println("Alarm log package name " + packageName);
+
+    private final String applicationName;
+    private final String packageName;
+
+    public LogErrorListener(String applicationName, String packageName) {
+        this.applicationName = applicationName;
+        this.packageName = packageName;
     }
+
 
     @Subscribe
     public void listen(LogErrorEvent logErrorEvent) {
@@ -54,5 +63,13 @@ public class LogErrorListener {
             AlarmUtils.sendNotify("app:" + applicationName
                     + " logger name:" + logger.getName() + " message:" + s);
         }
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }
