@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.db.mybatis;
+package com.github.flycat.platform.datasource;
 
 public class DataSourceConfig {
 
+    private boolean enabled = false;
     private String url;
     private String username;
     private String password;
     private String driverClassName;
     private String initSQL;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public String getUrl() {
         return url;

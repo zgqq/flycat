@@ -33,7 +33,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.github.flycat.spi.impl")
+@ComponentScan(basePackages = {"com.github.flycat.spi.impl", "com.github.flycat.platform"})
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
@@ -60,7 +60,7 @@ public class SpringContextConfiguration {
                     if (StringUtils.isBlank(beanClassName)) {
                         continue;
                     }
-                    LOGGER.info("Check bean class name, {}", beanClassName);
+//                    LOGGER.info("Check bean class name, {}", beanClassName);
                     final Primary annotation;
                     try {
                         annotation = Class.forName(beanClassName).getAnnotation(Primary.class);

@@ -1,0 +1,8 @@
+
+dependencies {
+    implementation project(':flycat-context')
+//    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+}
+
+
+

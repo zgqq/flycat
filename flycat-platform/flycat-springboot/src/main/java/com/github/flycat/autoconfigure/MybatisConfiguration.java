@@ -15,10 +15,9 @@
  */
 package com.github.flycat.autoconfigure;
 
-import com.github.flycat.db.mybatis.DataSourceConfig;
-import com.github.flycat.db.mybatis.DataSourceUtils;
-import com.github.flycat.db.mybatis.HikariConfiguration;
-import com.zaxxer.hikari.HikariDataSource;
+import com.github.flycat.db.mybatis.MybatisUtils;
+import com.github.flycat.platform.datasource.DataSourceConfig;
+import com.github.flycat.platform.datasource.DataSourceFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
@@ -40,7 +39,6 @@ import javax.sql.DataSource;
 
 
 /**
- * Created by zgq on 17-3-9.
  */
 @Configuration
 @ConditionalOnClass(MapperScannerConfigurer.class)
@@ -62,9 +60,9 @@ public class MybatisConfiguration {
         public MapperScannerConfigurer createMapperScanner(
                 ApplicationContext applicationContext) {
             String name = applicationContext.getEnvironment().
-                    resolvePlaceholders("${ds.primary.mybatis.mapper}");
+                    resolvePlaceholders("${flycat.datasource.primary.mybatis.mapper}");
             LOGGER.info("Creating primary mybatis mapper, {}", name);
-            return DataSourceUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_1);
+            return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_1);
         }
 
 
@@ -72,7 +70,7 @@ public class MybatisConfiguration {
         public SqlSessionFactory createSqlSessionFactory(
                 @Qualifier("primaryDataSource")
                         DataSource dataSource) throws Exception {
-            return DataSourceUtils.createSessionFactory(dataSource);
+            return MybatisUtils.createSessionFactory(dataSource);
         }
     }
 
@@ -91,16 +89,16 @@ public class MybatisConfiguration {
         public MapperScannerConfigurer createMapperScanner2(
                 ApplicationContext applicationContext) {
             String name = applicationContext.getEnvironment().
-                    resolvePlaceholders("${ds.secondary.mybatis.mapper}");
+                    resolvePlaceholders("${flycat.datasource.secondary.mybatis.mapper}");
             LOGGER.info("Creating secondary mybatis mapper, {}", name);
-            return DataSourceUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_2);
+            return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_2);
         }
 
         @Bean(name = SQL_SESSION_FACTORY_NAME_2)
         public SqlSessionFactory createSqlSessionFactory(
                 @Qualifier("secondaryDataSource") DataSource dataSource
         ) throws Exception {
-            return DataSourceUtils.createSessionFactory(dataSource);
+            return MybatisUtils.createSessionFactory(dataSource);
         }
     }
 
@@ -112,19 +110,13 @@ public class MybatisConfiguration {
 
         @Bean(name = "primaryDataSource")
         @Primary
-        public DataSource primaryDataSource(@Autowired @Qualifier("primaryDataSourceConfig")
-                                                    DataSourceConfig dataSourceConfig,
-                                            @Autowired @Qualifier("primaryHikariConfig")
-                                                    HikariConfiguration hikariConfiguration) {
-            LOGGER.info("Creating primary datasource, dataSource:{}, hikari:{}",
-                    dataSourceConfig, hikariConfiguration);
-            hikariConfiguration.setInitSQL(dataSourceConfig.getInitSQL());
-            HikariDataSource dataSource = DataSourceUtils
-                    .createDataSource(dataSourceConfig.getUrl(),
-                            dataSourceConfig.getUsername(), dataSourceConfig.getPassword(),
-                            dataSourceConfig.getDriverClassName(),
-                            hikariConfiguration);
-            return dataSource;
+        public DataSource primaryDataSource(
+                @Autowired DataSourceFactory dataSourceFactory,
+                @Autowired @Qualifier("primaryDataSourceConfig")
+                                                    DataSourceConfig dataSourceConfig) {
+            LOGGER.info("Creating primary datasource, dataSource:{}",
+                    dataSourceConfig);
+            return dataSourceFactory.createDataSource(dataSourceConfig);
         }
 
         @Bean(name = "primaryTransaction")
@@ -144,17 +136,11 @@ public class MybatisConfiguration {
     public static class CreateSecondaryDataSourceConfiguration {
 
         @Bean(name = "secondaryDataSource")
-        public DataSource secondaryDataSource(@Qualifier("secondaryDataSourceConfig")
-                                                      DataSourceConfig dataSourceConfig,
-                                              @Qualifier("secondaryHikariConfig")
-                                                      HikariConfiguration hikariConfiguration) {
-            hikariConfiguration.setInitSQL(dataSourceConfig.getInitSQL());
-            HikariDataSource dataSource = DataSourceUtils
-                    .createDataSource(dataSourceConfig.getUrl(),
-                            dataSourceConfig.getUsername(), dataSourceConfig.getPassword(),
-                            dataSourceConfig.getDriverClassName(),
-                            hikariConfiguration);
-            return dataSource;
+        public DataSource secondaryDataSource(
+                @Autowired DataSourceFactory dataSourceFactory,
+                @Qualifier("secondaryDataSourceConfig")
+                                                      DataSourceConfig dataSourceConfig) {
+            return dataSourceFactory.createDataSource(dataSourceConfig);
         }
 
         @Bean(name = "secondaryTransaction")
@@ -169,56 +155,26 @@ public class MybatisConfiguration {
 
 
     @Configuration
-    @ConditionalOnProperty(name = "ds.primary.enable", havingValue = "true")
+    @ConditionalOnProperty(name = "flycat.datasource.primary.enabled", havingValue = "true")
     public static class PrimaryDataSourceConfiguration {
 
-
         @Bean(name = "primaryDataSourceConfig")
-        @ConfigurationProperties(prefix = "ds.primary")
+        @ConfigurationProperties(prefix = "flycat.datasource.primary")
         @Primary
         public DataSourceConfig dataSourceConfig() {
             LOGGER.info("Creating primary config");
             return new DataSourceConfig();
         }
-
-        @Bean(name = "primaryHikariConfig")
-        @ConfigurationProperties(prefix = "ds.primary.hikari")
-        @Primary
-        public HikariConfiguration configuration() {
-            LOGGER.info("Creating hikari config");
-            return new HikariConfiguration();
-        }
-
     }
 
     @Configuration
-    @ConditionalOnProperty(name = "ds.secondary.enable", havingValue = "true")
+    @ConditionalOnProperty(name = "flycat.datasource.secondary.enabled", havingValue = "true")
     public static class SecondaryDataSourceConfiguration {
 
-
         @Bean(name = "secondaryDataSourceConfig")
-        @ConfigurationProperties(prefix = "ds.secondary")
+        @ConfigurationProperties(prefix = "flycat.datasource.secondary")
         public DataSourceConfig dataSourceConfig() {
             return new DataSourceConfig();
         }
-
-        @Bean(name = "secondaryHikariConfig")
-        @ConfigurationProperties(prefix = "ds.secondary.hikari")
-        public HikariConfiguration configuration() {
-            return new HikariConfiguration();
-        }
     }
-
-//    @Primary
-//    @Bean(name = "primaryDataSource")
-//    @ConfigurationProperties("spring.datasource.druid.one")
-//    public DataSource dataSourceOne(){
-//        return DruidDataSourceBuilder.create().build();
-//    }
-//    @Bean("secondaryDataSource")
-//    @ConfigurationProperties("spring.datasource.druid.two")
-//    public DataSource dataSourceTwo(){
-
-//        return DruidDataSourceBuilder.create().build();
-//    }
 }

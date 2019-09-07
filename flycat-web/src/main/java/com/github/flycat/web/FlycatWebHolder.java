@@ -15,12 +15,10 @@
  */
 package com.github.flycat.web;
 
-import com.github.flycat.server.event.EventManager;
 import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.api.ApiParameterResolver;
 import com.github.flycat.web.filter.ContentCachingHandler;
-import com.github.flycat.spi.impl.alarm.LogAlarmListener;
 
 public class FlycatWebHolder {
     private static volatile ContentCachingHandler contentCachingHandler;

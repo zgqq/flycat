@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 @Documented
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-@ComponentScan("com.github.flycat.spi.impl")
+@ComponentScan(basePackages = {"com.github.flycat.spi.impl"})
 public @interface FlycatApplication {
 
 }
