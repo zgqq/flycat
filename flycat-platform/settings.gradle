@@ -1,9 +1,10 @@
 include 'flycat-springboot'
 include 'flycat-ds-hikari'
 include 'flycat-ds'
+include 'flycat-ds-druid'
 
 project (':flycat-springboot').projectDir = new File('./flycat-platform/flycat-springboot')
 project (':flycat-ds-hikari').projectDir = new File('./flycat-platform/flycat-ds-hikari')
 
 project (':flycat-ds').projectDir = new File('./flycat-platform/flycat-ds')
-
+project (':flycat-ds-druid').projectDir = new File('./flycat-platform/flycat-ds-druid')

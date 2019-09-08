@@ -4,4 +4,5 @@ com.github.flycat.autoconfigure.WechatConfiguration,\
 com.github.flycat.autoconfigure.WebConfiguration,\
 com.github.flycat.autoconfigure.MybatisConfiguration,\
 com.github.flycat.autoconfigure.ServerConfiguration,\
+com.github.flycat.autoconfigure.DataSourceConfiguration,\
 com.github.flycat.autoconfigure.ValidationConfiguration

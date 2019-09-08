@@ -26,7 +26,7 @@ dependencies {
 
     compileOnly project(':flycat-server')
 
-    api project(':flycat-ds-hikari')
+    api project(':flycat-ds-druid')
 
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 //    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'

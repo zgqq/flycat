@@ -61,7 +61,7 @@ public class SpringRedisProviderAdapter implements RedisService {
     }
 
     @Override
-    public void setex(String key, String value, long seconds) {
+    public void setex(String key, long seconds, String value) {
         redisTemplate.boundValueOps(key).set(value, seconds, TimeUnit.SECONDS);
     }
 

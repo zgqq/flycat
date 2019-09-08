@@ -16,23 +16,27 @@
 package com.github.flycat.spi.impl.context;
 
 import com.github.flycat.spi.context.ApplicationConfiguration;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
-public class SpringConfiguration implements ApplicationConfiguration, ApplicationContextAware {
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+@Named
+@Singleton
+public class SpringConfiguration implements ApplicationConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfiguration.class);
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    public SpringConfiguration(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
-    public String getString(String key) {
+    public String getStringValue(String key) {
         return getEnvironment().getProperty(key);
     }
 
@@ -40,22 +44,4 @@ public class SpringConfiguration implements ApplicationConfiguration, Applicatio
         return applicationContext.getEnvironment();
     }
 
-    @Override
-    public Integer getInteger(String key) {
-        return NumberUtils.createInteger(getString(key));
-    }
-
-    @Override
-    public Boolean getBoolean(String key) {
-        final String property = getEnvironment().getProperty(key);
-        if (property == null) {
-            return null;
-        }
-        return Boolean.valueOf(property);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

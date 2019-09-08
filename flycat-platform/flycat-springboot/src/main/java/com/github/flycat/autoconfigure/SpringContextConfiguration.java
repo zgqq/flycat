@@ -16,8 +16,10 @@
 package com.github.flycat.autoconfigure;
 
 import com.github.flycat.spi.annotation.Primary;
+import com.github.flycat.spi.context.ApplicationConfiguration;
 import com.github.flycat.spi.context.ApplicationContext;
 import com.github.flycat.spi.context.ContextUtils;
+import com.github.flycat.spi.impl.context.SpringConfiguration;
 import com.github.flycat.spi.impl.context.SpringContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,9 +33,13 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProce
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 @Configuration
-@ComponentScan(basePackages = {"com.github.flycat.spi.impl", "com.github.flycat.platform"})
+@ComponentScan(basePackages = {"com.github.flycat.spi.impl",
+        "com.github.flycat.support.spring",
+        "com.github.flycat.platform", })
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
@@ -47,7 +53,9 @@ public class SpringContextConfiguration {
     }
 
     @Bean
-    public BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
+    @Order(value = Ordered.HIGHEST_PRECEDENCE)
+    public static BeanDefinitionRegistryPostProcessor beanDefinitionRegistryPostProcessor() {
+
         return new BeanDefinitionRegistryPostProcessor() {
             @Override
             public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry)
@@ -76,7 +84,6 @@ public class SpringContextConfiguration {
 
             @Override
             public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-
             }
         };
     }

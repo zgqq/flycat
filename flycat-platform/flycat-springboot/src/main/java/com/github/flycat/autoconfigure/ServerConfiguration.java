@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 public class ServerConfiguration {
 
     @Bean
-    public EventBusPostProcessor eventBusPostProcessor() {
+    public static EventBusPostProcessor eventBusPostProcessor() {
         return new EventBusPostProcessor();
     }
 
