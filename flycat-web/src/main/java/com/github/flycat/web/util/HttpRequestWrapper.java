@@ -16,6 +16,8 @@
 package com.github.flycat.web.util;
 
 import com.google.common.primitives.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
@@ -31,11 +34,32 @@ import java.util.Arrays;
  * Created by zcy on 17-4-18.
  */
 public class HttpRequestWrapper extends HttpServletRequestWrapper {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequestWrapper.class);
+
     private byte[] requestBody = new byte[0];
     private boolean bufferFilled = false;
 
     public HttpRequestWrapper(HttpServletRequest request) {
         super(request);
+    }
+
+    @Override
+    public String getParameter(String name) {
+        try {
+            final byte[] requestBodyBytes = getRequestBodyBytes();
+            final String content = new String(requestBodyBytes, Charset.forName("UTF-8"));
+            final String[] split = content.split("&");
+            for (int i = 0; i < split.length; i++) {
+                final String[] keyValue = split[i].split("=");
+                if (name.equals(keyValue[0])) {
+                    return keyValue[1];
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error("Unable to get parameter, name:{}", name, e);
+            return null;
+        }
+        return null;
     }
 
     public byte[] getRequestBodyBytes() throws IOException {
@@ -51,7 +75,6 @@ public class HttpRequestWrapper extends HttpServletRequestWrapper {
         bufferFilled = true;
         return requestBody;
     }
-
 
     /**
      * 覆盖getInputStream() 返回保存的流数据
