@@ -3,20 +3,18 @@ package com.github.flycat.support.spring.druid;
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.platform.datasource.DruidStatProperties;
 import com.github.flycat.spi.impl.context.SpringConfiguration;
+import com.github.flycat.support.spring.BeanDefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.util.function.Supplier;
 
 @Component
 public class SpringDruidLoader implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
@@ -32,18 +30,15 @@ public class SpringDruidLoader implements BeanDefinitionRegistryPostProcessor, A
                 DruidStatProperties.class);
         LOGGER.info("Loaded druid config, value:{}", JSON.toJSONString(druidStatProperties));
         if (druidStatProperties.getWebStatFilter().isEnabled()) {
-            final GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition();
-            genericBeanDefinition.setBeanClass(FilterRegistrationBean.class);
-            genericBeanDefinition.setInstanceSupplier((Supplier<FilterRegistrationBean>) () ->
-                    SpringDruidUtils.webStatFilterRegistrationBean(druidStatProperties));
-            registry.registerBeanDefinition("webStatFilterRegistrationBean", genericBeanDefinition);
+            BeanDefinitionUtils.register(registry, FilterRegistrationBean.class,
+                    "webStatFilterRegistrationBean", () ->
+                            SpringDruidUtils.webStatFilterRegistrationBean(druidStatProperties));
         }
         if (druidStatProperties.getStatViewServlet().isEnabled()) {
-            final GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition();
-            genericBeanDefinition.setBeanClass(ServletRegistrationBean.class);
-            genericBeanDefinition.setInstanceSupplier((Supplier<ServletRegistrationBean>) () ->
-                    SpringDruidUtils.statViewServletRegistrationBean(druidStatProperties));
-            registry.registerBeanDefinition("statViewServletRegistrationBean", genericBeanDefinition);
+            BeanDefinitionUtils.register(registry, ServletRegistrationBean.class,
+                    "statViewServletRegistrationBean",
+                    () ->
+                            SpringDruidUtils.statViewServletRegistrationBean(druidStatProperties));
         }
     }
 
