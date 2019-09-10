@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.server.metric;
+package com.github.flycat.platform.springboot;
 
-import com.codahale.metrics.MetricRegistry;
+import org.springframework.core.Ordered;
+import org.springframework.validation.beanvalidation.MethodValidationInterceptor;
 
-public class GlobalMetricRegister {
-    private static final MetricRegistry REGISTRY = new MetricRegistry();
+import javax.validation.Validator;
 
-    public static MetricRegistry getRegistry() {
-        return REGISTRY;
+public class OrderedMethodValidationInterceptor extends MethodValidationInterceptor implements Ordered {
+
+    public OrderedMethodValidationInterceptor() {
+        super();
+    }
+
+    public OrderedMethodValidationInterceptor(Validator validator) {
+        super(validator);
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }

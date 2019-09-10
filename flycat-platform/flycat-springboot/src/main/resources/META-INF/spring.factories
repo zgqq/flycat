@@ -1,8 +1,8 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.flycat.autoconfigure.SpringContextConfiguration,\
-com.github.flycat.autoconfigure.WechatConfiguration,\
-com.github.flycat.autoconfigure.WebConfiguration,\
-com.github.flycat.autoconfigure.MybatisConfiguration,\
-com.github.flycat.autoconfigure.ServerConfiguration,\
-com.github.flycat.autoconfigure.DataSourceConfiguration,\
-com.github.flycat.autoconfigure.ValidationConfiguration
+com.github.flycat.platform.springboot.SpringContextConfiguration,\
+com.github.flycat.platform.springboot.WechatConfiguration,\
+com.github.flycat.platform.springboot.WebConfiguration,\
+com.github.flycat.platform.springboot.MybatisConfiguration,\
+com.github.flycat.platform.springboot.ServerConfiguration,\
+com.github.flycat.platform.springboot.DataSourceConfiguration,\
+com.github.flycat.platform.springboot.ValidationConfiguration

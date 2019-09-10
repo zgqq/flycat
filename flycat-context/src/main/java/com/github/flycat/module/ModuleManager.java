@@ -2,11 +2,9 @@ package com.github.flycat.module;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -29,6 +27,18 @@ public class ModuleManager {
 
     public static String[] getModulePackages() {
         return modulePackages.toArray(new String[modulePackages.size()]);
+    }
+
+    public static String getModulePackagesAsString(String name) {
+        final String[] modulePackages = getModulePackages();
+        final StringJoiner stringJoiner = new StringJoiner(",");
+        if (StringUtils.isNotBlank(name)) {
+            stringJoiner.add(name);
+        }
+        for (int i = 0; i < modulePackages.length; i++) {
+            stringJoiner.add(modulePackages[i]);
+        }
+        return stringJoiner.toString();
     }
 
     public static Set<String> resolvePackageNames(Class<? extends Module> module)

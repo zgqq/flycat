@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.autoconfigure;
+package com.github.flycat.platform.springboot;
 
-import com.github.flycat.server.event.EventManager;
+import com.github.flycat.util.event.EventManager;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;

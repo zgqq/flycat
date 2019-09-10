@@ -13,22 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.server.log;
+package com.github.flycat.util.log;
 
-import com.google.common.collect.Sets;
+import ch.qos.logback.classic.Logger;
 
-import java.util.Set;
+public class LogErrorEvent {
+    private final Logger logger;
+    private final String message;
+    private final Throwable throwable;
 
-public final class MDCUtils {
+    public LogErrorEvent(Logger logger, String message, Throwable throwable) {
+        this.logger = logger;
+        this.message = message;
+        this.throwable = throwable;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
 
 
-    public static final String LOG_MDC = "logMDC";
+    public String getMessage() {
+        return message;
+    }
 
-    public static final String HTTP_URI = "req.requestURI";
-    public static final String HTTP_METHOD = "req.method";
-    public static final String HTTP_AGENT = "req.userAgent";
 
-    public static final Set<String> MDC_CONSTANTS = Sets.newHashSet(HTTP_URI,
-            HTTP_METHOD);
-
+    public Throwable getThrowable() {
+        return throwable;
+    }
 }

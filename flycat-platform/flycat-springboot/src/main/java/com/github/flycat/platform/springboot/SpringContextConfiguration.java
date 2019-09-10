@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.autoconfigure;
+package com.github.flycat.platform.springboot;
 
 import com.github.flycat.spi.annotation.Primary;
-import com.github.flycat.spi.context.ApplicationConfiguration;
 import com.github.flycat.spi.context.ApplicationContext;
 import com.github.flycat.spi.context.ContextUtils;
-import com.github.flycat.spi.impl.context.SpringConfiguration;
 import com.github.flycat.spi.impl.context.SpringContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

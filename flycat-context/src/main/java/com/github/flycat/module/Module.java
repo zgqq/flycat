@@ -4,11 +4,12 @@ import java.util.List;
 
 public interface Module {
 
-    default String getPackageName(){
+    default String getPackageName() {
         return this.getClass().getPackage().getName();
     }
 
-    void configure();
+    default void configure() {
+    }
 
     void addDependency(Class<? extends Module> module);
 

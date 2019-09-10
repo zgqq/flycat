@@ -15,7 +15,7 @@
  */
 package com.github.flycat.security.token;
 
-import com.github.flycat.server.event.EventManager;
+import com.github.flycat.util.event.EventManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;

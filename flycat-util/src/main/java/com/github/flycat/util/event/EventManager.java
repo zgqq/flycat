@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.autoconfigure;
+package com.github.flycat.util.event;
 
-import org.springframework.core.Ordered;
-import org.springframework.validation.beanvalidation.MethodValidationInterceptor;
+import com.google.common.eventbus.EventBus;
 
-import javax.validation.Validator;
+public class EventManager {
+    private static final EventBus EVENT_BUS = new EventBus();
 
-public class OrderedMethodValidationInterceptor extends MethodValidationInterceptor implements Ordered {
-
-    public OrderedMethodValidationInterceptor() {
-        super();
+    public static void register(Object obj) {
+        EVENT_BUS.register(obj);
     }
 
-    public OrderedMethodValidationInterceptor(Validator validator) {
-        super(validator);
+    public static void unregister(Object obj) {
+        EVENT_BUS.unregister(obj);
     }
 
-    @Override
-    public int getOrder() {
-        return 0;
+    public static void post(Object obj) {
+        EVENT_BUS.post(obj);
     }
 }

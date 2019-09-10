@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.autoconfigure;
+package com.github.flycat.platform.springboot;
 
 import com.github.flycat.db.mybatis.MybatisUtils;
+import com.github.flycat.module.ModuleManager;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
@@ -54,7 +55,8 @@ public class MybatisConfiguration {
             String name = applicationContext.getEnvironment().
                     resolvePlaceholders("${flycat.datasource.primary.mybatis.mapper}");
             LOGGER.info("Creating primary mybatis mapper, {}", name);
-            return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_1);
+            final String modulePackagesAsString = ModuleManager.getModulePackagesAsString(name);
+            return MybatisUtils.createMapperConfigurer(modulePackagesAsString, SQL_SESSION_FACTORY_NAME_1);
         }
 
 

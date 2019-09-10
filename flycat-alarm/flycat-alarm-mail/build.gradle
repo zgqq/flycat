@@ -1,7 +1,6 @@
 dependencies {
     api project(':flycat-alarm-spi')
     api 'org.simplejavamail:simple-java-mail:5.2.0'
-    implementation project(':flycat-server')
     implementation project(':flycat-context')
     implementation project(':flycat-util')
 }

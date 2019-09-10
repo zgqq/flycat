@@ -1,6 +1,5 @@
 
 dependencies {
-    implementation project(':flycat-server')
     implementation project(':flycat-context')
     implementation project(':flycat-alarm-spi')
     implementation project(':flycat-util')

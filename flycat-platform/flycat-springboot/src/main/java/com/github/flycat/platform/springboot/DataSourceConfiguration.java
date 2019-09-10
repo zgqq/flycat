@@ -1,4 +1,4 @@
-package com.github.flycat.autoconfigure;
+package com.github.flycat.platform.springboot;
 
 import com.github.flycat.platform.datasource.DataSourceConfig;
 import com.github.flycat.platform.datasource.DataSourceFactory;

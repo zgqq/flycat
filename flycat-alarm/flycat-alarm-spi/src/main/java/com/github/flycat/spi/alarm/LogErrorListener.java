@@ -16,7 +16,7 @@
 package com.github.flycat.spi.alarm;
 
 import ch.qos.logback.classic.Logger;
-import com.github.flycat.server.log.LogErrorEvent;
+import com.github.flycat.util.log.LogErrorEvent;
 import com.google.common.eventbus.Subscribe;
 
 public class LogErrorListener {

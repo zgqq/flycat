@@ -19,7 +19,6 @@ include 'flycat-sba'
 
 include 'flycat-standalone'
 
-include 'flycat-server'
 
 include 'flycat-generator'
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.autoconfigure;
+package com.github.flycat.platform.springboot;
 
 import org.aopalliance.aop.Advice;
 import org.hibernate.validator.HibernateValidator;
