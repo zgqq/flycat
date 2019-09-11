@@ -9,17 +9,33 @@ import java.util.stream.Collectors;
 
 
 public class ModuleManager {
-
     private static volatile Set<String> modulePackages = new HashSet<>();
 
     public static void load(Class<? extends Module>... modules) throws ModuleException {
         if (modules == null || modules.length == 0) {
             return;
         }
+
+        Map<Class<?>, Class<?>> implementClass = new HashMap<>();
+        for (int i = 0; i < modules.length; i++) {
+            final Class<? extends Module> module = modules[i];
+            try {
+                final Module moduleObj = module.newInstance();
+                moduleObj.configure();
+                final Class<? extends Module> parent = moduleObj.getParent();
+                if (parent != null) {
+                    implementClass.put(parent, module);
+                }
+            } catch (Exception e) {
+                throw new ModuleException(e);
+            }
+        }
+
+
         final HashSet<String> allPackages = new HashSet<>();
         for (int i = 0; i < modules.length; i++) {
             final Class<? extends Module> module = modules[i];
-            final Set<String> packageNames = resolvePackageNames(module);
+            final Set<String> packageNames = resolvePackageNames(module, implementClass);
             allPackages.addAll(packageNames);
         }
         ModuleManager.modulePackages = allPackages;
@@ -41,42 +57,75 @@ public class ModuleManager {
         return stringJoiner.toString();
     }
 
-    public static Set<String> resolvePackageNames(Class<? extends Module> module)
+    public static Set<String> resolvePackageNames(Class<? extends Module> module) {
+        return resolvePackageNames(module, new HashMap<>());
+    }
+
+    public static Set<String> resolvePackageNames(Class<? extends Module> module,
+                                                  Map<Class<?>, Class<?>> implementModules)
             throws ModuleException {
-        final HashSet<String> objects = new HashSet<>();
+        final Set<String> packageNames = new HashSet<>();
+        final HashSet<Module> objects = new HashSet<>();
         loadModule(null, module, new ArrayList<>(), objects);
-        return objects;
+        for (Module object : objects) {
+            final Class<?> aClass = implementModules.get(object.getClass());
+            if (aClass != null) {
+                final String name = aClass.getPackage().getName();
+                packageNames.add(name);
+            } else {
+                final Class<? extends Module> defaultReference = object.getDefaultReference();
+                if (defaultReference.equals(object.getClass())) {
+                    packageNames.add(object.getPackageName());
+                } else {
+                    try {
+                        final Module referModule = defaultReference.newInstance();
+                        final String packageName = referModule.getPackageName();
+                        packageNames.add(packageName);
+                    } catch (Exception e) {
+                        throw new ModuleException("Unable to load module", e);
+                    }
+                }
+            }
+        }
+        return packageNames;
     }
 
     private static void loadModule(
             Class<? extends Module> parent,
             Class<? extends Module> module,
             final List<Class> objects,
-            HashSet<String> packageNames
+            HashSet<Module> modules
     ) throws ModuleException {
-        if (objects.contains(module)) {
-            String parentName = "null";
-            if (parent != null) {
-                parentName = parent.getSimpleName();
-            }
-            final List<String> collect = objects.stream().map(Class::getSimpleName).collect(Collectors.toList());
-            throw new ModuleException("Found circular dependency " + JSON.toJSONString(collect) + ", but " +
-                    parentName + " depend " + module.getSimpleName());
-        }
-        final Module prepareModule;
         try {
+            if (objects.contains(module)) {
+                String parentName = "null";
+                if (parent != null) {
+                    parentName = parent.getSimpleName();
+                }
+                final List<String> collect = objects.stream().map(Class::getSimpleName).collect(Collectors.toList());
+                throw new ModuleException("Found circular dependency " + JSON.toJSONString(collect) + ", but " +
+                        parentName + " depend " + module.getSimpleName());
+            }
+            final Module prepareModule;
             prepareModule = module.newInstance();
+            prepareModule.configure();
+            final List<Class<? extends Module>> dependencies = new ArrayList<>(prepareModule.getDependencies());
+            final Class<? extends Module> moduleParent = prepareModule.getParent();
+            if (moduleParent != null) {
+                final Module moduleObj = moduleParent.newInstance();
+                moduleObj.configure();
+                dependencies.addAll(moduleObj.getDependencies());
+            }
+
+            final List<Class> newPath = Lists.newArrayList(objects);
+            newPath.add(module);
+            modules.add(prepareModule);
+
+            for (Class<? extends Module> dependency : dependencies) {
+                loadModule(module, dependency, newPath, modules);
+            }
         } catch (Exception e) {
             throw new ModuleException(e);
-        }
-        prepareModule.configure();
-        final String packageName = prepareModule.getPackageName();
-        final List<Class<? extends Module>> dependencies = prepareModule.getDependencies();
-        final List<Class> newPath = Lists.newArrayList(objects);
-        newPath.add(module);
-        packageNames.add(packageName);
-        for (Class<? extends Module> dependency : dependencies) {
-            loadModule(module, dependency, newPath, packageNames);
         }
     }
 }
