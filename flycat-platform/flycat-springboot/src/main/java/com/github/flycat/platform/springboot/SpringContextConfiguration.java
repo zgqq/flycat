@@ -28,6 +28,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -37,14 +39,14 @@ import org.springframework.core.annotation.Order;
 @Configuration
 @ComponentScan(basePackages = {"com.github.flycat.spi.impl",
         "com.github.flycat.support.spring",
-        "com.github.flycat.platform", })
+        "com.github.flycat.platform",})
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
 
     @Bean
     public ApplicationContext applicationContext(@Autowired org.springframework.context.ApplicationContext
-                                                             webApplicationContext) {
+                                                         webApplicationContext) {
         SpringContext springContainer = new SpringContext(webApplicationContext);
         ContextUtils.setContextHolder(springContainer);
         return springContainer;

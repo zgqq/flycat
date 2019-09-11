@@ -42,7 +42,7 @@ public class ValidationConfiguration {
     }
 
     @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
+    public MethodValidationPostProcessor customMethodValidationPostProcessor() {
         final MethodValidationPostProcessor methodValidationPostProcessor =
                 new MethodValidationPostProcessor() {
             @Override

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,7 +14,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Role;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.config.TransactionManagementConfigUtils;
+import org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
 
@@ -94,6 +100,33 @@ public class DataSourceConfiguration {
         @ConfigurationProperties(prefix = "flycat.datasource.secondary")
         public DataSourceConfig dataSourceConfig() {
             return new DataSourceConfig();
+        }
+    }
+
+    @Configuration
+    public static class ProxyTransactionManagementConfiguration {
+
+        @Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
+        @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+        public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor() {
+            BeanFactoryTransactionAttributeSourceAdvisor advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
+            advisor.setTransactionAttributeSource(transactionAttributeSource());
+            advisor.setAdvice(transactionInterceptor());
+            return advisor;
+        }
+
+        @Bean
+        @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+        public TransactionAttributeSource transactionAttributeSource() {
+            return new CustomTransactionAttributeSource();
+        }
+
+        @Bean
+        @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+        public TransactionInterceptor transactionInterceptor() {
+            TransactionInterceptor interceptor = new TransactionInterceptor();
+            interceptor.setTransactionAttributeSource(transactionAttributeSource());
+            return interceptor;
         }
     }
 }

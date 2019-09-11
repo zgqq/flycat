@@ -22,6 +22,7 @@ import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +35,7 @@ import javax.sql.DataSource;
 /**
  */
 @Configuration
-@ConditionalOnClass(MapperScannerConfigurer.class)
+//@ConditionalOnClass(MapperScannerConfigurer.class)
 public class MybatisConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MybatisConfiguration.class);
@@ -42,10 +43,11 @@ public class MybatisConfiguration {
 
 
     @Configuration
-//    @AutoConfigureAfter(CreatePrimaryDataSourceConfiguration.class)
-//    @ConditionalOnBean(CreatePrimaryDataSourceConfiguration.class)
-    @ConditionalOnBean(name = "primaryDataSource")
+//    @AutoConfigureAfter(DataSourceConfiguration.CreatePrimaryDataSourceConfiguration.class)
+    @ConditionalOnBean(DataSourceConfiguration.CreatePrimaryDataSourceConfiguration.class)
+//    @ConditionalOnBean(name = "primaryDataSource")
     @ConditionalOnClass(MapperScannerConfigurer.class)
+//    @AutoConfigureAfter(DataSourceConfiguration.class)
     public static class Mybatis1Configuration {
 
         // http://www.importnew.com/25940.html
@@ -54,8 +56,8 @@ public class MybatisConfiguration {
                 ApplicationContext applicationContext) {
             String name = applicationContext.getEnvironment().
                     resolvePlaceholders("${flycat.datasource.primary.mybatis.mapper}");
-            LOGGER.info("Creating primary mybatis mapper, {}", name);
             final String modulePackagesAsString = ModuleManager.getModulePackagesAsString(name);
+            LOGGER.info("Creating primary mybatis mapper, config:{}, module:{}", name, modulePackagesAsString);
             return MybatisUtils.createMapperConfigurer(modulePackagesAsString, SQL_SESSION_FACTORY_NAME_1);
         }
 
@@ -70,10 +72,11 @@ public class MybatisConfiguration {
 
 
     @Configuration
-//    @ConditionalOnBean(CreateSecondaryDataSourceConfiguration.class)
+    @ConditionalOnBean(DataSourceConfiguration.CreateSecondaryDataSourceConfiguration.class)
 //    @AutoConfigureAfter(CreateSecondaryDataSourceConfiguration.class)
-    @ConditionalOnBean(name = "secondaryDataSource")
+//    @ConditionalOnBean(name = "secondaryDataSource")
     @ConditionalOnClass(MapperScannerConfigurer.class)
+//    @AutoConfigureAfter(DataSourceConfiguration.class)
     public static class MybatisSqlFactory2Configuration {
 
         public static final String SQL_SESSION_FACTORY_NAME_2 = "sqlSessionFactory2";
