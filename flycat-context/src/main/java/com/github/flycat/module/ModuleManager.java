@@ -58,7 +58,17 @@ public class ModuleManager {
     }
 
     public static String[] getLocalModulePackages() {
-        return getLocalModules().stream().map(Module::getPackageName)
+        return getPackageNamesByModules(getLocalModules());
+    }
+
+
+    public static String[] getPackageNamesOfServiceModules() {
+        return getPackageNamesByModules(getServiceModules());
+    }
+
+
+    public static String[] getPackageNamesByModules(Set<Module> modules) {
+        return modules.stream().map(Module::getPackageName)
                 .collect(Collectors.toList()).toArray(new String[]{});
     }
 

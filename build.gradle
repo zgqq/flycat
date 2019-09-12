@@ -2,6 +2,7 @@ buildscript {
     ext {
         springBootVersion = '2.1.6.RELEASE'
         springRepo = 'http://repo.spring.io/libs-release'
+        dubboVersion = '2.7.1'
     }
 
 ////        springBootVersion = '2.2.0.M4'

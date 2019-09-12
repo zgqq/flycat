@@ -33,3 +33,6 @@ apply from: "./flycat-alarm/settings.gradle"
 apply from: "./flycat-sms/settings.gradle"
 apply from: "./flycat-queue/settings.gradle"
 apply from: "./flycat-platform/settings.gradle"
+
+apply from: "./flycat-springboot/settings.gradle"
+

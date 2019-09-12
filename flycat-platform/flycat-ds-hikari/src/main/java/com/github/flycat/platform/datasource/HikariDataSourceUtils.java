@@ -18,8 +18,6 @@ package com.github.flycat.platform.datasource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.sql.DataSource;
-
 
 /**
  * Created by zgq on 17-3-15.
