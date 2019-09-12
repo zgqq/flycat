@@ -96,7 +96,7 @@ configure(subprojects) { project ->
 }
 
 ext.bootProjects = subprojects.findAll {
-    it.name.startsWith("flycat-sba")
+    it.name.startsWith("flycat-springboot-sba")
 }
 
 configure(bootProjects) { project ->

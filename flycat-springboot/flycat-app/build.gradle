@@ -1,0 +1,18 @@
+
+dependencies {
+    api project(':flycat-web')
+    api project(':flycat-context')
+    api project(':flycat-redis')
+    api project(':flycat-config-redis')
+    api project(':flycat-cache-redis')
+    api project(':flycat-springboot-mybatis')
+    api project(':flycat-util')
+    api project(':flycat-springboot-security')
+    api project(':flycat-alarm-mail')
+
+    compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    compile group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.6'
+}
+
+

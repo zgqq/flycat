@@ -6,23 +6,13 @@ include 'flycat-redis'
 
 include 'flycat-configure'
 
-
 include 'flycat-context'
-
 
 include 'flycat-web'
 
 include 'flycat-wechat'
 
 
-include 'flycat-sba'
-
-include 'flycat-standalone'
-
-
-include 'flycat-generator'
-
-include 'flycat-security'
 
 include 'flycat-starter-app'
 
@@ -32,7 +22,6 @@ apply from: "./flycat-cache/settings.gradle"
 apply from: "./flycat-alarm/settings.gradle"
 apply from: "./flycat-sms/settings.gradle"
 apply from: "./flycat-queue/settings.gradle"
-apply from: "./flycat-platform/settings.gradle"
-
+apply from: "./flycat-datasource/settings.gradle"
 apply from: "./flycat-springboot/settings.gradle"
 

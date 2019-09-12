@@ -1,5 +1,18 @@
-include 'flycat-springboot'
-project (':flycat-springboot').projectDir = new File('./flycat-springboot/flycat-springboot')
+include 'flycat-springboot-autoconfigure'
+project (':flycat-springboot-autoconfigure').projectDir = new File('./flycat-springboot/flycat-autoconfigure')
 
 include 'flycat-springboot-dubbo'
 project (':flycat-springboot-dubbo').projectDir = new File('./flycat-springboot/flycat-dubbo')
+
+include 'flycat-springboot-security'
+project(':flycat-springboot-security').projectDir = new File('./flycat-springboot/flycat-security')
+
+include 'flycat-springboot-app'
+project(':flycat-springboot-app').projectDir = new File('./flycat-springboot/flycat-app')
+
+include 'flycat-springboot-sba'
+project(':flycat-springboot-sba').projectDir = new File('./flycat-springboot/flycat-sba')
+
+
+include 'flycat-springboot-mybatis'
+project(':flycat-springboot-mybatis').projectDir = new File('./flycat-springboot/flycat-mybatis')
