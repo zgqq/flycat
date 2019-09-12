@@ -1,27 +1,33 @@
 package com.github.flycat.module;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 import java.util.List;
 
 public interface Module {
+
+    default String getName(){
+        return this.getClass().getSimpleName();
+    }
 
     default String getPackageName() {
         return this.getClass().getPackage().getName();
     }
 
-    default void configure() {
+    default void init() {
     }
 
-    void addDependency(Class<? extends Module> module);
+    Module addDependency(Module module);
 
-    List<Class<? extends Module>> getDependencies();
+    List<Module> getDependencies();
 
-    default Class<? extends Module> getDefaultReference() {
-        return this.getClass();
+    default Module getDefaultReference() {
+        return this;
     }
 
-    void setParent(Class<? extends Module> module);
+    Module setParent(Module module);
 
-    Class<? extends Module> getParent();
+    Module getParent();
+
+    Module setModuleType(ModuleType moduleType);
+
+    ModuleType getModuleType();
 }

@@ -13,7 +13,7 @@ public class SpringModuleScanner implements BeanDefinitionRegistryPostProcessor 
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        final String[] modulePackages = ModuleManager.getModulePackages();
+        final String[] modulePackages = ModuleManager.getLocalModulePackages();
         if (modulePackages != null && modulePackages.length > 0) {
             final ClassPathBeanDefinitionScanner classPathBeanDefinitionScanner = new ClassPathBeanDefinitionScanner(registry);
             classPathBeanDefinitionScanner.scan(modulePackages);

@@ -3,7 +3,7 @@ package com.github.flycat.module;
 public class D2Module extends AbstractModule {
 
     @Override
-    public Class<? extends Module> getDefaultReference() {
+    public Class<? extends Module> getDefaultReferenceClass() {
         return D2SubModule1.class;
     }
 

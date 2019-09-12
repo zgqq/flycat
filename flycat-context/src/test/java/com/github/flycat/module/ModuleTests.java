@@ -11,7 +11,6 @@ import java.util.Set;
 
 public class ModuleTests {
 
-
     @Test
     public void testCircularDependency() throws Exception {
         try {
@@ -26,6 +25,7 @@ public class ModuleTests {
         try {
             final Set<String> packageNames = ModuleManager.resolvePackageNames(B1Module.class, new
                     HashMap<>());
+            System.out.println(packageNames);
             Assert.assertTrue(false);
         } catch (Exception e) {
 

@@ -7,7 +7,7 @@ public class D1Module extends AbstractModule{
     }
 
     @Override
-    public Class<? extends Module> getDefaultReference() {
+    public Class<? extends Module> getDefaultReferenceClass() {
         return D1SubModule.class;
     }
 
