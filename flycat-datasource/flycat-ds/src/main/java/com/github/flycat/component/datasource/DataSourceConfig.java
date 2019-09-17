@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.datasource;
+package com.github.flycat.component.datasource;
 
 public class DataSourceConfig {
 

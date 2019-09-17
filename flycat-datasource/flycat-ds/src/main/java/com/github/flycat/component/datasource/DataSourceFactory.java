@@ -1,4 +1,4 @@
-package com.github.flycat.datasource;
+package com.github.flycat.component.datasource;
 
 import javax.sql.DataSource;
 

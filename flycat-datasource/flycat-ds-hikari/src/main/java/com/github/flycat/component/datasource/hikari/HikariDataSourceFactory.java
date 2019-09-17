@@ -1,7 +1,7 @@
-package com.github.flycat.datasource.hikari;
+package com.github.flycat.component.datasource.hikari;
 
-import com.github.flycat.datasource.DataSourceConfig;
-import com.github.flycat.datasource.DataSourceFactory;
+import com.github.flycat.component.datasource.DataSourceConfig;
+import com.github.flycat.component.datasource.DataSourceFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;

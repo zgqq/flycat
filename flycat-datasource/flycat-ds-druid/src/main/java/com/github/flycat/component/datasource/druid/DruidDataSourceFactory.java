@@ -1,12 +1,12 @@
-package com.github.flycat.datasource.druid;
+package com.github.flycat.component.datasource.druid;
 
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallFilter;
-import com.github.flycat.datasource.DataSourceConfig;
-import com.github.flycat.datasource.DataSourceFactory;
+import com.github.flycat.component.datasource.DataSourceConfig;
+import com.github.flycat.component.datasource.DataSourceFactory;
 import com.google.common.collect.Lists;
 
 import javax.inject.Named;

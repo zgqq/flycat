@@ -39,7 +39,7 @@ import org.springframework.core.annotation.Order;
 @Configuration
 @ComponentScan(basePackages = {"com.github.flycat.spi.impl",
         "com.github.flycat.support.spring",
-        "com.github.flycat.platform",})
+        "com.github.flycat.component",})
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 

@@ -1,7 +1,7 @@
 package com.github.flycat.platform.springboot;
 
-import com.github.flycat.datasource.DataSourceConfig;
-import com.github.flycat.datasource.DataSourceFactory;
+import com.github.flycat.component.datasource.DataSourceConfig;
+import com.github.flycat.component.datasource.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

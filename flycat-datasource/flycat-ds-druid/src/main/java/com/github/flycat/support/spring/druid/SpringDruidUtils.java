@@ -2,7 +2,7 @@ package com.github.flycat.support.spring.druid;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import com.github.flycat.datasource.druid.DruidStatProperties;
+import com.github.flycat.component.datasource.druid.DruidStatProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 

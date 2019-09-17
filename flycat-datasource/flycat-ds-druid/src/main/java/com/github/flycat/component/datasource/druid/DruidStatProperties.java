@@ -1,4 +1,4 @@
-package com.github.flycat.datasource.druid;
+package com.github.flycat.component.datasource.druid;
 
 public class DruidStatProperties {
     private String[] aopPatterns;

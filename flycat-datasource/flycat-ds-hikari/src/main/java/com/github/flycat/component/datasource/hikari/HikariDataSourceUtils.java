@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.datasource.hikari;
+package com.github.flycat.component.datasource.hikari;
 
-import com.github.flycat.datasource.DataSourceConfig;
+import com.github.flycat.component.datasource.DataSourceConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
