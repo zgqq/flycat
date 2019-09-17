@@ -14,9 +14,6 @@ include 'flycat-wechat'
 
 
 
-include 'flycat-starter-app'
-
-
 apply from: "./flycat-config/settings.gradle"
 apply from: "./flycat-cache/settings.gradle"
 apply from: "./flycat-alarm/settings.gradle"

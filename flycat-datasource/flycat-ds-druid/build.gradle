@@ -1,7 +1,7 @@
 
 dependencies {
-    api project(':flycat-context')
     api project(':flycat-ds')
+    api project(':flycat-context')
     implementation group: 'com.alibaba', name: 'druid', version: '1.1.20'
 
     compileOnly "org.springframework.boot:spring-boot-starter-web:$springBootVersion"

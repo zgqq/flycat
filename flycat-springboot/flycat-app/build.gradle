@@ -9,6 +9,8 @@ dependencies {
     api project(':flycat-util')
     api project(':flycat-springboot-security')
     api project(':flycat-alarm-mail')
+    api project(':flycat-ds-druid')
+
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
