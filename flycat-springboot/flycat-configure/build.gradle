@@ -1,7 +1,8 @@
 
 dependencies {
-    api project(':flycat-context')
+    api "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
 
+    compileOnly project(':flycat-context')
     compileOnly project(':flycat-redis')
 
     compileOnly project(':flycat-config-spi')
@@ -26,9 +27,6 @@ dependencies {
     compileOnly project(':flycat-springboot-web')
 
     compileOnly project(':flycat-ds')
-
-    compile "org.springframework.boot:spring-boot:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
 
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 //    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
