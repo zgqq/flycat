@@ -15,21 +15,15 @@
  */
 package com.github.flycat.platform.springboot;
 
-import com.github.flycat.spi.annotation.Primary;
-import com.github.flycat.spi.context.ApplicationContext;
-import com.github.flycat.spi.context.ContextUtils;
-import com.github.flycat.spi.impl.context.SpringContext;
+import com.github.flycat.context.bean.annotation.Primary;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -43,14 +37,6 @@ import org.springframework.core.annotation.Order;
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
-
-    @Bean
-    public ApplicationContext applicationContext(@Autowired org.springframework.context.ApplicationContext
-                                                         webApplicationContext) {
-        SpringContext springContainer = new SpringContext(webApplicationContext);
-        ContextUtils.setContextHolder(springContainer);
-        return springContainer;
-    }
 
     @Bean
     @Order(value = Ordered.HIGHEST_PRECEDENCE)

@@ -22,7 +22,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
 
 import javax.inject.Named;
 import javax.inject.Singleton;

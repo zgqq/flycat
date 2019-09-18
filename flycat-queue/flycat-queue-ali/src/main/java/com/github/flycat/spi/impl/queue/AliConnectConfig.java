@@ -15,7 +15,7 @@
  */
 package com.github.flycat.spi.impl.queue;
 
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
 
 import javax.inject.Inject;
 import javax.inject.Named;

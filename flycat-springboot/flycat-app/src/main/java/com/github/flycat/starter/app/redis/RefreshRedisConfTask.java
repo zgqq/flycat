@@ -18,7 +18,7 @@ package com.github.flycat.starter.app.redis;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.github.flycat.spi.redis.RedisService;
-import com.github.flycat.spi.context.ApplicationContext;
+import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.config.MaintainConf;
 import com.google.common.collect.Lists;

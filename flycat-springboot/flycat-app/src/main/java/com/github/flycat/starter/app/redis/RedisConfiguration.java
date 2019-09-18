@@ -16,7 +16,7 @@
 package com.github.flycat.starter.app.redis;
 
 import com.github.flycat.spi.redis.RedisService;
-import com.github.flycat.spi.context.ApplicationContext;
+import com.github.flycat.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

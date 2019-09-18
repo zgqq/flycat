@@ -16,7 +16,7 @@
 package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.SpiService;
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;

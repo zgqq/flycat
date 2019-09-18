@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.impl.context;
+package com.github.flycat.support.spring.context;
 
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -31,6 +33,7 @@ public class SpringConfiguration implements ApplicationConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfiguration.class);
     private final ApplicationContext applicationContext;
 
+    @Inject
     public SpringConfiguration(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

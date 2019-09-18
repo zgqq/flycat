@@ -17,7 +17,7 @@ package com.github.flycat.spi.sms.qcloud;
 
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.spi.SpiService;
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.sms.SmsService;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;

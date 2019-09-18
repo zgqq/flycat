@@ -1,4 +1,4 @@
-package com.github.flycat.platform.spring.dubbo;
+package com.github.flycat.support.spring.dubbo;
 
 import com.github.flycat.module.ModuleManager;
 import org.apache.dubbo.config.spring.beans.factory.annotation.ServiceAnnotationBeanPostProcessor;

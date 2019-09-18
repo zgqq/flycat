@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.context;
+package com.github.flycat.context;
 
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;

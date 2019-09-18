@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.impl.context;
+package com.github.flycat.support.spring.context;
 
-import com.github.flycat.spi.context.ApplicationContext;
+import com.github.flycat.context.ApplicationContext;
+import com.github.flycat.context.ContextUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
+
 @Component
-public class SpringContext implements ApplicationContext {
+public class SpringContext implements ApplicationContext, InitializingBean  {
     private final org.springframework.context.ApplicationContext applicationContext;
 
+    @Inject
     public SpringContext(org.springframework.context.ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -39,5 +44,10 @@ public class SpringContext implements ApplicationContext {
     @Override
     public String getApplicationName() {
         return this.applicationContext.getEnvironment().getProperty("spring.application.name");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        ContextUtils.setContextHolder(this);
     }
 }

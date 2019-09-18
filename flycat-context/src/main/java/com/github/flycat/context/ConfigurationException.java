@@ -1,4 +1,4 @@
-package com.github.flycat.spi.context;
+package com.github.flycat.context;
 
 public class ConfigurationException extends RuntimeException {
 

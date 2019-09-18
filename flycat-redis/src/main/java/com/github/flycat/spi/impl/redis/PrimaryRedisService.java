@@ -15,7 +15,7 @@
  */
 package com.github.flycat.spi.impl.redis;
 
-import com.github.flycat.spi.annotation.Primary;
+import com.github.flycat.context.bean.annotation.Primary;
 import com.github.flycat.spi.redis.AbstractRedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

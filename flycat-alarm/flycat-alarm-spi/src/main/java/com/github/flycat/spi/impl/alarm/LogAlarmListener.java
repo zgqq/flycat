@@ -19,7 +19,7 @@ import ch.qos.logback.classic.Logger;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
-import com.github.flycat.spi.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationConfiguration;
 
 import javax.inject.Inject;
 import javax.inject.Named;

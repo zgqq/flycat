@@ -15,8 +15,8 @@
  */
 package com.github.flycat.spi;
 
-import com.github.flycat.spi.context.ApplicationConfiguration;
-import com.github.flycat.spi.context.ContextUtils;
+import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ContextUtils;
 
 public interface SpiService {
 

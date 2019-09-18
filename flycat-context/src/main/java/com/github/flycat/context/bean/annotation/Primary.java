@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.context;
+package com.github.flycat.context.bean.annotation;
 
-public interface ApplicationContext {
+import java.lang.annotation.*;
 
-    <T> T getBean(Class<T> clazz);
-
-    Object getBean(String name);
-
-    String getApplicationName();
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Primary {
 }
