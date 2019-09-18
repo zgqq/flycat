@@ -1,12 +1,6 @@
-
 dependencies {
-    implementation project(':flycat-context')
-    implementation project(':flycat-alarm-spi')
-    implementation project(':flycat-util')
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
-    compileOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-
-    compile group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'
-//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+    api project(':flycat-context')
+    compileOnly group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
+//    api project(':flycat-util')
 }

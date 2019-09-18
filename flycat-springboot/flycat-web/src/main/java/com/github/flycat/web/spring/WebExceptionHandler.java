@@ -16,14 +16,15 @@
 package com.github.flycat.web.spring;
 
 import com.codahale.metrics.MetricRegistry;
+import com.github.flycat.exception.BusinessException;
 import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.api.ApiResponseCode;
 import com.github.flycat.web.api.ApiResponseCodeUtils;
-import com.github.flycat.exception.BusinessException;
 import com.github.flycat.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +36,7 @@ import javax.validation.ValidationException;
 import java.util.Set;
 
 @ControllerAdvice
+@Component
 public class WebExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionHandler.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();

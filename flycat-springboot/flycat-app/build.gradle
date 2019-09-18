@@ -1,12 +1,12 @@
 
 dependencies {
-    api project(':flycat-web')
     api project(':flycat-context')
 
     api project(':flycat-springboot-autoconfigure')
     api project(':flycat-springboot-redis')
     api project(':flycat-springboot-mybatis')
     api project(':flycat-springboot-security')
+    api project(':flycat-springboot-web')
 
     api project(':flycat-config-redis')
     api project(':flycat-cache-redis')

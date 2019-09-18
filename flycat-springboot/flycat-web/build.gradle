@@ -1,0 +1,7 @@
+dependencies {
+    api project(':flycat-web')
+    api "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+
+    implementation group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'
+}

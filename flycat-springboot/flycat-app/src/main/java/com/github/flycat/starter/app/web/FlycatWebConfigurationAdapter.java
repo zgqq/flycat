@@ -25,8 +25,9 @@ import com.github.flycat.web.api.ApiRequestHolder;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
 import com.github.flycat.web.util.HttpRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +42,8 @@ public class FlycatWebConfigurationAdapter implements FlycatWebConfiguration {
     public ContentCachingHandler contentCachingHandler() {
         return new ContentCachingHandler() {
             @Override
-            public PostFilterAction postFilter(HttpRequestWrapper requestWrapper,
-                                               ContentCachingResponseWrapper responseWrapper) {
+            public PostFilterAction postFilter(HttpServletRequest httpServletRequest,
+                                               HttpServletResponse httpServletResponse) {
                 final ApiHttpRequest currentApiRequest = ApiRequestHolder.getCurrentApiRequest();
 
                 boolean isDebugUid = false;
@@ -73,8 +74,8 @@ public class FlycatWebConfigurationAdapter implements FlycatWebConfiguration {
             }
 
             @Override
-            public boolean executeNextFilter(HttpRequestWrapper requestWrapper,
-                                             ContentCachingResponseWrapper responseWrapper) {
+            public boolean executeNextFilter(HttpServletRequest httpServletRequest,
+                                             HttpServletResponse httpServletResponse) {
                 return true;
             }
         };

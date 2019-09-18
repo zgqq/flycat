@@ -15,13 +15,13 @@
  */
 package com.github.flycat.web.filter;
 
-import com.github.flycat.web.util.HttpRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface ContentCachingHandler {
 
-    default boolean executeNextFilter(HttpRequestWrapper requestWrapper,
-                                      ContentCachingResponseWrapper responseWrapper) {
+    default boolean executeNextFilter(HttpServletRequest httpServletRequest,
+                                      HttpServletResponse httpServletResponse) {
         return true;
     }
 
@@ -29,8 +29,8 @@ public interface ContentCachingHandler {
         return originResponse;
     }
 
-    default PostFilterAction postFilter(HttpRequestWrapper requestWrapper,
-                                        ContentCachingResponseWrapper responseWrapper) {
+    default PostFilterAction postFilter(HttpServletRequest httpServletRequest,
+                                        HttpServletResponse httpServletResponse) {
         return new PostFilterAction(false, false);
     }
 }

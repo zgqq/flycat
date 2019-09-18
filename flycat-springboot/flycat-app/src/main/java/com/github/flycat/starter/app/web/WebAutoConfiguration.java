@@ -17,7 +17,7 @@ package com.github.flycat.starter.app.web;
 
 import com.github.flycat.starter.app.web.filter.RequestHolderFilter;
 import com.github.flycat.web.FlycatWebConfiguration;
-import com.github.flycat.web.filter.FilterOrder;
+import com.github.flycat.web.spring.FilterOrder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

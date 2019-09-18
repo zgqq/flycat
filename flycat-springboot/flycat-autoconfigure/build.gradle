@@ -21,9 +21,9 @@ dependencies {
     compileOnly project(':flycat-alarm-spi')
 
     compileOnly project(':flycat-wechat')
-    compileOnly project(':flycat-web')
 
     compileOnly project(':flycat-springboot-mybatis')
+    compileOnly project(':flycat-springboot-web')
 
     compileOnly project(':flycat-ds')
 
