@@ -17,6 +17,7 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.context.bean.annotation.Primary;
 import com.github.flycat.spi.redis.AbstractRedisService;
+import com.github.flycat.spi.redis.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class PrimaryRedisService extends AbstractRedisService  {
         LOGGER.info("Creating primary redis");
     }
 
-    public PrimaryRedisService(SpringRedisProviderAdapter provider) {
+    public PrimaryRedisService(RedisService provider) {
         super(provider);
     }
 }

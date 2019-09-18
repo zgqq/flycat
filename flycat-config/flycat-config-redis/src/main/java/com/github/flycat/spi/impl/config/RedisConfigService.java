@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,13 +21,14 @@ import com.github.flycat.spi.config.ConfigService;
 import com.github.flycat.spi.redis.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @Named
@@ -41,17 +42,21 @@ public class RedisConfigService implements ConfigService {
     @Inject
     public RedisConfigService(RedisService redisService) {
         this.redisClient = redisService;
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                    post();
+                }, 5, 30, TimeUnit.SECONDS
+        );
     }
 
     public RedisConfig getRedisConfig(String key) {
         RedisConfig systemConfig = systemConfigMap.get(key);
         if (systemConfig == null) {
-            return getAndRefreshBizConfig(key);
+            return getAndRefreshConfig(key);
         }
         return systemConfig;
     }
 
-    private RedisConfig getAndRefreshBizConfig(String key) {
+    private RedisConfig getAndRefreshConfig(String key) {
         RedisConfig systemConfig;
         String string = redisClient.get(key);
         systemConfig = new RedisConfig(key, JSON.parseObject(string));
@@ -59,13 +64,12 @@ public class RedisConfigService implements ConfigService {
         return systemConfig;
     }
 
-    @Scheduled(initialDelay = 5000, fixedDelay = 30 * 1000)
     public void post() {
         LOGGER.info("Refreshing config");
         for (Map.Entry<String, RedisConfig> configEntry : systemConfigMap.entrySet()) {
             try {
                 String key = configEntry.getKey();
-                systemConfigMap.put(key, getAndRefreshBizConfig(key));
+                systemConfigMap.put(key, getAndRefreshConfig(key));
             } catch (Throwable throwable) {
                 LOGGER.info("Unable to refresh config, {}", configEntry, throwable);
             }
