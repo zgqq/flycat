@@ -1,6 +1,6 @@
 
 dependencies {
-    compileOnly project(':flycat-context')
+    api project(':flycat-context')
 
     compile 'org.apache.dubbo:dubbo-spring-boot-starter:2.7.3'
     compile group: 'com.alibaba.nacos', name: 'nacos-client', version: '0.9.1'

@@ -2,15 +2,18 @@
 dependencies {
     api project(':flycat-web')
     api project(':flycat-context')
-    api project(':flycat-redis')
+
+    api project(':flycat-springboot-autoconfigure')
+    api project(':flycat-springboot-redis')
+    api project(':flycat-springboot-mybatis')
+    api project(':flycat-springboot-security')
+
     api project(':flycat-config-redis')
     api project(':flycat-cache-redis')
-    api project(':flycat-springboot-mybatis')
+
     api project(':flycat-util')
-    api project(':flycat-springboot-security')
     api project(':flycat-alarm-mail')
     api project(':flycat-ds-druid')
-    api project(':flycat-springboot-autoconfigure')
 
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")

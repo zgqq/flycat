@@ -1,6 +1,5 @@
 
 dependencies {
-    implementation project(':flycat-context')
     api "org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion"
     
     // Datasource

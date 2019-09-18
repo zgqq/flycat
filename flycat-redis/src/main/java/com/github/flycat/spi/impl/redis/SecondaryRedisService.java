@@ -16,6 +16,7 @@
 package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.redis.AbstractRedisService;
+import com.github.flycat.spi.redis.RedisService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -26,7 +27,7 @@ public class SecondaryRedisService extends AbstractRedisService  {
     public SecondaryRedisService() {
     }
 
-    public SecondaryRedisService(SpringRedisProviderAdapter provider) {
+    public SecondaryRedisService(RedisService provider) {
         super(provider);
     }
 }
