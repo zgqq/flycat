@@ -15,27 +15,37 @@
  */
 package com.github.flycat.platform.springboot;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
 import com.github.flycat.db.mybatis.MybatisUtils;
 import com.github.flycat.module.ModuleManager;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 
 /**
  */
 @Configuration
-//@ConditionalOnClass(MapperScannerConfigurer.class)
+@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
 public class MybatisConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MybatisConfiguration.class);
@@ -43,12 +53,20 @@ public class MybatisConfiguration {
 
 
     @Configuration
-//    @AutoConfigureAfter(DataSourceConfiguration.CreatePrimaryDataSourceConfiguration.class)
     @ConditionalOnBean(DataSourceConfiguration.CreatePrimaryDataSourceConfiguration.class)
-//    @ConditionalOnBean(name = "primaryDataSource")
+    @EnableConfigurationProperties(MybatisPlusProperties.class)
     @ConditionalOnClass(MapperScannerConfigurer.class)
-//    @AutoConfigureAfter(DataSourceConfiguration.class)
-    public static class Mybatis1Configuration {
+    public static class Mybatis1Configuration extends MybatisPlusAutoConfiguration {
+
+        public Mybatis1Configuration(MybatisPlusProperties properties,
+                                     ObjectProvider<Interceptor[]> interceptorsProvider,
+                                     ResourceLoader resourceLoader,
+                                     ObjectProvider<DatabaseIdProvider> databaseIdProvider,
+                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
+                                     ObjectProvider<List<MybatisPlusPropertiesCustomizer>> mybatisPlusPropertiesCustomizerProvider,
+                                     ApplicationContext applicationContext) {
+            super(properties, interceptorsProvider, resourceLoader, databaseIdProvider, configurationCustomizersProvider, mybatisPlusPropertiesCustomizerProvider, applicationContext);
+        }
 
         // http://www.importnew.com/25940.html
         @Bean
@@ -66,20 +84,28 @@ public class MybatisConfiguration {
         public SqlSessionFactory createSqlSessionFactory(
                 @Qualifier("primaryDataSource")
                         DataSource dataSource) throws Exception {
-            return MybatisUtils.createSessionFactory(dataSource);
+            return sqlSessionFactory(dataSource);
+//            return MybatisUtils.createSessionFactory(dataSource);
         }
     }
 
 
     @Configuration
     @ConditionalOnBean(DataSourceConfiguration.CreateSecondaryDataSourceConfiguration.class)
-//    @AutoConfigureAfter(CreateSecondaryDataSourceConfiguration.class)
-//    @ConditionalOnBean(name = "secondaryDataSource")
+    @EnableConfigurationProperties(MybatisPlusProperties.class)
     @ConditionalOnClass(MapperScannerConfigurer.class)
-//    @AutoConfigureAfter(DataSourceConfiguration.class)
-    public static class MybatisSqlFactory2Configuration {
+    public static class MybatisSqlFactory2Configuration extends MybatisPlusAutoConfiguration  {
 
         public static final String SQL_SESSION_FACTORY_NAME_2 = "sqlSessionFactory2";
+
+        public MybatisSqlFactory2Configuration(MybatisPlusProperties properties,
+                                               ObjectProvider<Interceptor[]> interceptorsProvider,
+                                               ResourceLoader resourceLoader,
+                                               ObjectProvider<DatabaseIdProvider> databaseIdProvider,
+                                               ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
+                                               ObjectProvider<List<MybatisPlusPropertiesCustomizer>> mybatisPlusPropertiesCustomizerProvider, ApplicationContext applicationContext) {
+            super(properties, interceptorsProvider, resourceLoader, databaseIdProvider, configurationCustomizersProvider, mybatisPlusPropertiesCustomizerProvider, applicationContext);
+        }
 
         // http://www.importnew.com/25940.html
         @Bean
@@ -95,7 +121,8 @@ public class MybatisConfiguration {
         public SqlSessionFactory createSqlSessionFactory(
                 @Qualifier("secondaryDataSource") DataSource dataSource
         ) throws Exception {
-            return MybatisUtils.createSessionFactory(dataSource);
+            return sqlSessionFactory(dataSource);
+//            return MybatisUtils.createSessionFactory(dataSource);
         }
     }
 }
