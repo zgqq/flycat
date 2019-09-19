@@ -15,11 +15,11 @@
  */
 package com.github.flycat.spi.impl.alarm;
 
-import ch.qos.logback.classic.Logger;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
 import com.github.flycat.context.ApplicationConfiguration;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;

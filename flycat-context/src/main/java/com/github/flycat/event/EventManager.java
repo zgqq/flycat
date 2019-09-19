@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.util.event;
+package com.github.flycat.event;
 
 import com.google.common.eventbus.EventBus;
 

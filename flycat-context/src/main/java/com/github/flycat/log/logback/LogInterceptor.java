@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.util.log;
+package com.github.flycat.log.logback;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
-import com.github.flycat.util.event.EventManager;
+import com.github.flycat.event.EventManager;
+import com.github.flycat.log.LogErrorEvent;
+import com.github.flycat.log.MDCUtils;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 

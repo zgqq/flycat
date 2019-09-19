@@ -15,9 +15,9 @@
  */
 package com.github.flycat.spi.alarm;
 
-import ch.qos.logback.classic.Logger;
-import com.github.flycat.util.log.LogErrorEvent;
+import com.github.flycat.log.LogErrorEvent;
 import com.google.common.eventbus.Subscribe;
+import org.slf4j.Logger;
 
 public class LogErrorListener {
 
@@ -42,7 +42,7 @@ public class LogErrorListener {
 
     @Subscribe
     public void listen(LogErrorEvent logErrorEvent) {
-        sendAlarm(logErrorEvent.getLogger(), logErrorEvent.getMessage(),
+        sendAlarm((Logger) logErrorEvent.getLogger(), logErrorEvent.getMessage(),
                 logErrorEvent.getThrowable());
     }
 

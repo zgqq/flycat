@@ -15,7 +15,7 @@
  */
 package com.github.flycat.platform.springboot;
 
-import com.github.flycat.util.event.EventManager;
+import com.github.flycat.event.EventManager;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
