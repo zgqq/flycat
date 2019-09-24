@@ -25,7 +25,6 @@ import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.flycat.db.mybatis.MybatisUtils;
-import com.github.flycat.module.ModuleManager;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -38,6 +37,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -50,8 +50,11 @@ import org.springframework.util.StringUtils;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static com.github.flycat.module.ModuleManager.getModulePackagesAsString;
+
 
 /**
+ *
  */
 @Configuration
 //@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
@@ -197,9 +200,12 @@ public class MybatisConfiguration {
         @Bean
         public static MapperScannerConfigurer createMapperScanner(
                 ApplicationContext applicationContext) {
-            String name = applicationContext.getEnvironment().
-                    resolvePlaceholders("${flycat.datasource.primary.mybatis.mapper}");
-            final String modulePackagesAsString = ModuleManager.getModulePackagesAsString(name);
+            String name = null;
+            try {
+                name = applicationContext.getEnvironment().
+                        resolveRequiredPlaceholders("${flycat.datasource.primary.mybatis.mapper}");
+            } catch (IllegalArgumentException e) { }
+            final String modulePackagesAsString = getModulePackagesAsString(name);
             LOGGER.info("Creating primary mybatis mapper, config:{}, module:{}", name, modulePackagesAsString);
             return MybatisUtils.createMapperConfigurer(modulePackagesAsString, SQL_SESSION_FACTORY_NAME_1);
         }
@@ -236,10 +242,14 @@ public class MybatisConfiguration {
 
         // http://www.importnew.com/25940.html
         @Bean
+        @ConditionalOnProperty("flycat.datasource.secondary.mybatis.mapper")
         public static MapperScannerConfigurer createMapperScanner2(
                 ApplicationContext applicationContext) {
-            String name = applicationContext.getEnvironment().
-                    resolvePlaceholders("${flycat.datasource.secondary.mybatis.mapper}");
+            String name = null;
+            try {
+                name = applicationContext.getEnvironment().
+                        resolveRequiredPlaceholders("${flycat.datasource.secondary.mybatis.mapper}");
+            } catch (IllegalArgumentException e) { }
             LOGGER.info("Creating secondary mybatis mapper, {}", name);
             return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_2);
         }

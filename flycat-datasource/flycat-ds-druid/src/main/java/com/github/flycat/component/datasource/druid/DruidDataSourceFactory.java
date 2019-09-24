@@ -16,19 +16,6 @@ import javax.sql.DataSource;
 @Named
 @Singleton
 public class DruidDataSourceFactory implements DataSourceFactory {
-    private final Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
-    private final WallFilter wallFilter = new WallFilter();
-    private final StatFilter statFilter = new StatFilter();
-
-    {
-        statFilter.setLogSlowSql(true);
-        statFilter.setSlowSqlMillis(2000);
-        final WallConfig wallConfig = new WallConfig();
-        wallConfig.setDeleteAllow(false);
-        wallConfig.setDropTableAllow(false);
-        wallFilter.setConfig(wallConfig);
-    }
-
 
 
     @Override
@@ -56,6 +43,19 @@ public class DruidDataSourceFactory implements DataSourceFactory {
         druidDataSource.setPassword(dataSourceConfig.getPassword());
         druidDataSource.setDriverClassName(dataSourceConfig.getDriverClassName());
         druidDataSource.setConnectionInitSqls(Lists.newArrayList(dataSourceConfig.getInitSQL()));
+
+
+        Slf4jLogFilter slf4jLogFilter = new Slf4jLogFilter();
+        WallFilter wallFilter = new WallFilter();
+        StatFilter statFilter = new StatFilter();
+
+        statFilter.setLogSlowSql(true);
+        statFilter.setSlowSqlMillis(2000);
+        final WallConfig wallConfig = new WallConfig();
+        wallConfig.setDeleteAllow(false);
+        wallConfig.setDropTableAllow(false);
+        wallFilter.setConfig(wallConfig);
+        wallFilter.setDbType(JdbcUtils.getDbType(dataSourceConfig.getUrl()).getDb());
 
         druidDataSource.getProxyFilters().add(slf4jLogFilter);
         druidDataSource.getProxyFilters().add(statFilter);
