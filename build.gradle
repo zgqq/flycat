@@ -22,11 +22,11 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath 'org.springframework:springloaded:1.2.0.RELEASE'
     }
-
 }
 
 plugins {
     id "com.github.hierynomus.license" version "0.15.0"
+    id "io.freefair.lombok" version "4.1.0"
 }
 
 ext.configDir = "${project.rootDir}/config"
@@ -50,6 +50,7 @@ ext.isProd = { env ->
 
 configure(subprojects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
+
 
     group "com.github.flycat"
     version "0.0.1-SNAPSHOT"
