@@ -17,9 +17,14 @@ package com.github.flycat.spi.alarm;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.github.flycat.context.ContextUtils;
 import com.google.common.util.concurrent.RateLimiter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public abstract class AbstractAlarmSender implements AlarmSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAlarmSender.class);
@@ -28,11 +33,21 @@ public abstract class AbstractAlarmSender implements AlarmSender {
 
     @Override
     public void sendNotify(String message) {
+        if (StringUtils.isBlank(message)) {
+            return;
+        }
         final boolean require = rateLimiter.tryAcquire();
         if (require) {
             final Meter meter = REGISTRY.meter("log." + message);
             meter.mark();
             if (meter.getOneMinuteRate() < 0.4) {
+                InetAddress inetAddress = null;
+                try {
+                    inetAddress = InetAddress.getLocalHost();
+                } catch (UnknownHostException e) {
+                }
+                final String applicationName = ContextUtils.getApplicationName();
+                message = "machine info:" + inetAddress + ", app name:" + applicationName + ", error:" + message;
                 doSendNotify(message);
             } else {
                 LOGGER.warn("Alarm too frequently, aborted, message:{}", message);
