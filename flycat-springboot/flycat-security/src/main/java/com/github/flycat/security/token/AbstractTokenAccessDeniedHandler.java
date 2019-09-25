@@ -30,7 +30,11 @@ import java.io.IOException;
 
 
 public abstract class AbstractTokenAccessDeniedHandler implements AccessDeniedHandler {
-    private AuthenticationTrustResolver trustResolver = new AuthenticationTrustResolverImpl();
+    private final AuthenticationTrustResolver trustResolver;
+
+    protected AbstractTokenAccessDeniedHandler(AuthenticationTrustResolver trustResolver) {
+        this.trustResolver = trustResolver;
+    }
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
@@ -47,6 +51,7 @@ public abstract class AbstractTokenAccessDeniedHandler implements AccessDeniedHa
 
     protected abstract void handleInvalidToken(HttpServletRequest request, HttpServletResponse response,
                                                AccessDeniedException accessDeniedException);
+
     protected abstract void handleAccessDenied(HttpServletRequest request, HttpServletResponse response,
                                                AccessDeniedException accessDeniedException);
 }

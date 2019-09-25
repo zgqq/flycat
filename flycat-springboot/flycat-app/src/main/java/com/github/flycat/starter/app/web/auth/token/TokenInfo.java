@@ -21,6 +21,7 @@ public class TokenInfo {
     private long expire;
     private String token;
     private long ts;
+    private String authorities;
 
     public Integer getUid() {
         return uid;
@@ -56,6 +57,14 @@ public class TokenInfo {
 
     public long getTs() {
         return ts;
+    }
+
+    public String getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(String authorities) {
+        this.authorities = authorities;
     }
 
     public void setTs(long ts) {
