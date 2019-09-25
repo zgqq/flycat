@@ -15,13 +15,10 @@
  */
 package com.github.flycat.platform.springboot;
 
-import com.github.flycat.wechat.WechatLoginHandler;
-import com.github.flycat.wechat.WechatLoginInterceptor;
 import com.github.flycat.wechat.mp.MiniProgramClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,11 +38,11 @@ public class WechatConfiguration {
             return new MiniProgramClient(appid, secret);
         }
 
-        @Bean
-        @ConditionalOnBean(WechatLoginHandler.class)
-        public WechatLoginInterceptor wechatLoginInterceptor(WechatLoginHandler wechatLoginHandler) {
-            LOGGER.info("Creating wechat login interceptor");
-            return new WechatLoginInterceptor(wechatLoginHandler);
-        }
+//        @Bean
+//        @ConditionalOnBean(WechatLoginHandler.class)
+//        public WechatLoginInterceptor wechatLoginInterceptor(WechatLoginHandler wechatLoginHandler) {
+//            LOGGER.info("Creating wechat login interceptor");
+//            return new WechatLoginInterceptor(wechatLoginHandler);
+//        }
     }
 }
