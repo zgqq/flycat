@@ -2,7 +2,10 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.redis.RedisService;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -11,10 +14,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.List;
 
 @Singleton
 @Named
-public class SpringMultipleRedisService extends MultipleRedisService {
+public class SpringMultipleRedisService extends MultipleRedisService implements InitializingBean, BeanClassLoaderAware {
+
+    private List<SpringRedisProviderAdapter> redisProviderAdapterList;
 
     @Inject
     public SpringMultipleRedisService(PrimaryRedisService primaryRedisService,
@@ -27,7 +33,12 @@ public class SpringMultipleRedisService extends MultipleRedisService {
     public RedisService newRedisService(String host, Integer port, String password) {
         final StringRedisTemplate secondaryRedisTemplate =
                 createRedisTemplate(host, port, password);
-        return new SpringRedisProviderAdapter(secondaryRedisTemplate);
+        final SpringRedisProviderAdapter adapter = new SpringRedisProviderAdapter(secondaryRedisTemplate);
+        if (redisProviderAdapterList == null) {
+            redisProviderAdapterList = Lists.newArrayList();
+        }
+        redisProviderAdapterList.add(adapter);
+        return adapter;
     }
 
     public StringRedisTemplate createRedisTemplate(String host, Integer port, String password) {
@@ -46,5 +57,19 @@ public class SpringMultipleRedisService extends MultipleRedisService {
         stringRedisTemplate.setEnableTransactionSupport(true);
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
         return stringRedisTemplate;
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        for (SpringRedisProviderAdapter adapter : redisProviderAdapterList) {
+            adapter.setBeanClassLoader(classLoader);
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        for (SpringRedisProviderAdapter adapter : redisProviderAdapterList) {
+            adapter.afterPropertiesSet();
+        }
     }
 }

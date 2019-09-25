@@ -17,13 +17,14 @@ package com.github.flycat.spi.impl.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.spi.redis.RedisService;
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class SpringRedisProviderAdapter implements RedisService {
+public class SpringRedisProviderAdapter implements RedisService, BeanClassLoaderAware{
     private final StringRedisTemplate redisTemplate;
 
     public SpringRedisProviderAdapter(StringRedisTemplate redisTemplate) {
@@ -73,5 +74,14 @@ public class SpringRedisProviderAdapter implements RedisService {
     @Override
     public void setexAsJson(String key, Object object, long seconds) {
         redisTemplate.boundValueOps(key).set(JSON.toJSONString(object), seconds, TimeUnit.SECONDS);
+    }
+
+    public void afterPropertiesSet() {
+        redisTemplate.afterPropertiesSet();
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        redisTemplate.setBeanClassLoader(classLoader);
     }
 }
