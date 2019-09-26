@@ -43,7 +43,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
     @ResponseBody
-    public Object handleBizException(ValidationException exception, HttpServletRequest request) {
+    public Object handleValidationException(ValidationException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
         String requestBody = ((HttpRequestWrapper) request).getRequestBody();
         LOGGER.error("Validation exception! uri:{}, body:{}",
@@ -75,7 +75,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public Object handleBizException(BusinessException exception, HttpServletRequest request) {
+    public Object handleBusinessException(BusinessException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
         String requestBody = ((HttpRequestWrapper) request).getRequestBody();
         LOGGER.error("Business exception! uri:{}, body:{}",

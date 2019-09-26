@@ -15,9 +15,12 @@
  */
 package com.github.flycat.context;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class ContextUtils {
@@ -47,6 +50,13 @@ public final class ContextUtils {
         final ApplicationContext contextHolder = getContextHolder();
         final ApplicationConfiguration bean = contextHolder.getBean(ApplicationConfiguration.class);
         return bean;
+    }
+
+    static final List<String> productEnvWords = Lists.newArrayList("production", "product", "prod", "ali");
+
+    public static boolean isTestProfile() {
+        final String property = System.getProperty("spring.profiles.active");
+        return productEnvWords.stream().noneMatch(word -> word.equals(property));
     }
 
     public static String getApplicationName() {
