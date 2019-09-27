@@ -17,6 +17,7 @@ package com.github.flycat.web.api;
 
 import com.github.flycat.context.ContextUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ApiResponseCodeUtils {
 
@@ -58,7 +59,8 @@ public class ApiResponseCodeUtils {
             if (ContextUtils.isTestProfile()) {
                 final String stackTrace = ExceptionUtils.getStackTrace(e);
                 unknownExceptionResult = apiFactory.createApiResult(ApiResponseCodeUtils
-                        .getSystemErrorCode(ApiResponseCode.SERVER_UNKNOWN_ERROR), stackTrace);
+                        .getSystemErrorCode(ApiResponseCode.SERVER_UNKNOWN_ERROR),
+                        StringEscapeUtils.unescapeJson(stackTrace));
             } else {
                 unknownExceptionResult = apiFactory.createApiResult(ApiResponseCodeUtils
                         .getSystemErrorCode(ApiResponseCode.SERVER_UNKNOWN_ERROR), "服务器傲娇了!");
