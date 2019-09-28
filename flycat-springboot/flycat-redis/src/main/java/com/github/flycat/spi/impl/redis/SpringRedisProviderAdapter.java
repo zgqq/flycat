@@ -18,6 +18,9 @@ package com.github.flycat.spi.impl.redis;
 import com.alibaba.fastjson.JSON;
 import com.github.flycat.spi.redis.RedisService;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Map;
@@ -76,12 +79,25 @@ public class SpringRedisProviderAdapter implements RedisService, BeanClassLoader
         redisTemplate.boundValueOps(key).set(JSON.toJSONString(object), seconds, TimeUnit.SECONDS);
     }
 
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet() throws Exception {
         redisTemplate.afterPropertiesSet();
+        final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+        if (connectionFactory instanceof InitializingBean) {
+            InitializingBean factory = (InitializingBean) connectionFactory;
+            factory.afterPropertiesSet();
+        }
     }
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         redisTemplate.setBeanClassLoader(classLoader);
+    }
+
+    public void destroy() throws Exception {
+        final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+        if (connectionFactory instanceof DisposableBean) {
+            DisposableBean factory = (DisposableBean) connectionFactory;
+            factory.destroy();
+        }
     }
 }

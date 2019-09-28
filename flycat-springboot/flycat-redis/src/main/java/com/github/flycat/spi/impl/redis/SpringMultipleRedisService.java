@@ -5,6 +5,7 @@ import com.github.flycat.spi.redis.RedisService;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Singleton
 @Named
-public class SpringMultipleRedisService extends MultipleRedisService implements InitializingBean, BeanClassLoaderAware {
+public class SpringMultipleRedisService extends MultipleRedisService implements InitializingBean, DisposableBean, BeanClassLoaderAware {
 
     private List<SpringRedisProviderAdapter> redisProviderAdapterList;
 
@@ -70,6 +71,13 @@ public class SpringMultipleRedisService extends MultipleRedisService implements 
     public void afterPropertiesSet() throws Exception {
         for (SpringRedisProviderAdapter adapter : redisProviderAdapterList) {
             adapter.afterPropertiesSet();
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        for (SpringRedisProviderAdapter adapter : redisProviderAdapterList) {
+            adapter.destroy();
         }
     }
 }
