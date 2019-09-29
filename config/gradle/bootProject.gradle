@@ -43,3 +43,17 @@ dependencies {
 
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
+
+configurations {
+
+    // replaced with jcl-over-slf4j
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+    // replaced with log4j-over-slf4j
+    all*.exclude group: 'log4j', module: 'log4j'
+    compile.exclude module: "spring-boot-starter-tomcat"
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
