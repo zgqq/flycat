@@ -18,10 +18,7 @@ package com.github.flycat.platform.springboot;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.github.flycat.web.FlycatWebConfiguration;
 import com.github.flycat.web.FlycatWebHolder;
-import com.github.flycat.web.spring.ContentCachingFilter;
-import com.github.flycat.web.spring.FilterOrder;
-import com.github.flycat.web.spring.WebCorsFilter;
-import com.github.flycat.web.spring.WebExceptionHandler;
+import com.github.flycat.web.spring.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -79,7 +76,8 @@ public class WebConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-                FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
+                CustomFastJsonHttpMessageConverter converter = new CustomFastJsonHttpMessageConverter();
+                converter.afterPropertiesSet();
                 // 会优先加载 jackson，所以设置第一位
                 converters.add(0, converter);
             }
