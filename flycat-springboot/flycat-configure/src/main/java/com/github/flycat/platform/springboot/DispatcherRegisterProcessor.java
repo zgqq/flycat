@@ -45,6 +45,9 @@ public class DispatcherRegisterProcessor implements BeanDefinitionRegistryPostPr
         for (String beanDefinitionName : registry.getBeanDefinitionNames()) {
             final BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
             final String beanClassName = beanDefinition.getBeanClassName();
+            if (beanClassName == null) {
+                continue;
+            }
             try {
                 final Class<?> aClass = Class.forName(beanClassName);
                 for (Class<?> aClass1 : typesAnnotatedWith) {
