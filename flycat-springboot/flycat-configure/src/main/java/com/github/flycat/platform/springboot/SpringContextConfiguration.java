@@ -37,6 +37,10 @@ import org.springframework.core.annotation.Order;
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
+    @Bean
+    public static DispatcherRegisterProcessor dispatcherRegisterProcessor() {
+        return new DispatcherRegisterProcessor();
+    }
 
     @Bean
     @Order(value = Ordered.HIGHEST_PRECEDENCE)
