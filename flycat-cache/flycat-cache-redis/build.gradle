@@ -1,6 +1,7 @@
 
 dependencies {
     api project(':flycat-cache-spi')
+    implementation project(':flycat-json-spi')
     implementation project(':flycat-redis')
 }
 

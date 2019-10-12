@@ -15,6 +15,7 @@ dependencies {
     api project(':flycat-alarm-mail')
     api project(':flycat-ds-druid')
 
+    api project(':flycat-json-jackson')
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")

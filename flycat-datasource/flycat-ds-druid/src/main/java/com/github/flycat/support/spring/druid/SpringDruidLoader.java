@@ -1,9 +1,8 @@
 package com.github.flycat.support.spring.druid;
 
-import com.alibaba.fastjson.JSON;
 import com.github.flycat.component.datasource.druid.DruidStatProperties;
-import com.github.flycat.support.spring.context.SpringConfiguration;
 import com.github.flycat.support.spring.BeanDefinitionUtils;
+import com.github.flycat.support.spring.context.SpringConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -28,7 +27,7 @@ public class SpringDruidLoader implements BeanDefinitionRegistryPostProcessor, A
         final SpringConfiguration springConfiguration = new SpringConfiguration(this.applicationContext);
         final DruidStatProperties druidStatProperties = springConfiguration.load("flycat.datasource.druid",
                 DruidStatProperties.class);
-        LOGGER.info("Loaded druid config, value:{}", JSON.toJSONString(druidStatProperties));
+        LOGGER.info("Loaded druid config, value:{}", druidStatProperties);
         if (druidStatProperties.getWebStatFilter().isEnabled()) {
             BeanDefinitionUtils.register(registry, FilterRegistrationBean.class,
                     "webStatFilterRegistrationBean", () ->

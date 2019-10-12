@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,8 @@
  */
 package com.github.flycat.spi.sms.qcloud;
 
-import com.alibaba.fastjson.JSON;
-import com.github.flycat.spi.SpiService;
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.sms.SmsService;
 import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
@@ -59,8 +58,7 @@ public class QcloudSmsSender implements SmsService, SpiService {
             SmsSingleSenderResult result = ssender.send(0, "86", phone,
                     msg, "", "");
             LOGGER.info("Qcloud sms, phone:{}, msg:{}, result:{}", phone, msg,
-                    JSON.toJSONString(result)
-            );
+                    result);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

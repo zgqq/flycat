@@ -15,12 +15,17 @@
  */
 package com.github.flycat.platform.springboot;
 
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.flycat.context.ContextUtils;
 import com.github.flycat.web.FlycatWebConfiguration;
 import com.github.flycat.web.FlycatWebHolder;
 import com.github.flycat.web.spring.*;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -31,6 +36,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
@@ -81,18 +88,41 @@ public class WebConfiguration {
         return new WebExceptionHandler();
     }
 
-    @Bean
-    public WebMvcConfigurer webMvcConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-                CustomFastJsonHttpMessageConverter converter = new CustomFastJsonHttpMessageConverter();
-                converter.afterPropertiesSet();
-                // 会优先加载 jackson，所以设置第一位
-                converters.add(0, converter);
-            }
-        };
+
+    @Configuration
+    @ConditionalOnClass(FastJsonHttpMessageConverter.class)
+    public static class FastJsonConfiguration {
+        @Bean
+        public WebMvcConfigurer webMvcConfigurer() {
+            return new WebMvcConfigurer() {
+                @Override
+                public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+                    CustomFastJsonHttpMessageConverter converter = new CustomFastJsonHttpMessageConverter();
+                    converter.afterPropertiesSet();
+                    // 会优先加载 jackson，所以设置第一位
+                    converters.add(0, converter);
+                }
+            };
+        }
     }
+
+    @Configuration
+    @ConditionalOnClass(ObjectMapper.class)
+    @ConditionalOnBean(Jackson2ObjectMapperBuilder.class)
+    public static class JacksonConfiguration {
+
+        @Bean
+        public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(Jackson2ObjectMapperBuilder build,
+                                                                                       ObjectMapper objectMapper) {
+            if (ContextUtils.isTestProfile()) {
+                final ObjectMapper prettyMapper = build.createXmlMapper(false)
+                        .featuresToEnable(SerializationFeature.INDENT_OUTPUT).build();
+                return new MappingJackson2HttpMessageConverter(prettyMapper);
+            }
+            return new MappingJackson2HttpMessageConverter(objectMapper);
+        }
+    }
+
 
     @Bean
     @ConditionalOnMissingBean(FlycatWebConfiguration.class)

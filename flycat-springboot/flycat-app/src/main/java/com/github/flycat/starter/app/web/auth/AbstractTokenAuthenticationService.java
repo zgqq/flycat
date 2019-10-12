@@ -15,10 +15,9 @@
  */
 package com.github.flycat.starter.app.web.auth;
 
-import com.alibaba.fastjson.JSON;
 import com.github.flycat.security.token.TokenAuthentication;
 import com.github.flycat.security.token.TokenAuthenticationService;
-import com.github.flycat.security.token.TokenInformation;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.redis.RedisKeys;
 import com.github.flycat.starter.app.web.api.AppRequest;
@@ -31,7 +30,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class AbstractTokenAuthenticationService implements TokenAuthenticationService {
     private final RedisService redisProvider;
@@ -90,7 +88,7 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
         }
         String tokenInfoStr = redisProvider.hget(RedisKeys.USER_REQ_TOKEN, uid + "");
         if (tokenInfoStr != null && tokenInfoStr instanceof String) {
-            final TokenInfo tokenInfo = JSON.parseObject(tokenInfoStr, TokenInfo.class);
+            final TokenInfo tokenInfo = JsonUtils.parseObject(tokenInfoStr, TokenInfo.class);
             return tokenInfo;
         }
         TokenInfo user = findTokenInfo(uid);

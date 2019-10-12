@@ -15,14 +15,9 @@
  */
 package com.github.flycat.starter.app.web.api;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.util.TypeUtils;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.util.bean.CommonParameters;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -145,28 +140,28 @@ public class AppRequest {
         return (T) data.get(name);
     }
 
-    public <T> List<T> resolveDataList(String name, Class<T> clazz) {
-        Object o = data.get(name);
-        if (o instanceof ArrayList) {
-            ArrayList arrayList = (ArrayList) o;
-            ArrayList<T> list = new ArrayList<>();
-            ParserConfig config = ParserConfig.getGlobalInstance();
-            for (Object item : arrayList) {
-                T classItem = (T) TypeUtils.cast(item, clazz, config);
-                list.add(classItem);
-            }
-            return list;
-        } else if (o instanceof JSONArray) {
-            JSONArray objects = (JSONArray) o;
-            return objects.toJavaList(clazz);
-        }
-        return new ArrayList<>();
-    }
+//    public <T> List<T> resolveDataList(String name, Class<T> clazz) {
+//        Object o = data.get(name);
+//        if (o instanceof ArrayList) {
+//            ArrayList arrayList = (ArrayList) o;
+//            ArrayList<T> list = new ArrayList<>();
+//            ParserConfig config = ParserConfig.getGlobalInstance();
+//            for (Object item : arrayList) {
+//                T classItem = (T) TypeUtils.cast(item, clazz, config);
+//                list.add(classItem);
+//            }
+//            return list;
+//        } else if (o instanceof JSONArray) {
+//            JSONArray objects = (JSONArray) o;
+//            return objects.toJavaList(clazz);
+//        }
+//        return new ArrayList<>();
+//    }
 
     public <T> T resolveData(Class<T> clazz) {
         Map dataMap = getData();
-        String json = JSON.toJSONString(dataMap);
-        T t = JSON.parseObject(json, clazz);
+        String json = JsonUtils.toJsonString(dataMap);
+        T t = JsonUtils.parseObject(json, clazz);
         injectCommonParameters(t);
         return t;
     }
@@ -187,13 +182,13 @@ public class AppRequest {
         }
     }
 
-    public <T> T convertDataAndSetOpUid(Class<T> clazz) {
-        Map dataMap = getData();
-        String json = JSON.toJSONString(dataMap);
-        T t = JSON.parseObject(json, clazz);
-        injectCommonParameters(t);
-        return t;
-    }
+//    public <T> T convertDataAndSetOpUid(Class<T> clazz) {
+//        Map dataMap = getData();
+//        String json = JSON.toJSONString(dataMap);
+//        T t = JSON.parseObject(json, clazz);
+//        injectCommonParameters(t);
+//        return t;
+//    }
 
     public Integer resolvePageNum() {
         return resolveParameter("pageNum", Integer.class);

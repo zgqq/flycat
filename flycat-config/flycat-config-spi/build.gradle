@@ -1,6 +1,7 @@
 
 dependencies {
     api project(':flycat-context')
+    api project(':flycat-json-spi')
 //    compile project(':base-core')
 }
 

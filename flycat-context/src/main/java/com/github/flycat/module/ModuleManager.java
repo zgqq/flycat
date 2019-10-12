@@ -1,6 +1,5 @@
 package com.github.flycat.module;
 
-import com.alibaba.fastjson.JSON;
 import com.github.flycat.core.reflect.ReflectUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -167,7 +166,7 @@ public class ModuleManager {
                     parentName = parent.getName();
                 }
                 final List<String> collect = objects.stream().map(Class::getSimpleName).collect(Collectors.toList());
-                throw new ModuleException("Found circular dependency " + JSON.toJSONString(collect) + ", but " +
+                throw new ModuleException("Found circular dependency " + collect + ", but " +
                         parentName + " depend " + module.getName());
             }
             final Module prepareModule = module;

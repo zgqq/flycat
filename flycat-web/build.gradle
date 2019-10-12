@@ -1,5 +1,6 @@
 dependencies {
     api project(':flycat-context')
+    api project(':flycat-json-spi')
     api group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 }

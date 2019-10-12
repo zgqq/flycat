@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,6 @@
  */
 package com.github.flycat.security.token;
 
-import com.alibaba.fastjson.JSON;
 import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.util.HttpResponseUtils;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ public class DefaultTokenAccessDeniedHandler extends AbstractTokenAccessDeniedHa
                                       AccessDeniedException accessDeniedException) {
         final Object invalidTokenResult = ApiFactoryHolder.getApiFactory().createInvalidTokenResult();
         if (invalidTokenResult != null) {
-            HttpResponseUtils.writeJson(response, JSON.toJSONString(invalidTokenResult));
+            HttpResponseUtils.writeJson(response, invalidTokenResult);
         } else {
             HttpResponseUtils.writeJson(response,
                     "请先登录", HttpStatus.UNAUTHORIZED.value());
@@ -52,7 +51,7 @@ public class DefaultTokenAccessDeniedHandler extends AbstractTokenAccessDeniedHa
                 .getApiFactory()
                 .createAccessDeniedResult(accessDeniedException);
         if (accessDeniedResult != null) {
-            HttpResponseUtils.writeJson(response, JSON.toJSONString(accessDeniedResult));
+            HttpResponseUtils.writeJson(response, accessDeniedResult);
         } else {
             HttpResponseUtils.writeJson(response,
                     "权限错误", HttpStatus.FORBIDDEN.value()

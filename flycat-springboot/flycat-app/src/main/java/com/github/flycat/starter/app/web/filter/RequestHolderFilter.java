@@ -15,7 +15,7 @@
  */
 package com.github.flycat.starter.app.web.filter;
 
-import com.alibaba.fastjson.JSONObject;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.web.api.ApiHttpRequest;
 import com.github.flycat.web.api.ApiRequestHolder;
@@ -67,7 +67,7 @@ public class RequestHolderFilter implements Filter {
 
         try {
             jsonString = httpRequestWrapper.getRequestBody();
-            jo = JSONObject.parseObject(jsonString, AppRequest.class);
+            jo = JsonUtils.parseObject(jsonString, AppRequest.class);
 
         } catch (Throwable throwable) {
         }

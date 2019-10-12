@@ -15,9 +15,9 @@
  */
 package com.github.flycat.spi.impl.config;
 
-import com.alibaba.fastjson.JSON;
 import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
+import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +38,12 @@ public class RedisConfigService implements ConfigService {
             systemConfigMap = new ConcurrentHashMap<>();
     private final RedisService redisClient;
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisConfigService.class);
+    private final JsonService jsonService;
 
     @Inject
-    public RedisConfigService(RedisService redisService) {
+    public RedisConfigService(RedisService redisService, JsonService jsonService) {
         this.redisClient = redisService;
+        this.jsonService = jsonService;
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                     post();
                 }, 5, 30, TimeUnit.SECONDS
@@ -59,7 +61,7 @@ public class RedisConfigService implements ConfigService {
     private RedisConfig getAndRefreshConfig(String key) {
         RedisConfig systemConfig;
         String string = redisClient.get(key);
-        systemConfig = new RedisConfig(key, JSON.parseObject(string));
+        systemConfig = new RedisConfig(jsonService, key, string);
         systemConfigMap.put(key, systemConfig);
         return systemConfig;
     }

@@ -16,7 +16,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
 
     compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
+//    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 //    compile group: 'org.jetbrains', name: 'annotations', version: '13.0'
     compile group: 'javax.inject', name: 'javax.inject', version: '1'

@@ -1,0 +1,5 @@
+include 'flycat-json-spi'
+include 'flycat-json-jackson'
+
+project (':flycat-json-spi').projectDir = new File('./flycat-json/flycat-json-spi')
+project (':flycat-json-jackson').projectDir = new File('./flycat-json/flycat-json-jackson')

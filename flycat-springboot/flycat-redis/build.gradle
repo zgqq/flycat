@@ -1,6 +1,7 @@
 dependencies {
     api project(':flycat-redis')
     api project(':flycat-context')
+    api project(':flycat-json-spi')
     api "org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"
 }
 

@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,10 +15,10 @@
  */
 package com.github.flycat.starter.app.redis;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.context.ApplicationContext;
+import com.github.flycat.spi.json.JsonService;
+import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.config.MaintainConf;
 import com.google.common.collect.Lists;
@@ -38,10 +38,12 @@ public class RefreshRedisConfTask {
 
     private final RedisService redisClient;
     private final ApplicationContext applicationContainer;
+    private final JsonService jsonService;
 
-    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient) {
+    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient, JsonService jsonService) {
         this.redisClient = redisClient;
         this.applicationContainer = applicationContainer;
+        this.jsonService = jsonService;
     }
 
     public void start() {
@@ -58,14 +60,8 @@ public class RefreshRedisConfTask {
                 for (Map.Entry<String, String> entry : entries) {
                     String key = entry.getKey();
                     String value = entry.getValue();
-                    if (JSON.isValidArray(value)) {
-                        JSONArray jsonArray = JSON.parseArray(value);
-                        List<String> contents = null;
-                        if (jsonArray != null) {
-                            contents = jsonArray.toJavaList(String.class);
-                        } else {
-                            contents = new ArrayList<>();
-                        }
+                    if (JsonUtils.isJsonArray(value)) {
+                        final List<String> contents = jsonService.toStringList(value);
                         replaceContentMap.put(key, contents);
                     } else {
                         replaceContentMap.put(key, Lists.newArrayList(value));
@@ -90,8 +86,8 @@ public class RefreshRedisConfTask {
             }
 
             MaintainConf maintainConfig = null;
-            if (JSON.isValidObject(appMaintainConfig)) {
-                maintainConfig = JSON.parseObject(appMaintainConfig,
+            if (jsonService.isValidJson(appMaintainConfig)) {
+                maintainConfig = jsonService.parseObject(appMaintainConfig,
                         MaintainConf.class);
             }
             AppConf.setMaintainConfig(maintainConfig);

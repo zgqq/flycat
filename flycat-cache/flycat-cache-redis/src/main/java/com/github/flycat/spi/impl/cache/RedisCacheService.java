@@ -15,10 +15,9 @@
  */
 package com.github.flycat.spi.impl.cache;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.DistributedCacheService;
+import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,10 +36,14 @@ public class RedisCacheService implements DistributedCacheService {
     public static final String CACHE_NULL = "CACHE_NULL_" + RedisCacheService.class.getName();
 
     private final RedisService redisService;
+    private final JsonService jsonService;
+    private final Type stringListType;
 
     @Inject
-    public RedisCacheService(RedisService redisService) {
+    public RedisCacheService(RedisService redisService, JsonService jsonService) {
         this.redisService = redisService;
+        this.jsonService = jsonService;
+        this.stringListType = jsonService.createStringListReference();
     }
 
 
@@ -61,11 +64,11 @@ public class RedisCacheService implements DistributedCacheService {
                 if (result == null) {
                     redisService.setex(redisKey, seconds, CACHE_NULL);
                 } else {
-                    final String jsonString = JSON.toJSONString(result);
+                    final String jsonString = jsonService.toJsonString(result);
                     redisService.setex(redisKey, seconds, jsonString);
                 }
             } else {
-                result = (T) JSON.parseObject(cacheValue, type);
+                result = jsonService.parseObject(cacheValue, type);
             }
             return Optional.ofNullable(result);
         } catch (Exception e) {
@@ -96,15 +99,11 @@ public class RedisCacheService implements DistributedCacheService {
         return queryCacheObject(module, "ALL", returnType, callable);
     }
 
-
-    public final static Type LIST_INTEGER = new TypeReference<List<String>>() {
-    }.getType();
-
     @Override
     public List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds) {
         return queryCacheObject(module,
                 key,
-                LIST_INTEGER,
+                stringListType,
                 () -> callable.call(), seconds
         );
     }

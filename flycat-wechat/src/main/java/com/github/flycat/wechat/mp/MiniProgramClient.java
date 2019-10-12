@@ -15,7 +15,7 @@
  */
 package com.github.flycat.wechat.mp;
 
-import com.alibaba.fastjson.JSON;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.util.http.HttpUtils;
 import com.github.flycat.util.http.Pair;
 import org.apache.commons.lang3.StringUtils;
@@ -50,9 +50,9 @@ public class MiniProgramClient {
         try {
             LOGGER.info("Requesting wechat mp auth info, params {}", params);
             pair = HttpUtils.get("https://api.weixin.qq.com/sns/jscode2session", params, "utf-8");
-            LOGGER.info("Requested wechat mp auth info, response:{}", JSON.toJSONString(pair));
+            LOGGER.info("Requested wechat mp auth info, response:{}", JsonUtils.toJsonString(pair));
             if (null != pair && 200 == pair.getL().intValue()) {
-                map = JSON.parseObject(pair.getR(), Map.class);
+                map = JsonUtils.parseObject(pair.getR(), Map.class);
             }
 
             if (StringUtils.isEmpty(map.get("openid"))) {

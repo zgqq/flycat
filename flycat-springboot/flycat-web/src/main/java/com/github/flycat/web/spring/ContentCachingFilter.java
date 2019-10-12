@@ -15,10 +15,10 @@
  */
 package com.github.flycat.web.spring;
 
-import com.alibaba.fastjson.JSON;
+import com.github.flycat.exception.BusinessException;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.web.FlycatWebHolder;
 import com.github.flycat.web.api.*;
-import com.github.flycat.exception.BusinessException;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
 import com.github.flycat.web.util.HttpRequestWrapper;
@@ -93,12 +93,12 @@ public class ContentCachingFilter implements Filter {
                 LOGGER.error("BusinessException! uri {}, params {}, method {}", uri, requestBody, method, e);
                 BusinessException e1 = (BusinessException) cause;
                 final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-                String output = JSON.toJSONString(apiFactory.createApiResult(e1.getErrorCode(), e1.getMessage()));
+                String output = JsonUtils.toJsonString(apiFactory.createApiResult(e1.getErrorCode(), e1.getMessage()));
                 responseWrapper.getWriter().write(output);
             } else {
                 LOGGER.error("System error! uri {}, params {}, method {}", uri, requestBody, method, e);
                 final Object unknownExceptionResult = ApiResponseCodeUtils.getUnknownExceptionResult(e);
-                String output = JSON.toJSONString(unknownExceptionResult);
+                String output = JsonUtils.toJsonString(unknownExceptionResult);
                 responseWrapper.getWriter().write(output);
             }
         } finally {

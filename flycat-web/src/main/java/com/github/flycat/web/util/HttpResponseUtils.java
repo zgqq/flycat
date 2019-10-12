@@ -15,7 +15,7 @@
  */
 package com.github.flycat.web.util;
 
-import com.alibaba.fastjson.JSON;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryHolder;
 
@@ -25,6 +25,10 @@ import java.io.OutputStream;
 
 public final class HttpResponseUtils {
     private HttpResponseUtils() {
+    }
+
+    public static void writeJson(HttpServletResponse response, Object result) {
+        writeJson(response, JsonUtils.toJsonString(result));
     }
 
     public static void writeJson(HttpServletResponse response, String message) {
@@ -47,7 +51,7 @@ public final class HttpResponseUtils {
 
     public static void writeJson(HttpServletResponse response, String message, int errorCode) {
         final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-        String output = JSON.toJSONString(apiFactory.createApiResult(errorCode, message));
+        final String output = JsonUtils.toJsonString(apiFactory.createApiResult(errorCode, message));
         writeJson(response, output);
     }
 

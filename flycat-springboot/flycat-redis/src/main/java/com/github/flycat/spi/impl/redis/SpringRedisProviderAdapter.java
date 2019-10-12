@@ -15,7 +15,7 @@
  */
 package com.github.flycat.spi.impl.redis;
 
-import com.alibaba.fastjson.JSON;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -61,7 +61,7 @@ public class SpringRedisProviderAdapter implements RedisService, BeanClassLoader
 
     @Override
     public void hsetAsJson(String key, String hashKey, Object object) {
-        redisTemplate.boundHashOps(key).put(hashKey, JSON.toJSONString(object));
+        redisTemplate.boundHashOps(key).put(hashKey, JsonUtils.toJsonString(object));
     }
 
     @Override
@@ -71,12 +71,12 @@ public class SpringRedisProviderAdapter implements RedisService, BeanClassLoader
 
     @Override
     public <T> T getJsonObject(String key, Class<T> clazz) {
-        return JSON.parseObject(redisTemplate.boundValueOps(key).get(), clazz);
+        return JsonUtils.parseObject(redisTemplate.boundValueOps(key).get(), clazz);
     }
 
     @Override
     public void setexAsJson(String key, Object object, long seconds) {
-        redisTemplate.boundValueOps(key).set(JSON.toJSONString(object), seconds, TimeUnit.SECONDS);
+        redisTemplate.boundValueOps(key).set(JsonUtils.toJsonString(object), seconds, TimeUnit.SECONDS);
     }
 
     public void afterPropertiesSet() throws Exception {

@@ -15,13 +15,13 @@
  */
 package com.github.flycat.spi.impl.queue;
 
-import com.alibaba.fastjson.JSONObject;
 import com.aliyun.mns.client.CloudQueue;
 import com.aliyun.mns.client.CloudTopic;
 import com.aliyun.mns.client.MNSClient;
 import com.aliyun.mns.common.ClientException;
 import com.aliyun.mns.common.ServiceException;
 import com.aliyun.mns.model.*;
+import com.github.flycat.spi.json.JsonUtils;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,7 +228,7 @@ public final class MNSUtils {
     public static void pushQueueMsg(Object msgEntity, CloudQueue queue) {
         try {
             Message message = new Message();
-            message.setMessageBody(JSONObject.toJSONString(msgEntity), Message.MessageBodyType.RAW_STRING);
+            message.setMessageBody(JsonUtils.toJsonString(msgEntity), Message.MessageBodyType.RAW_STRING);
             Message m1 = queue.putMessage(message);
             LOGGER.info("queue msg:{}", m1.getMessageId());
         } catch (Exception e) {
@@ -240,7 +240,7 @@ public final class MNSUtils {
         try {
             Message message = new Message();
             message.setDelaySeconds(delaySeconds);
-            message.setMessageBody(JSONObject.toJSONString(msgEntity), Message.MessageBodyType.RAW_STRING);
+            message.setMessageBody(JsonUtils.toJsonString(msgEntity), Message.MessageBodyType.RAW_STRING);
             Message m1 = queue.putMessage(message);
             LOGGER.info("queue msg:{}", m1.getMessageId());
         } catch (Exception e) {

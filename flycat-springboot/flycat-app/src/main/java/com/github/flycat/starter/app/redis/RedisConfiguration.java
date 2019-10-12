@@ -15,8 +15,9 @@
  */
 package com.github.flycat.starter.app.redis;
 
-import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.context.ApplicationContext;
+import com.github.flycat.spi.json.JsonService;
+import com.github.flycat.spi.redis.RedisService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,8 +27,9 @@ public class RedisConfiguration {
     @Bean(destroyMethod = "close", initMethod = "start")
     public RefreshRedisConfTask refreshRedisConfTask(
             ApplicationContext applicationContainer,
-            RedisService redisClient) {
-        RefreshRedisConfTask refreshRedisConfTask = new RefreshRedisConfTask(applicationContainer, redisClient);
+            RedisService redisClient,
+            JsonService jsonService) {
+        RefreshRedisConfTask refreshRedisConfTask = new RefreshRedisConfTask(applicationContainer, redisClient, jsonService);
         return refreshRedisConfTask;
     }
 }
