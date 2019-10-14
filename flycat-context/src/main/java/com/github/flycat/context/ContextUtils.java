@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -63,8 +62,23 @@ public final class ContextUtils {
     static final List<String> productEnvWords = Lists.newArrayList("production", "product", "prod", "ali");
 
     public static boolean isTestProfile() {
-        final String property = System.getProperty("spring.profiles.active");
+        final String property = getCurrentProfile();
         return productEnvWords.stream().noneMatch(word -> word.equals(property));
+    }
+
+    private static String getCurrentProfile() {
+        return System.getProperty("spring.profiles.active");
+    }
+
+    static final List<String> serverEnvWords = Lists.newArrayList(productEnvWords);
+
+    static {
+        serverEnvWords.add("test");
+    }
+
+    public static boolean isLocalProfile() {
+        final String currentProfile = getCurrentProfile();
+        return serverEnvWords.stream().noneMatch(word -> word.equals(currentProfile));
     }
 
     public static String getApplicationName() {
