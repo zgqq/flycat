@@ -15,8 +15,8 @@
  */
 package com.github.flycat.context;
 
+import com.github.flycat.util.StringUtils;
 import com.google.common.base.CaseFormat;
-import org.apache.commons.lang3.StringUtils;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;

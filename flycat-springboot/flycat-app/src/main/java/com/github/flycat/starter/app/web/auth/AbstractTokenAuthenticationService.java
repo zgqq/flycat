@@ -22,9 +22,9 @@ import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.redis.RedisKeys;
 import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.starter.app.web.auth.token.TokenInfo;
+import com.github.flycat.util.StringUtils;
 import com.github.flycat.web.api.ApiHttpRequest;
 import com.github.flycat.web.api.ApiRequestHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 

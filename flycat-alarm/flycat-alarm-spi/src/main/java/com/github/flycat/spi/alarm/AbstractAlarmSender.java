@@ -18,8 +18,8 @@ package com.github.flycat.spi.alarm;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.github.flycat.context.ContextUtils;
+import com.github.flycat.util.StringUtils;
 import com.google.common.util.concurrent.RateLimiter;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

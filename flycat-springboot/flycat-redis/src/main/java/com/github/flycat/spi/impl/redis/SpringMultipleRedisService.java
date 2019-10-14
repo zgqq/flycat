@@ -2,8 +2,8 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.util.StringUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

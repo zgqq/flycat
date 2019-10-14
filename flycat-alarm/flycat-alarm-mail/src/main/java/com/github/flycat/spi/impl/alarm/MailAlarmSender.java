@@ -15,9 +15,9 @@
  */
 package com.github.flycat.spi.impl.alarm;
 
-import com.github.flycat.spi.alarm.AbstractAlarmSender;
 import com.github.flycat.context.ApplicationConfiguration;
-import org.apache.commons.lang3.StringUtils;
+import com.github.flycat.spi.alarm.AbstractAlarmSender;
+import com.github.flycat.util.StringUtils;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.Mailer;

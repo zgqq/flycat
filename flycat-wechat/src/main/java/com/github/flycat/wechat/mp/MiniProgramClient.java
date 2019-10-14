@@ -16,9 +16,9 @@
 package com.github.flycat.wechat.mp;
 
 import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.http.HttpUtils;
 import com.github.flycat.util.http.Pair;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

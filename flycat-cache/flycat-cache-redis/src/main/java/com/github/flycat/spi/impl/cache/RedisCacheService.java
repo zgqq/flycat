@@ -19,7 +19,7 @@ import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisService;
-import org.apache.commons.lang3.StringUtils;
+import com.github.flycat.util.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;

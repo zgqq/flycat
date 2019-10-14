@@ -1,8 +1,8 @@
 package com.github.flycat.module;
 
 import com.github.flycat.core.reflect.ReflectUtils;
+import com.github.flycat.util.StringUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -21,8 +21,8 @@ import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.config.MaintainConf;
+import com.github.flycat.util.StringUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
