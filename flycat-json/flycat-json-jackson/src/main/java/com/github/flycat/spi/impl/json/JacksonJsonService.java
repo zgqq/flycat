@@ -26,6 +26,10 @@ public class JacksonJsonService implements JsonService {
         this.objectMapper = objectMapper;
     }
 
+    public static JsonService newInstance() {
+        return new JacksonJsonService(new ObjectMapper());
+    }
+
     @Override
     public boolean isJsonArray(String value) {
         try {

@@ -47,7 +47,11 @@ public final class ContextUtils {
     }
 
     public static <T> T getBean(Class<T> type) {
-        return getContextHolder().getBean(type);
+        final ApplicationContext contextHolder = getContextHolder();
+        if (contextHolder != null) {
+            return contextHolder.getBean(type);
+        }
+        return null;
     }
 
     public static ApplicationConfiguration getApplicationConfiguration() {
