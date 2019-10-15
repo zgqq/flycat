@@ -36,17 +36,8 @@ ext.vJavaLang = '1.8'
 
 wrapper.gradleVersion = '5.4.1'
 
-ext.environment = "test"
 
-if (hasProperty("env")) {
-    ext.environment = "$env"
-}
-
-ext.env = ext.environment
-ext.isProd = { env ->
-    return "prod".equals(env.toString()) || "production".equals(env.toString())
-}
-
+apply from: "${gradleConfigDir}/env.gradle"
 
 configure(subprojects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"

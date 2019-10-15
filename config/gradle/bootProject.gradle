@@ -11,7 +11,6 @@ if (vJavaLang == '1.11') {
     ext.appJvmArgs = ext.springJvmArgs + [
             "-Dfile.encoding=UTF-8",
             "-Xlog:gc*",
-
             "-XX:-OmitStackTraceInFastThrow"]
 } else {
     ext.appJvmArgs = ext.springJvmArgs + [
@@ -23,10 +22,24 @@ if (vJavaLang == '1.11') {
 
 
 if (!isProd(env)) {
-    appJvmArgs += ["-noverify"
+    ext.appJvmArgs += ["-noverify"
                    , "-XX:TieredStopAtLevel=1"
                    , "-XX:+AlwaysPreTouch"]
 }
+
+
+ext.debugServerPort = 5005
+if (hasProperty("debugPort")) {
+    ext.debugServerPort = "$debugPort"
+}
+
+if (isTestServer(env)) {
+    ext.appJvmArgs += ["-Xdebug",
+                   "-Xnoagent",
+                   "-Djava.compiler=NONE",
+                   "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},server=y,suspend=n"]
+}
+
 defaultTasks 'compileJava', 'checkStyle', 'jar'
 
 distZip.enabled = false
@@ -44,6 +57,11 @@ dependencies {
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
 
+bootJar {
+    archiveClassifier = 'boot'
+}
+
+
 configurations {
 
     // replaced with jcl-over-slf4j
@@ -56,4 +74,5 @@ configurations {
         extendsFrom developmentOnly
     }
 }
+
 
