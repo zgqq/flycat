@@ -8,6 +8,6 @@ dependencies {
 
     compile group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+//    compile "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 }

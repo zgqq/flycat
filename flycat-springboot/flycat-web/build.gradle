@@ -3,7 +3,7 @@ dependencies {
         exclude group: 'javax.validation', module: 'validation-api'
     }
     api "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+//    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
 
 
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'

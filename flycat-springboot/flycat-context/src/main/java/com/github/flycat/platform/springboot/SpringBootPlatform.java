@@ -1,9 +1,7 @@
 package com.github.flycat.platform.springboot;
 
 import com.github.flycat.context.ContextManager;
-import com.github.flycat.context.ContextUtils;
 import com.github.flycat.module.Module;
-import com.github.flycat.module.ModuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
