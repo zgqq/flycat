@@ -40,11 +40,19 @@ if (isTestServer(env)) {
                    "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},server=y,suspend=n"]
 }
 
-defaultTasks 'compileJava', 'checkStyle', 'jar'
+
+
+version = env
+if (isProd(env)) {
+    version += '-' + (new Date().format("yyyyMMdd_HHmmss"))
+}
+
+
+defaultTasks 'compileJava', 'checkStyle'
 
 distZip.enabled = false
 distTar.enabled = false
-bootDistTar.enabled = false
+//bootDistTar.enabled = false
 bootDistZip.enabled = false
 
 //    processResources.dependsOn copyConfiguration
@@ -68,7 +76,7 @@ configurations {
     all*.exclude group: 'commons-logging', module: 'commons-logging'
     // replaced with log4j-over-slf4j
     all*.exclude group: 'log4j', module: 'log4j'
-    compile.exclude module: "spring-boot-starter-tomcat"
+//    compile.exclude module: "spring-boot-starter-tomcat"
     developmentOnly
     runtimeClasspath {
         extendsFrom developmentOnly
