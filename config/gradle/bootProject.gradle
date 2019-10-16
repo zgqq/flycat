@@ -28,6 +28,7 @@ if (!isProd(env)) {
 }
 
 
+
 ext.debugServerPort = 5005
 if (hasProperty("debugPort")) {
     ext.debugServerPort = "$debugPort"
@@ -83,4 +84,7 @@ configurations {
     }
 }
 
+bootRun {
+    systemProperties = System.properties
+}
 
