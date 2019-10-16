@@ -4,23 +4,6 @@ dependencies {
 
     compileOnly project(':flycat-context')
     compileOnly project(':flycat-redis')
-
-    compileOnly project(':flycat-config-spi')
-    compileOnly project(':flycat-config-nacos')
-    compileOnly project(':flycat-config-redis')
-
-    compileOnly project(':flycat-cache-spi')
-    compileOnly project(':flycat-cache-guava')
-    compileOnly project(':flycat-cache-redis')
-
-    compileOnly project(':flycat-queue-spi')
-    compileOnly project(':flycat-queue-ali')
-
-    compileOnly project(':flycat-sms-spi')
-    compileOnly project(':flycat-sms-qcloud')
-    
-    compileOnly project(':flycat-alarm-spi')
-
     compileOnly project(':flycat-wechat')
 
     compileOnly project(':flycat-springboot-mybatis')
@@ -29,7 +12,6 @@ dependencies {
     compileOnly project(':flycat-ds')
 
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
-
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
 //    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'

@@ -16,7 +16,7 @@
 package com.github.flycat.platform.springboot;
 
 import com.github.flycat.context.bean.annotation.Primary;
-import org.apache.commons.lang3.StringUtils;
+import com.github.flycat.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

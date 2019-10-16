@@ -10,12 +10,11 @@ dependencies {
 
     api project(':flycat-config-redis')
     api project(':flycat-cache-redis')
+    api project(':flycat-alarm-mail')
+    api project(':flycat-ds-hikari')
+    api project(':flycat-json-jackson')
 
     api project(':flycat-util')
-    api project(':flycat-alarm-mail')
-    api project(':flycat-ds-druid')
-
-    api project(':flycat-json-jackson')
 
     compile("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
     compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
