@@ -76,6 +76,11 @@ public final class ContextUtils {
         serverEnvWords.add("test");
     }
 
+    public static boolean isTestServerProfile() {
+        final String currentProfile = getCurrentProfile();
+        return "test".equals(currentProfile);
+    }
+
     public static boolean isLocalProfile() {
         final String currentProfile = getCurrentProfile();
         return serverEnvWords.stream().noneMatch(word -> word.equals(currentProfile));
