@@ -15,24 +15,24 @@
  */
 package com.github.flycat.web;
 
-public class FlycatWebException extends RuntimeException {
+public class WebException extends RuntimeException {
 
-    public FlycatWebException() {
+    public WebException() {
     }
 
-    public FlycatWebException(String message) {
+    public WebException(String message) {
         super(message);
     }
 
-    public FlycatWebException(String message, Throwable cause) {
+    public WebException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public FlycatWebException(Throwable cause) {
+    public WebException(Throwable cause) {
         super(cause);
     }
 
-    public FlycatWebException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public WebException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

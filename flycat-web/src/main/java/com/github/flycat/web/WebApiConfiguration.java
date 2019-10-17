@@ -19,11 +19,10 @@ import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiFactoryImpl;
 import com.github.flycat.web.api.ApiParameterResolver;
 import com.github.flycat.web.api.ParameterRequest;
-import com.github.flycat.web.filter.ContentCachingHandler;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface FlycatWebConfiguration {
+public interface WebApiConfiguration extends WebConfiguration {
 
     default ApiParameterResolver createParameterResolver() {
         return new ApiParameterResolver() {
@@ -36,10 +35,5 @@ public interface FlycatWebConfiguration {
 
     default ApiFactory createApiFactory() {
         return new ApiFactoryImpl();
-    }
-
-    default ContentCachingHandler contentCachingHandler() {
-        return new ContentCachingHandler() {
-        };
     }
 }

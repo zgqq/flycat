@@ -20,27 +20,27 @@ import com.github.flycat.web.api.ApiFactoryHolder;
 import com.github.flycat.web.api.ApiParameterResolver;
 import com.github.flycat.web.filter.ContentCachingHandler;
 
-public class FlycatWebHolder {
+public class WebLoader {
     private static volatile ContentCachingHandler contentCachingHandler;
     private static volatile ApiParameterResolver apiParameterResolver;
 
-    public static void load(FlycatWebConfiguration configuration) {
+    public static void load(WebApiConfiguration configuration) {
         final ApiFactory apiFactory = configuration.createApiFactory();
         final int modulePlaceholderCode = apiFactory.getModulePlaceholderCode();
         if (modulePlaceholderCode > 99 || modulePlaceholderCode < 0) {
-            throw new FlycatWebException("modulePlaceholderCode must be less than 100 and greater than 0," +
+            throw new WebException("modulePlaceholderCode must be less than 100 and greater than 0," +
                     " code " + modulePlaceholderCode + " was configured");
         }
 
         final int businessErrorPlaceholderCode = apiFactory.getBusinessErrorPlaceholderCode();
         if (businessErrorPlaceholderCode > 9 || businessErrorPlaceholderCode < 1) {
-            throw new FlycatWebException("businessErrorPlaceholderCode must be less " +
+            throw new WebException("businessErrorPlaceholderCode must be less " +
                     "than 10 and greater than 0");
         }
 
         final int systemErrorPlaceholderCode = apiFactory.getSystemErrorPlaceholderCode();
         if (systemErrorPlaceholderCode > 9 || systemErrorPlaceholderCode < 1) {
-            throw new FlycatWebException("errorPlaceholderCode must be less " +
+            throw new WebException("errorPlaceholderCode must be less " +
                     "than 10 and greater than 0");
         }
 
@@ -60,10 +60,10 @@ public class FlycatWebHolder {
     }
 
     public static void setApiParameterResolver(ApiParameterResolver apiParameterResolver) {
-        FlycatWebHolder.apiParameterResolver = apiParameterResolver;
+        WebLoader.apiParameterResolver = apiParameterResolver;
     }
 
     public static void setContentCachingHandler(ContentCachingHandler contentCachingHandler) {
-        FlycatWebHolder.contentCachingHandler = contentCachingHandler;
+        WebLoader.contentCachingHandler = contentCachingHandler;
     }
 }

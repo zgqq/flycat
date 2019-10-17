@@ -16,7 +16,7 @@
 package com.github.flycat.starter.app.web;
 
 import com.github.flycat.starter.app.web.filter.RequestHolderFilter;
-import com.github.flycat.web.FlycatWebConfiguration;
+import com.github.flycat.web.WebApiConfiguration;
 import com.github.flycat.web.spring.FilterOrder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -28,10 +28,9 @@ import javax.servlet.Filter;
 public class WebAutoConfiguration {
 
     @Bean
-    public FlycatWebConfiguration flycatWebConfiguration() {
-        return new FlycatWebConfigurationAdapter();
+    public WebApiConfiguration webApiConfiguration() {
+        return new WebApiConfigurationAdapter();
     }
-
 
     @Bean
     public FilterRegistrationBean requestHolderFilter() {

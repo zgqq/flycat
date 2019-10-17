@@ -38,8 +38,8 @@ import java.util.Set;
 
 @ControllerAdvice
 @Component
-public class WebExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebExceptionHandler.class);
+public class WebApiExceptionHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebApiExceptionHandler.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();
 
     @ExceptionHandler(ValidationException.class)

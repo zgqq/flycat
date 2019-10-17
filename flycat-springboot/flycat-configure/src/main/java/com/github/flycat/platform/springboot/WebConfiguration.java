@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.platform.springboot.web.SmoothTomcatWebServerCustomizer;
 import com.github.flycat.util.StringUtils;
-import com.github.flycat.web.FlycatWebConfiguration;
-import com.github.flycat.web.FlycatWebHolder;
+import com.github.flycat.web.WebApiConfiguration;
+import com.github.flycat.web.WebLoader;
 import com.github.flycat.web.spring.*;
 import com.google.common.collect.Sets;
 import org.apache.catalina.startup.Tomcat;
@@ -57,9 +57,8 @@ import java.util.List;
 import java.util.Set;
 
 @Configuration
-@ConditionalOnClass(FlycatWebConfiguration.class)
+@ConditionalOnClass(WebApiConfiguration.class)
 public class WebConfiguration {
-
 
 
     @Bean
@@ -92,8 +91,8 @@ public class WebConfiguration {
     }
 
     @Bean
-    public WebExceptionHandler webExceptionHandler() {
-        return new WebExceptionHandler();
+    public WebApiExceptionHandler webExceptionHandler() {
+        return new WebApiExceptionHandler();
     }
 
 
@@ -133,18 +132,18 @@ public class WebConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean(FlycatWebConfiguration.class)
-    public FlycatWebConfiguration defaultFlycatWebConfiguration() {
-        return new FlycatWebConfiguration() {
+    @ConditionalOnMissingBean(WebApiConfiguration.class)
+    public WebApiConfiguration defaultFlycatWebConfiguration() {
+        return new WebApiConfiguration() {
         };
     }
 
     @Autowired
-    FlycatWebConfiguration flycatWebConfiguration;
+    WebApiConfiguration webApiConfiguration;
 
     @PostConstruct
-    public void configureFlycatWeb() {
-        FlycatWebHolder.load(flycatWebConfiguration);
+    public void configureWeb() {
+        WebLoader.load(webApiConfiguration);
     }
 
 

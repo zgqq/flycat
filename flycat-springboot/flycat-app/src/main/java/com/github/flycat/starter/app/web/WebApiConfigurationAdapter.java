@@ -18,20 +18,19 @@ package com.github.flycat.starter.app.web;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.util.StringReplacer;
-import com.github.flycat.web.FlycatWebConfiguration;
+import com.github.flycat.web.WebApiConfiguration;
 import com.github.flycat.web.api.ApiFactory;
 import com.github.flycat.web.api.ApiHttpRequest;
 import com.github.flycat.web.api.ApiRequestHolder;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
-import com.github.flycat.web.util.HttpRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-public class FlycatWebConfigurationAdapter implements FlycatWebConfiguration {
+public class WebApiConfigurationAdapter implements WebApiConfiguration {
 
     @Override
     public ApiFactory createApiFactory() {
