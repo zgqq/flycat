@@ -26,4 +26,11 @@ public interface JsonService {
     List<String> toStringList(String value);
 
     boolean isValidJson(String json);
+
+    Object replaceArrayByMatchedObject(
+            Object jsonObject,
+            String arrayName,
+            String bitKey,
+            int matchBit
+    );
 }

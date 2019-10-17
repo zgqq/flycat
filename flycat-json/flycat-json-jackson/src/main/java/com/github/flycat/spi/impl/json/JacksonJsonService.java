@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.NumericNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.flycat.spi.json.JsonException;
 import com.github.flycat.spi.json.JsonService;
 
@@ -12,6 +15,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.List;
 
 @Named
@@ -138,5 +142,23 @@ public class JacksonJsonService implements JsonService {
         } catch (Throwable e) {
             return false;
         }
+    }
+
+
+    @Override
+    public Object replaceArrayByMatchedObject(Object jsonObject, String arrayName, String bitKey, int matchBit) {
+        ObjectNode jsonNode = (ObjectNode) jsonObject;
+        final JsonNode jsonArray = jsonNode.get(arrayName);
+        final Iterator<JsonNode> elements = jsonArray.elements();
+        final ArrayNode jsonNodes = new ArrayNode(objectMapper.getNodeFactory());
+        while (elements.hasNext()) {
+            final JsonNode next = elements.next();
+            final NumericNode jsonBit = (NumericNode) next.get(bitKey);
+            if ((jsonBit.asInt() & matchBit) == matchBit) {
+                jsonNodes.add(next);
+            }
+        }
+        jsonNode.set(arrayName, jsonNodes);
+        return jsonNode;
     }
 }
