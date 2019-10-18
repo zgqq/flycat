@@ -204,12 +204,12 @@ public class MybatisConfiguration {
             try {
                 name = applicationContext.getEnvironment().
                         resolveRequiredPlaceholders("${flycat.datasource.primary.mybatis.mapper}");
-            } catch (IllegalArgumentException e) { }
-            final String modulePackagesAsString = getModulePackagesAsString(name);
+            } catch (IllegalArgumentException e) {
+            }
+            String modulePackagesAsString = getScanPackages(name);
             LOGGER.info("Creating primary mybatis mapper, config:{}, module:{}", name, modulePackagesAsString);
             return MybatisUtils.createMapperConfigurer(modulePackagesAsString, SQL_SESSION_FACTORY_NAME_1);
         }
-
 
         @Bean(name = SQL_SESSION_FACTORY_NAME_1)
         public SqlSessionFactory createSqlSessionFactory(
@@ -219,6 +219,15 @@ public class MybatisConfiguration {
 //            return MybatisUtils.createSessionFactory(dataSource);
         }
 
+    }
+
+    private static String getScanPackages(String name) {
+        String modulePackagesAsString = getModulePackagesAsString(name);
+        if (StringUtils.isEmpty(modulePackagesAsString)) {
+            final Class<?> primarySource = SpringBootPlatform.getPrimarySource();
+            modulePackagesAsString = primarySource.getPackage().getName();
+        }
+        return modulePackagesAsString;
     }
 
 
@@ -249,7 +258,8 @@ public class MybatisConfiguration {
             try {
                 name = applicationContext.getEnvironment().
                         resolveRequiredPlaceholders("${flycat.datasource.secondary.mybatis.mapper}");
-            } catch (IllegalArgumentException e) { }
+            } catch (IllegalArgumentException e) {
+            }
             LOGGER.info("Creating secondary mybatis mapper, {}", name);
             return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_2);
         }

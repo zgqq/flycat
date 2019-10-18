@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
+
+import com.github.flycat.web.context.ExceptionContext;
 
 import javax.validation.ValidationException;
 
-public interface ApiFactory {
+public interface ResponseFactory {
 
-    Object createApiResult(int code, String message);
+    Object createResponse(int code, String message);
 
-    default Object createUnknownExceptionResult(Throwable throwable) {
+    default Object createUnknownExceptionResponse(ExceptionContext exceptionContext) {
         return null;
     }
 
-    default Object createValidationExceptionResult(ValidationException exception) {
+    default Object createValidationExceptionResponse(ValidationException exception) {
         return null;
     }
 
-    default Object createInvalidTokenResult() {
+    default Object createInvalidTokenResponse() {
         return null;
     }
 
-    default Object createAccessDeniedResult(Exception exception) {
+    default Object createAccessDeniedResponse(Exception exception) {
         return null;
     }
 

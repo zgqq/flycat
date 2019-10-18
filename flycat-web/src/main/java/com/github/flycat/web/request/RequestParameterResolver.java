@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.request;
 
-public class ParameterRequest {
-    private final String name;
+import javax.servlet.http.HttpServletRequest;
 
-    public ParameterRequest(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+public interface RequestParameterResolver {
+    String resolveParameter(HttpServletRequest request, ParameterRequest parameterRequest);
 }

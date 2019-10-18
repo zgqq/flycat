@@ -1,40 +1,41 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
 
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.util.ExceptionUtils;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.web.context.ExceptionContext;
 
-public class ApiResponseCodeUtils {
+public class ResponseBodyUtils {
 
     public static int getSystemErrorCode(int code) {
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
+        final ResponseFactory apiFactory = ResponseFactoryHolder.getResponseFactory();
         final int systemErrorPlaceholderCode = apiFactory.getSystemErrorPlaceholderCode();
         return getApiResponseCode(systemErrorPlaceholderCode, code);
     }
 
     public static int getBusinessErrorCode(int code) {
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
+        final ResponseFactory apiFactory = ResponseFactoryHolder.getResponseFactory();
         final int businessErrorPlaceholderCode = apiFactory.getBusinessErrorPlaceholderCode();
         return getApiResponseCode(businessErrorPlaceholderCode, code);
     }
 
     private static int getApiResponseCode(int levelCode, int code) {
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
+        final ResponseFactory apiFactory = ResponseFactoryHolder.getResponseFactory();
         final int modulePlaceholderCode = apiFactory.getModulePlaceholderCode();
         final StringBuilder codeBuilder = new StringBuilder();
         codeBuilder.append(levelCode);
@@ -52,18 +53,18 @@ public class ApiResponseCodeUtils {
         return Integer.parseInt(codeBuilder.toString());
     }
 
-    public static Object getUnknownExceptionResult(Throwable e) {
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-        Object unknownExceptionResult = apiFactory.createUnknownExceptionResult(e);
+    public static Object getUnknownExceptionResult(ExceptionContext exceptionContext) {
+        final ResponseFactory responseFactory = ResponseFactoryHolder.getResponseFactory();
+        Object unknownExceptionResult = responseFactory.createUnknownExceptionResponse(exceptionContext);
         if (unknownExceptionResult == null) {
             if (ContextUtils.isTestProfile()) {
-                final String stackTrace = ExceptionUtils.getStackTrace(e);
-                unknownExceptionResult = apiFactory.createApiResult(ApiResponseCodeUtils
-                        .getSystemErrorCode(ApiResponseCode.SERVER_UNKNOWN_ERROR),
+                final String stackTrace = ExceptionUtils.getStackTrace(exceptionContext.getThrowable());
+                unknownExceptionResult = responseFactory.createResponse(ResponseBodyUtils
+                                .getSystemErrorCode(ResponseCode.SERVER_UNKNOWN_ERROR),
                         StringUtils.unescapeJson(stackTrace));
             } else {
-                unknownExceptionResult = apiFactory.createApiResult(ApiResponseCodeUtils
-                        .getSystemErrorCode(ApiResponseCode.SERVER_UNKNOWN_ERROR), "服务器傲娇了!");
+                unknownExceptionResult = responseFactory.createResponse(ResponseBodyUtils
+                        .getSystemErrorCode(ResponseCode.SERVER_UNKNOWN_ERROR), "服务器傲娇了!");
             }
         }
         return unknownExceptionResult;

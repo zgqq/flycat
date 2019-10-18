@@ -16,8 +16,8 @@
 package com.github.flycat.web.util;
 
 import com.github.flycat.spi.json.JsonUtils;
-import com.github.flycat.web.api.ApiFactory;
-import com.github.flycat.web.api.ApiFactoryHolder;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.response.ResponseFactoryHolder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -50,8 +50,8 @@ public final class HttpResponseUtils {
 //    }
 
     public static void writeJson(HttpServletResponse response, String message, int errorCode) {
-        final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-        final String output = JsonUtils.toJsonString(apiFactory.createApiResult(errorCode, message));
+        final ResponseFactory apiFactory = ResponseFactoryHolder.getResponseFactory();
+        final String output = JsonUtils.toJsonString(apiFactory.createResponse(errorCode, message));
         writeJson(response, output);
     }
 

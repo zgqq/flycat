@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
 
-public final class ApiRequestHolder {
-    private static final ThreadLocal<ApiHttpRequest> REQUEST_HOLDER = new ThreadLocal<>();
+public interface ResponseCode {
 
-    private ApiRequestHolder() {
-    }
+    int CLIENT_UNKNOWN_ERROR = 100;
 
-    public static void setCurrentApiRequest(ApiHttpRequest apiHttpRequest) {
-        REQUEST_HOLDER.set(apiHttpRequest);
-    }
+    int CLIENT_VALIDATION_ERROR = 101;
 
-    public static ApiHttpRequest getCurrentApiRequest() {
-        return REQUEST_HOLDER.get();
-    }
+    int SERVER_UNKNOWN_ERROR = 500;
 }

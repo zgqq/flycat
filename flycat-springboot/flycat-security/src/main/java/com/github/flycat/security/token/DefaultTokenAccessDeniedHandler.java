@@ -15,7 +15,7 @@
  */
 package com.github.flycat.security.token;
 
-import com.github.flycat.web.api.ApiFactoryHolder;
+import com.github.flycat.web.response.ResponseFactoryHolder;
 import com.github.flycat.web.util.HttpResponseUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -35,7 +35,7 @@ public class DefaultTokenAccessDeniedHandler extends AbstractTokenAccessDeniedHa
     protected void handleInvalidToken(HttpServletRequest quest,
                                       HttpServletResponse response,
                                       AccessDeniedException accessDeniedException) {
-        final Object invalidTokenResult = ApiFactoryHolder.getApiFactory().createInvalidTokenResult();
+        final Object invalidTokenResult = ResponseFactoryHolder.getResponseFactory().createInvalidTokenResponse();
         if (invalidTokenResult != null) {
             HttpResponseUtils.writeJson(response, invalidTokenResult);
         } else {
@@ -47,9 +47,9 @@ public class DefaultTokenAccessDeniedHandler extends AbstractTokenAccessDeniedHa
     @Override
     protected void handleAccessDenied(HttpServletRequest request, HttpServletResponse response,
                                       AccessDeniedException accessDeniedException) {
-        final Object accessDeniedResult = ApiFactoryHolder
-                .getApiFactory()
-                .createAccessDeniedResult(accessDeniedException);
+        final Object accessDeniedResult = ResponseFactoryHolder
+                .getResponseFactory()
+                .createAccessDeniedResponse(accessDeniedException);
         if (accessDeniedResult != null) {
             HttpResponseUtils.writeJson(response, accessDeniedResult);
         } else {

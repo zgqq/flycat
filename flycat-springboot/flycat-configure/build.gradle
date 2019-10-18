@@ -6,6 +6,7 @@ dependencies {
     compileOnly project(':flycat-redis')
     compileOnly project(':flycat-wechat')
 
+    compileOnly project(':flycat-springboot-context')
     compileOnly project(':flycat-springboot-mybatis')
     compileOnly project(':flycat-springboot-web')
 

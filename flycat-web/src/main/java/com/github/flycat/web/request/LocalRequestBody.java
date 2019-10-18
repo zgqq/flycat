@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.request;
 
-import javax.servlet.http.HttpServletRequest;
+public final class LocalRequestBody {
+    private static final ThreadLocal<RequestBodyHolder> REQUEST_HOLDER = new ThreadLocal<>();
 
-public interface ApiParameterResolver {
-    String resolveParameter(HttpServletRequest request, ParameterRequest parameterRequest);
+    private LocalRequestBody() {
+    }
+
+    public static void setCurrentApiRequest(RequestBodyHolder apiHttpRequest) {
+        REQUEST_HOLDER.set(apiHttpRequest);
+    }
+
+    public static RequestBodyHolder getCurrentApiRequest() {
+        return REQUEST_HOLDER.get();
+    }
 }

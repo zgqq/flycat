@@ -23,8 +23,8 @@ import com.github.flycat.starter.app.redis.RedisKeys;
 import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.starter.app.web.auth.token.TokenInfo;
 import com.github.flycat.util.StringUtils;
-import com.github.flycat.web.api.ApiHttpRequest;
-import com.github.flycat.web.api.ApiRequestHolder;
+import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.request.LocalRequestBody;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -40,8 +40,8 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
 
     @Override
     public TokenAuthentication requireToken(HttpServletRequest httpServletRequest) {
-        final ApiHttpRequest currentApiRequest = ApiRequestHolder.getCurrentApiRequest();
-        final AppRequest apiRequest = (AppRequest) currentApiRequest.getApiRequest();
+        final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
+        final AppRequest apiRequest = (AppRequest) currentApiRequest.getRequestBody();
         if (apiRequest == null) {
             final TokenAuthentication tokenInformation = new TokenAuthentication(null,
                     null);

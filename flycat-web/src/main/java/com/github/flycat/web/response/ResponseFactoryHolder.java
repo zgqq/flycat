@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
 
+public class ResponseFactoryHolder {
+    private static volatile ResponseFactory responseFactory;
 
-import com.github.flycat.web.util.HttpRequestWrapper;
-
-public class ApiHttpRequest {
-
-    private final HttpRequestWrapper httpServletRequest;
-    private final Object apiRequest;
-
-    public ApiHttpRequest(HttpRequestWrapper httpServletRequest,
-                          Object apiRequest) {
-        this.httpServletRequest = httpServletRequest;
-        this.apiRequest = apiRequest;
+    public static ResponseFactory getResponseFactory() {
+        return responseFactory;
     }
 
-    public Object getApiRequest() {
-        return apiRequest;
-    }
-
-    public HttpRequestWrapper getHttpServletRequest() {
-        return httpServletRequest;
+    public static void setResponseFactory(ResponseFactory responseFactory) {
+        ResponseFactoryHolder.responseFactory = responseFactory;
     }
 }

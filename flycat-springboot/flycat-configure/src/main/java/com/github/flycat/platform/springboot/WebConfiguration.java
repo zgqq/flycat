@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.platform.springboot.web.SmoothTomcatWebServerCustomizer;
 import com.github.flycat.util.StringUtils;
-import com.github.flycat.web.WebApiConfiguration;
+import com.github.flycat.web.WebFactoryConfiguration;
 import com.github.flycat.web.WebLoader;
 import com.github.flycat.web.spring.*;
 import com.google.common.collect.Sets;
@@ -57,9 +57,8 @@ import java.util.List;
 import java.util.Set;
 
 @Configuration
-@ConditionalOnClass(WebApiConfiguration.class)
+@ConditionalOnClass(WebFactoryConfiguration.class)
 public class WebConfiguration {
-
 
     @Bean
     public FilterRegistrationBean cacheRequestFilter() {
@@ -90,9 +89,15 @@ public class WebConfiguration {
         return registration;
     }
 
+
     @Bean
-    public WebApiExceptionHandler webExceptionHandler() {
-        return new WebApiExceptionHandler();
+    public HandlerMappingContext handlerMappingContext() {
+        return new HandlerMappingContext();
+    }
+
+    @Bean
+    public WebExceptionHandler webExceptionHandler(HandlerMappingContext handlerMappingContext) {
+        return new WebExceptionHandler(handlerMappingContext);
     }
 
 
@@ -132,14 +137,14 @@ public class WebConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean(WebApiConfiguration.class)
-    public WebApiConfiguration defaultFlycatWebConfiguration() {
-        return new WebApiConfiguration() {
+    @ConditionalOnMissingBean(WebFactoryConfiguration.class)
+    public WebFactoryConfiguration defaultFlycatWebConfiguration() {
+        return new WebFactoryConfiguration() {
         };
     }
 
     @Autowired
-    WebApiConfiguration webApiConfiguration;
+    WebFactoryConfiguration webApiConfiguration;
 
     @PostConstruct
     public void configureWeb() {

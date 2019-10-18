@@ -15,17 +15,17 @@
  */
 package com.github.flycat.web;
 
-import com.github.flycat.web.api.ApiFactory;
-import com.github.flycat.web.api.ApiFactoryHolder;
-import com.github.flycat.web.api.ApiParameterResolver;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.response.ResponseFactoryHolder;
+import com.github.flycat.web.request.RequestParameterResolver;
 import com.github.flycat.web.filter.ContentCachingHandler;
 
 public class WebLoader {
     private static volatile ContentCachingHandler contentCachingHandler;
-    private static volatile ApiParameterResolver apiParameterResolver;
+    private static volatile RequestParameterResolver apiParameterResolver;
 
-    public static void load(WebApiConfiguration configuration) {
-        final ApiFactory apiFactory = configuration.createApiFactory();
+    public static void load(WebFactoryConfiguration configuration) {
+        final ResponseFactory apiFactory = configuration.createResponseFactory();
         final int modulePlaceholderCode = apiFactory.getModulePlaceholderCode();
         if (modulePlaceholderCode > 99 || modulePlaceholderCode < 0) {
             throw new WebException("modulePlaceholderCode must be less than 100 and greater than 0," +
@@ -44,7 +44,7 @@ public class WebLoader {
                     "than 10 and greater than 0");
         }
 
-        ApiFactoryHolder.setApiFactory(apiFactory);
+        ResponseFactoryHolder.setResponseFactory(apiFactory);
 
         contentCachingHandler = configuration.contentCachingHandler();
         apiParameterResolver = configuration.createParameterResolver();
@@ -55,11 +55,11 @@ public class WebLoader {
         return contentCachingHandler;
     }
 
-    public static ApiParameterResolver getApiParameterResolver() {
+    public static RequestParameterResolver getApiParameterResolver() {
         return apiParameterResolver;
     }
 
-    public static void setApiParameterResolver(ApiParameterResolver apiParameterResolver) {
+    public static void setApiParameterResolver(RequestParameterResolver apiParameterResolver) {
         WebLoader.apiParameterResolver = apiParameterResolver;
     }
 

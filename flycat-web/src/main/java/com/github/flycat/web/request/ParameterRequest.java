@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.request;
 
-public class ApiFactoryHolder {
-    private static volatile ApiFactory apiFactory;
+public class ParameterRequest {
+    private final String name;
 
-    public static ApiFactory getApiFactory() {
-        return apiFactory;
+    public ParameterRequest(String name) {
+        this.name = name;
     }
 
-    public static void setApiFactory(ApiFactory apiFactory) {
-        ApiFactoryHolder.apiFactory = apiFactory;
+    public String getName() {
+        return name;
     }
 }

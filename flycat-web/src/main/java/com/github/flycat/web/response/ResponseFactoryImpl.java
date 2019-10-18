@@ -13,33 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
 
-public class ApiResult {
-    private final Integer code;
-    private final String message;
-    private Object data;
-
-    public ApiResult(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-
-    public String getMessage() {
-        return message;
-    }
-
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+public class ResponseFactoryImpl implements ResponseFactory {
+    @Override
+    public Object createResponse(int code, String message) {
+        return new ResponseView(code, message);
     }
 }

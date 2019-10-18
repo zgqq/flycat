@@ -18,10 +18,10 @@ package com.github.flycat.starter.app.web;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.util.StringReplacer;
-import com.github.flycat.web.WebApiConfiguration;
-import com.github.flycat.web.api.ApiFactory;
-import com.github.flycat.web.api.ApiHttpRequest;
-import com.github.flycat.web.api.ApiRequestHolder;
+import com.github.flycat.web.WebFactoryConfiguration;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.request.LocalRequestBody;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
 
@@ -30,11 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
-public class WebApiConfigurationAdapter implements WebApiConfiguration {
+public class WebFactoryConfigurationAdapter implements WebFactoryConfiguration {
 
     @Override
-    public ApiFactory createApiFactory() {
-        return new FlycatApiFactoryAdapter();
+    public ResponseFactory createResponseFactory() {
+        return new ResponseFactoryAdapter();
     }
 
     @Override
@@ -43,11 +43,11 @@ public class WebApiConfigurationAdapter implements WebApiConfiguration {
             @Override
             public PostFilterAction postFilter(HttpServletRequest httpServletRequest,
                                                HttpServletResponse httpServletResponse) {
-                final ApiHttpRequest currentApiRequest = ApiRequestHolder.getCurrentApiRequest();
+                final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
 
                 boolean isDebugUid = false;
-                if (currentApiRequest != null && currentApiRequest.getApiRequest() != null) {
-                    AppRequest apiRequest = (AppRequest) currentApiRequest.getApiRequest();
+                if (currentApiRequest != null && currentApiRequest.getRequestBody() != null) {
+                    AppRequest apiRequest = (AppRequest) currentApiRequest.getRequestBody();
                     if (AppConf.getDebugUids().contains(apiRequest.getUid() + "")) {
                         isDebugUid = true;
                     }

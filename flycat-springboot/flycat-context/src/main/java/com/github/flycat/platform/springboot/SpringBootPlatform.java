@@ -7,15 +7,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 
 public class SpringBootPlatform {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootPlatform.class);
+    private static Class<?> primarySource;
 
     public static void run(Class<?> primarySource, String[] args, Class<? extends Module>... modules) {
         try {
+            SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(modules);
             SpringApplication.run(primarySource, args);
         } catch (Exception e) {
             LOGGER.error("Unable to startup server, system exit", e);
             System.exit(0);
         }
+    }
+
+    public static Class<?> getPrimarySource() {
+        return primarySource;
+    }
+
+    public static void setPrimarySource(Class<?> primarySource) {
+        SpringBootPlatform.primarySource = primarySource;
     }
 }

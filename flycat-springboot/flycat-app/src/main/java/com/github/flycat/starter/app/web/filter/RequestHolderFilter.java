@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,8 +17,9 @@ package com.github.flycat.starter.app.web.filter;
 
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.starter.app.web.api.AppRequest;
-import com.github.flycat.web.api.ApiHttpRequest;
-import com.github.flycat.web.api.ApiRequestHolder;
+import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.request.LocalRequestBody;
+import com.github.flycat.web.util.HttpConstants;
 import com.github.flycat.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,23 +63,31 @@ public class RequestHolderFilter implements Filter {
             return;
         }
 
-        String jsonString = null;
-        AppRequest jo = null;
-
-        try {
-            jsonString = httpRequestWrapper.getRequestBody();
-            jo = JsonUtils.parseObject(jsonString, AppRequest.class);
-
-        } catch (Throwable throwable) {
+        final String contentType = httpServletRequest.getParameter(HttpConstants.CONTENT_TYPE);
+        boolean readAppRequest = false;
+        if (contentType != null) {
+            readAppRequest = contentType.startsWith(HttpConstants.APPLICATION_JSON_VALUE);
         }
 
-        ApiRequestHolder.setCurrentApiRequest(new ApiHttpRequest((HttpRequestWrapper) httpServletRequest,
-                jo
-        ));
+        if (readAppRequest) {
+            String jsonString = null;
+            AppRequest jo = null;
 
-        if (jo != null) {
-            if (jo.getUid() != null) {
-                MDC.put("request.uid", jo.getUid() + "");
+            try {
+                jsonString = httpRequestWrapper.getRequestBody();
+                jo = JsonUtils.parseObject(jsonString, AppRequest.class);
+
+            } catch (Throwable throwable) {
+            }
+
+            LocalRequestBody.setCurrentApiRequest(new RequestBodyHolder((HttpRequestWrapper) httpServletRequest,
+                    jo
+            ));
+
+            if (jo != null) {
+                if (jo.getUid() != null) {
+                    MDC.put("request.uid", jo.getUid() + "");
+                }
             }
         }
 

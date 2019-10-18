@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,14 @@ package com.github.flycat.web.spring;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.web.WebLoader;
-import com.github.flycat.web.api.*;
+import com.github.flycat.web.context.ExceptionContext;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
+import com.github.flycat.web.request.LocalRequestBody;
+import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.response.ResponseBodyUtils;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.response.ResponseFactoryHolder;
 import com.github.flycat.web.util.HttpRequestWrapper;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
@@ -92,12 +97,13 @@ public class ContentCachingFilter implements Filter {
             if (cause instanceof BusinessException) {
                 LOGGER.error("BusinessException! uri {}, params {}, method {}", uri, requestBody, method, e);
                 BusinessException e1 = (BusinessException) cause;
-                final ApiFactory apiFactory = ApiFactoryHolder.getApiFactory();
-                String output = JsonUtils.toJsonString(apiFactory.createApiResult(e1.getErrorCode(), e1.getMessage()));
+                final ResponseFactory factoryResponse = ResponseFactoryHolder.getResponseFactory();
+                String output = JsonUtils.toJsonString(factoryResponse.createResponse(e1.getErrorCode(), e1.getMessage()));
                 responseWrapper.getWriter().write(output);
             } else {
                 LOGGER.error("System error! uri {}, params {}, method {}", uri, requestBody, method, e);
-                final Object unknownExceptionResult = ApiResponseCodeUtils.getUnknownExceptionResult(e);
+                final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
+                        new ExceptionContext(cause, true));
                 String output = JsonUtils.toJsonString(unknownExceptionResult);
                 responseWrapper.getWriter().write(output);
             }
@@ -106,7 +112,7 @@ public class ContentCachingFilter implements Filter {
 
             started.stop();
 
-            final ApiHttpRequest currentApiRequest = ApiRequestHolder.getCurrentApiRequest();
+            final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
 
             String responseContent = null;
 
@@ -129,7 +135,7 @@ public class ContentCachingFilter implements Filter {
                                 " execute time {}, request params {}, method {},"
                                 + " response:{}",
                         requestWrapper.getRequestURI(),
-                        currentApiRequest.getApiRequest(),
+                        currentApiRequest.getRequestBody(),
                         needValidate ? "validated" : "ignored",
                         started, requestBody, method, responseContent);
             }

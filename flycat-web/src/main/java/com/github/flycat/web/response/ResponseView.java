@@ -13,13 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.web.response;
 
-public interface ApiResponseCode {
+public class ResponseView {
+    private final Integer code;
+    private final String message;
+    private Object data;
 
-    int CLIENT_UNKNOWN_ERROR = 100;
+    public ResponseView(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
-    int CLIENT_VALIDATION_ERROR = 101;
+    public Integer getCode() {
+        return code;
+    }
 
-    int SERVER_UNKNOWN_ERROR = 500;
+
+    public String getMessage() {
+        return message;
+    }
+
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 }

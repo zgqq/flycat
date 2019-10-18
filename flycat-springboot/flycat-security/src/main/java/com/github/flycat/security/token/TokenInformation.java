@@ -15,10 +15,21 @@
  */
 package com.github.flycat.security.token;
 
-import lombok.Data;
 
-@Data
 public class TokenInformation {
     private final Object userId;
     private final Object token;
+
+    public TokenInformation(Object userId, Object token) {
+        this.userId = userId;
+        this.token = token;
+    }
+
+    public Object getUserId() {
+        return userId;
+    }
+
+    public Object getToken() {
+        return token;
+    }
 }

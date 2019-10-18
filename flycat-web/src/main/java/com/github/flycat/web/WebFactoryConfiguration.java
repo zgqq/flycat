@@ -15,17 +15,17 @@
  */
 package com.github.flycat.web;
 
-import com.github.flycat.web.api.ApiFactory;
-import com.github.flycat.web.api.ApiFactoryImpl;
-import com.github.flycat.web.api.ApiParameterResolver;
-import com.github.flycat.web.api.ParameterRequest;
+import com.github.flycat.web.request.ParameterRequest;
+import com.github.flycat.web.request.RequestParameterResolver;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.response.ResponseFactoryImpl;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface WebApiConfiguration extends WebConfiguration {
+public interface WebFactoryConfiguration extends WebConfiguration {
 
-    default ApiParameterResolver createParameterResolver() {
-        return new ApiParameterResolver() {
+    default RequestParameterResolver createParameterResolver() {
+        return new RequestParameterResolver() {
             @Override
             public String resolveParameter(HttpServletRequest request, ParameterRequest parameterRequest) {
                 return null;
@@ -33,7 +33,7 @@ public interface WebApiConfiguration extends WebConfiguration {
         };
     }
 
-    default ApiFactory createApiFactory() {
-        return new ApiFactoryImpl();
+    default ResponseFactory createResponseFactory() {
+        return new ResponseFactoryImpl();
     }
 }

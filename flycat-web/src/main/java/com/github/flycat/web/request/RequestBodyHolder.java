@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.starter.app.web;
+package com.github.flycat.web.request;
 
-import com.github.flycat.starter.app.web.api.Result;
-import com.github.flycat.web.api.ApiFactory;
 
-public class FlycatApiFactoryAdapter implements ApiFactory {
+import com.github.flycat.web.util.HttpRequestWrapper;
 
-    @Override
-    public Object createApiResult(int code, String message) {
-        return new Result<>(code, message);
+public class RequestBodyHolder {
+
+    private final HttpRequestWrapper httpServletRequest;
+    private final Object requestBody;
+
+    public RequestBodyHolder(HttpRequestWrapper httpServletRequest,
+                             Object requestBody) {
+        this.httpServletRequest = httpServletRequest;
+        this.requestBody = requestBody;
+    }
+
+    public Object getRequestBody() {
+        return requestBody;
+    }
+
+    public HttpRequestWrapper getHttpServletRequest() {
+        return httpServletRequest;
     }
 }

@@ -15,13 +15,11 @@
  */
 package com.github.flycat.security.token;
 
-import lombok.Data;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-@Data
 public class TokenAuthentication extends AbstractAuthenticationToken {
     private final Object principal;
     private final Object credentials;
@@ -39,5 +37,19 @@ public class TokenAuthentication extends AbstractAuthenticationToken {
         this.credentials = credentials;
         this.valid = valid;
         setAuthenticated(this.valid);
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    @Override
+    public Object getCredentials() {
+        return credentials;
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return principal;
     }
 }

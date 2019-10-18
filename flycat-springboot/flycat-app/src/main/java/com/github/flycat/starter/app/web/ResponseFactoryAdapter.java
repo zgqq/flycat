@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.web.api;
+package com.github.flycat.starter.app.web;
 
-public interface ApiRequest {
-    Object getData();
+import com.github.flycat.starter.app.web.api.Result;
+import com.github.flycat.web.response.ResponseFactory;
+
+public class ResponseFactoryAdapter implements ResponseFactory {
+
+    @Override
+    public Object createResponse(int code, String message) {
+        return new Result<>(code, message);
+    }
 }
