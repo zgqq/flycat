@@ -17,7 +17,7 @@ package com.github.flycat.web.spring;
 
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.json.JsonUtils;
-import com.github.flycat.web.WebLoader;
+import com.github.flycat.web.WebConfigurationLoader;
 import com.github.flycat.web.context.ExceptionContext;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
@@ -76,7 +76,7 @@ public class ContentCachingFilter implements Filter {
 //        MDC.put("HttpUri", uri);
 //        MDC.put("HttpMethod", method);
 
-        final ContentCachingHandler contentCachingHandler = WebLoader.getContentCachingHandler();
+        final ContentCachingHandler contentCachingHandler = WebConfigurationLoader.getContentCachingHandler();
         try {
             if (contentCachingHandler.executeNextFilter(requestWrapper, responseWrapper)) {
                 chain.doFilter(requestWrapper, responseWrapper);

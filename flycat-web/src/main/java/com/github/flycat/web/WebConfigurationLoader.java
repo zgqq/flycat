@@ -20,9 +20,9 @@ import com.github.flycat.web.response.ResponseFactoryHolder;
 import com.github.flycat.web.request.RequestParameterResolver;
 import com.github.flycat.web.filter.ContentCachingHandler;
 
-public class WebLoader {
+public class WebConfigurationLoader {
     private static volatile ContentCachingHandler contentCachingHandler;
-    private static volatile RequestParameterResolver apiParameterResolver;
+    private static volatile RequestParameterResolver parameterResolver;
 
     public static void load(WebFactoryConfiguration configuration) {
         final ResponseFactory apiFactory = configuration.createResponseFactory();
@@ -47,7 +47,7 @@ public class WebLoader {
         ResponseFactoryHolder.setResponseFactory(apiFactory);
 
         contentCachingHandler = configuration.contentCachingHandler();
-        apiParameterResolver = configuration.createParameterResolver();
+        parameterResolver = configuration.createParameterResolver();
 //        EventManager.register(new LogAlarmListener(alarmSender));
     }
 
@@ -55,15 +55,15 @@ public class WebLoader {
         return contentCachingHandler;
     }
 
-    public static RequestParameterResolver getApiParameterResolver() {
-        return apiParameterResolver;
+    public static RequestParameterResolver getParameterResolver() {
+        return parameterResolver;
     }
 
-    public static void setApiParameterResolver(RequestParameterResolver apiParameterResolver) {
-        WebLoader.apiParameterResolver = apiParameterResolver;
+    public static void setParameterResolver(RequestParameterResolver apiParameterResolver) {
+        WebConfigurationLoader.parameterResolver = apiParameterResolver;
     }
 
     public static void setContentCachingHandler(ContentCachingHandler contentCachingHandler) {
-        WebLoader.contentCachingHandler = contentCachingHandler;
+        WebConfigurationLoader.contentCachingHandler = contentCachingHandler;
     }
 }

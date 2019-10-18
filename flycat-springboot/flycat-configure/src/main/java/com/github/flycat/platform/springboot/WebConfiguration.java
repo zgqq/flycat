@@ -22,7 +22,7 @@ import com.github.flycat.context.ContextUtils;
 import com.github.flycat.platform.springboot.web.SmoothTomcatWebServerCustomizer;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.web.WebFactoryConfiguration;
-import com.github.flycat.web.WebLoader;
+import com.github.flycat.web.WebConfigurationLoader;
 import com.github.flycat.web.spring.*;
 import com.google.common.collect.Sets;
 import org.apache.catalina.startup.Tomcat;
@@ -144,11 +144,11 @@ public class WebConfiguration {
     }
 
     @Autowired
-    WebFactoryConfiguration webApiConfiguration;
+    WebFactoryConfiguration webFactoryConfiguration;
 
     @PostConstruct
     public void configureWeb() {
-        WebLoader.load(webApiConfiguration);
+        WebConfigurationLoader.load(webFactoryConfiguration);
     }
 
 

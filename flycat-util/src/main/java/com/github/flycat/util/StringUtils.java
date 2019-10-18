@@ -23,4 +23,12 @@ public class StringUtils {
     public static boolean isEmpty(String str) {
         return org.apache.commons.lang3.StringUtils.isEmpty(str);
     }
+
+    public static boolean hasText(String text) {
+        return isNotBlank(text);
+    }
+
+    public static boolean hasLength(String str) {
+        return (str != null && !str.isEmpty());
+    }
 }

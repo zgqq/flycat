@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.flycat.db.mybatis.MybatisUtils;
+import com.github.flycat.util.StringUtils;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -45,7 +46,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -223,7 +223,7 @@ public class MybatisConfiguration {
 
     private static String getScanPackages(String name) {
         String modulePackagesAsString = getModulePackagesAsString(name);
-        if (StringUtils.isEmpty(modulePackagesAsString)) {
+        if (StringUtils.isBlank(modulePackagesAsString)) {
             final Class<?> primarySource = SpringBootPlatform.getPrimarySource();
             modulePackagesAsString = primarySource.getPackage().getName();
         }
