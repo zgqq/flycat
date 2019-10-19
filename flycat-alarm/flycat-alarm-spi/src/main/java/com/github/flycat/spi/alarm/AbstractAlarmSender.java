@@ -46,7 +46,12 @@ public abstract class AbstractAlarmSender implements AlarmSender {
                     inetAddress = InetAddress.getLocalHost();
                 } catch (UnknownHostException e) {
                 }
-                final String applicationName = ContextUtils.getApplicationName();
+                String applicationName = "unknown";
+                try {
+                    applicationName = ContextUtils.getApplicationName();
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to get applicationName", e);
+                }
                 message = "machine info:" + inetAddress + ", app name:" + applicationName + ", error:" + message;
                 doSendNotify(message);
             } else {

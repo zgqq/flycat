@@ -18,7 +18,7 @@ public class SpringBootPlatform {
             ContextManager.beforeRun(modules);
             SpringApplication.run(primarySource, args);
         } catch (Exception e) {
-            LOGGER.error("Startup exception", e);
+            LOGGER.warn("Startup exception", e);
             if (!ContextUtils.isLocalProfile()) {
                 LOGGER.info("Unable to startup server, system exit");
                 System.exit(0);

@@ -43,6 +43,11 @@ public class SpringConfiguration implements ApplicationConfiguration {
         return getEnvironment().getProperty(key);
     }
 
+    @Override
+    public String getApplicationName() {
+        return getString("spring.application.name");
+    }
+
     public Environment getEnvironment() {
         return applicationContext.getEnvironment();
     }

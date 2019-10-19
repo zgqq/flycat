@@ -89,6 +89,6 @@ public final class ContextUtils {
 
     public static String getApplicationName() {
         final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
-        return applicationConfiguration.getString("spring.application.name");
+        return applicationConfiguration.getApplicationName();
     }
 }
