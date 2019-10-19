@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>詹xx的博客</title>
+    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
+</head>
+<body>
+<ol th:each="post : ${postPage.records}">
+    <li th:text="${{post.title}}"></li>
+</ol>
+</body>
+</html>

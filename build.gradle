@@ -19,12 +19,13 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+//        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath 'org.springframework:springloaded:1.2.0.RELEASE'
     }
 }
 
 plugins {
+    id 'org.springframework.boot' version "${springBootVersion}"
     id "com.github.hierynomus.license" version "0.15.0"
     id "io.freefair.lombok" version "4.1.0"
 }
@@ -39,7 +40,12 @@ wrapper.gradleVersion = '5.4.1'
 
 apply from: "${gradleConfigDir}/env.gradle"
 
-configure(subprojects) { project ->
+
+ext.javaProjects = subprojects.findAll {
+    !it.name.endsWith("template")
+}
+
+configure(javaProjects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
 
 
@@ -87,7 +93,7 @@ configure(subprojects) { project ->
     }
 }
 
-ext.bootProjects = subprojects.findAll {
+ext.bootProjects = javaProjects.findAll {
     it.name.startsWith("flycat-springboot-sba")
 }
 

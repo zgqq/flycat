@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <turboFilter class="com.github.flycat.log.logback.LogInterceptor"/>
+
+    <property name="logDir" value="${user.dir}/data/log/" />
+
+    <appender name="COMMON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}.%M %line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="COMMON"/>
+    </root>
+    <root level="WARN">
+        <appender-ref ref="COMMON"/>
+    </root>
+
+    <appender name="REQUEST" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logDir}request.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logDir}request-%d{yyyy-MM-dd}-%i.log.gz</FileNamePattern>
+            <MaxHistory>10</MaxHistory>
+            <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>100MB</MaxFileSize>
+            </TimeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{yy-MM-dd HH:mm:ss.SSS} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <logger name="request" additivity="true">
+        <level value="INFO"/>
+        <appender-ref ref="REQUEST"/>
+    </logger>
+</configuration>
