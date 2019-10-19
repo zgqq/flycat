@@ -35,7 +35,8 @@ public final class ContextUtils {
             throw new UnsupportedOperationException("Container holder is null");
         }
         if (ContextUtils.CONTAINER_HOLDER.get() != null) {
-            throw new UnsupportedOperationException("Already set container");
+            LOGGER.info("Updating new container");
+//            throw new UnsupportedOperationException("Already set container");
         }
         ContextUtils.CONTAINER_HOLDER.set(containerHolder);
         LOGGER.info("Set container holder, container:{}", containerHolder);

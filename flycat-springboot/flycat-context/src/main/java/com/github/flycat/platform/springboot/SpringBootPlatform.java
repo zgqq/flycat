@@ -1,6 +1,7 @@
 package com.github.flycat.platform.springboot;
 
 import com.github.flycat.context.ContextManager;
+import com.github.flycat.context.ContextUtils;
 import com.github.flycat.module.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,11 @@ public class SpringBootPlatform {
             ContextManager.beforeRun(modules);
             SpringApplication.run(primarySource, args);
         } catch (Exception e) {
-            LOGGER.error("Unable to startup server, system exit", e);
-            System.exit(0);
+            LOGGER.error("Startup exception", e);
+            if (!ContextUtils.isLocalProfile()) {
+                LOGGER.info("Unable to startup server, system exit");
+                System.exit(0);
+            }
         }
     }
 
