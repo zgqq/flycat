@@ -28,7 +28,12 @@ if (!isProd(env)) {
                    , "-XX:+AlwaysPreTouch"]
 }
 
-
+applicationDefaultJvmArgs = appJvmArgs + [
+        "-Xms512m",
+        "-Xmx512m",
+        "-Xmn128m",
+        "-Xloggc:$projectDir/data/log/gc.log",
+]
 
 ext.debugServerPort = 5005
 if (hasProperty("debugPort")) {
@@ -63,7 +68,6 @@ dependencies {
 //        testCompile "org.springframework:spring-test"
 //        testCompile "org.springframework.boot:spring-boot-test"
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
 
