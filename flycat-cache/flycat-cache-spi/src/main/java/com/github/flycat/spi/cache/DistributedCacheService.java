@@ -56,4 +56,11 @@ public interface DistributedCacheService {
 
     List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds);
 
+
+
+    default <T> T queryCacheObject(Object key,
+                                   Type type,
+                                   Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
 }

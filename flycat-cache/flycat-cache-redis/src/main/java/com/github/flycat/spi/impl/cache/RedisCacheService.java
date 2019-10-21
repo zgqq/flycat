@@ -52,9 +52,10 @@ public class RedisCacheService implements DistributedCacheService {
                                                     Type type,
                                                     Callable<T> callable, int seconds)
             throws CacheException {
+        String cacheValue = null;
         try {
-            String redisKey = "cache:" + module + ":" + key + ":" + seconds;
-            final String cacheValue = redisService.get(redisKey);
+            String redisKey = "cache:removable:" + module + ":" + key + ":" + seconds;
+            cacheValue = redisService.get(redisKey);
             if (CACHE_NULL.equals(cacheValue)) {
                 return Optional.empty();
             }
@@ -72,7 +73,7 @@ public class RedisCacheService implements DistributedCacheService {
             }
             return Optional.ofNullable(result);
         } catch (Exception e) {
-            throw new CacheException("Unable to read cache from redis", e);
+            throw new CacheException("Unable to read cache from redis, cacheValue " + cacheValue, e);
         }
     }
 
@@ -106,5 +107,15 @@ public class RedisCacheService implements DistributedCacheService {
                 stringListType,
                 () -> callable.call(), seconds
         );
+    }
+
+    @Override
+    public <T> T queryCacheObject(Object key, Type type, Callable<T> callable) throws CacheException {
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final StackTraceElement stackTraceElement = stackTrace[2];
+        final String className = stackTraceElement.getClassName();
+        final String methodName = stackTraceElement.getMethodName();
+        String flag = className + "." + methodName + "-" + type.getTypeName();
+        return queryCacheObject(flag, key + "", type, callable);
     }
 }
