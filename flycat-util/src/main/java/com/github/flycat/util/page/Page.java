@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Page<T> implements Serializable {
-    private final List<T> list;
+    private List<T> list;
     private Integer hasNext;
     private Long total;
     private Integer hasPrevious;
@@ -30,7 +30,7 @@ public class Page<T> implements Serializable {
     private Integer endPage;
 
 
-    public Page(List<T> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 

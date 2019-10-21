@@ -40,7 +40,8 @@ public final class PageUtils {
         int pageLimit = pageSize + 1;
         List<T> query = queryer.query(pageStart, pageLimit);
         short hasMore = hasNext(pageSize, query);
-        final Page<T> tPage = new Page<>(query);
+        final Page<T> tPage = new Page<>();
+        tPage.setList(query);
         tPage.setHasNext((int) hasMore);
         tPage.setCurrent(pageNum);
         return tPage;
