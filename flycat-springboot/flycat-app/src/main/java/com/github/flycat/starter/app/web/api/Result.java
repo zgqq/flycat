@@ -128,7 +128,7 @@ public class Result<T> {
     public static <R> Result<R> success(Page<R> page) {
         Result<R> r = new Result<>(ResultCode.OK, "");
         r.putToMap("list", page.getList());
-        r.putToMap("hasMore", page.getHasMore());
+        r.putToMap("hasMore", page.getHasNext());
         return r;
     }
 
@@ -140,7 +140,7 @@ public class Result<T> {
 
     public static <T> Result paginate(Page<T> page) {
         return Result.success(page.getList())
-                .putToMap("hasMore", page.getHasMore())
+                .putToMap("hasMore", page.getHasNext())
                 .putToMap("total", page.getTotal());
     }
 }

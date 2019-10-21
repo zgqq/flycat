@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,11 +39,14 @@ public final class PageUtils {
         int pageStart = (pageNum - 1) * pageSize;
         int pageLimit = pageSize + 1;
         List<T> query = queryer.query(pageStart, pageLimit);
-        short hasMore = hasMore(pageSize, query);
-        return new Page<T>(query, hasMore);
+        short hasMore = hasNext(pageSize, query);
+        final Page<T> tPage = new Page<>(query);
+        tPage.setHasNext((int) hasMore);
+        tPage.setCurrent(pageNum);
+        return tPage;
     }
 
-    public static short hasMore(int pageSize, List<?> collection) {
+    public static short hasNext(int pageSize, List<?> collection) {
         short hasMore = 1;
         if ((pageSize + 1) > collection.size()) {
             hasMore = 0;
@@ -52,6 +55,4 @@ public final class PageUtils {
         }
         return hasMore;
     }
-
-
 }
