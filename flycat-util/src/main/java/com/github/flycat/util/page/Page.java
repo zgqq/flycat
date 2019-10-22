@@ -15,11 +15,14 @@
  */
 package com.github.flycat.util.page;
 
+import com.github.flycat.util.CollectionUtils;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Function;
 
 public class Page<T> implements Serializable {
-    private List<T> list;
+    private List<? extends T> list;
     private Integer hasNext;
     private Long total;
     private Integer hasPrevious;
@@ -28,11 +31,6 @@ public class Page<T> implements Serializable {
 
     private Integer startPage;
     private Integer endPage;
-
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
 
     public int getHasNext() {
         return hasNext;
@@ -54,9 +52,6 @@ public class Page<T> implements Serializable {
         this.hasPrevious = hasPrevious;
     }
 
-    public List<T> getList() {
-        return list;
-    }
 
     public Integer getCurrent() {
         return current;
@@ -88,6 +83,13 @@ public class Page<T> implements Serializable {
         trySet();
     }
 
+    public List<? extends T> getList() {
+        return list;
+    }
+
+    public void setList(List<? extends T> list) {
+        this.list = list;
+    }
 
     public Integer getStartPage() {
         return startPage;
@@ -111,5 +113,14 @@ public class Page<T> implements Serializable {
 
     public void setTotal(Long total) {
         this.total = total;
+    }
+
+
+    public <R> Page<R> mapListTo(Function<? super T, ? extends R> mapper) {
+        final List<? extends R> map = CollectionUtils.map(getList(),
+                mapper
+        );
+        setList((List<? extends T>) map);
+        return (Page<R>) this;
     }
 }

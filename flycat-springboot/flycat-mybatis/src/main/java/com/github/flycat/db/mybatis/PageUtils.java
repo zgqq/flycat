@@ -10,7 +10,8 @@ public class PageUtils {
 
     public static <T> Page<T> toPage(IPage<T> page) {
         final List<T> records = page.getRecords();
-        final Page<T> tPage = new Page<>(records);
+        final Page<T> tPage = new Page<>();
+        tPage.setList(records);
         tPage.setCurrent((int) page.getCurrent());
         tPage.setTotal(page.getTotal());
         tPage.setTotalPages((int) page.getPages());

@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +15,21 @@
  */
 package com.github.flycat.util;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DateTimeUtils {
+
+    public static String toISO8601DateFormat(Date date) {
+        return DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(date);
+    }
 
     public static long currentTimeMillisPlusDays(int days) {
         return System.currentTimeMillis() + TimeUnit.DAYS.toMillis(days);
