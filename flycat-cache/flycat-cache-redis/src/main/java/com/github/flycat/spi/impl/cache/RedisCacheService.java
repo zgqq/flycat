@@ -20,6 +20,9 @@ import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.util.StringUtils;
+import com.google.common.base.Stopwatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,6 +35,7 @@ import java.util.concurrent.Callable;
 @Singleton
 @Named
 public class RedisCacheService implements DistributedCacheService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisCacheService.class);
 
     public static final String CACHE_NULL = "CACHE_NULL_" + RedisCacheService.class.getName();
 
@@ -65,7 +69,10 @@ public class RedisCacheService implements DistributedCacheService {
                 if (result == null) {
                     redisService.setex(redisKey, seconds, CACHE_NULL);
                 } else {
+                    final Stopwatch started = Stopwatch.createStarted();
                     final String jsonString = jsonService.toJsonString(result);
+                    started.stop();
+                    LOGGER.info("Serialized object to json, cost: {}", started);
                     redisService.setex(redisKey, seconds, jsonString);
                 }
             } else {
