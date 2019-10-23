@@ -15,5 +15,7 @@
  */
 package com.github.flycat.spi.cache;
 
-public interface StandaloneCacheService extends CacheService {
+public interface StandaloneCacheService extends InMemoryCacheService {
+
+
 }

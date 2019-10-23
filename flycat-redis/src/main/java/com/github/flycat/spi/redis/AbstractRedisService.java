@@ -68,6 +68,11 @@ public class AbstractRedisService implements RedisService {
         provider.setexAsJson(key, object, seconds);
     }
 
+    @Override
+    public Long del(String... keys) {
+        return provider.del(keys);
+    }
+
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }

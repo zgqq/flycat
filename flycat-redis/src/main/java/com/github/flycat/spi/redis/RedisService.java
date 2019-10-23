@@ -35,4 +35,6 @@ public interface RedisService {
     <T> T getJsonObject(String key, Class<T> clazz);
 
     void setexAsJson(String key, Object object, long seconds);
+
+    Long del(String... key);
 }

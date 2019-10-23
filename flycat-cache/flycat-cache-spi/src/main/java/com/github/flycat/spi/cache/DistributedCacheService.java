@@ -22,6 +22,8 @@ import java.util.concurrent.Callable;
 
 public interface DistributedCacheService {
 
+    String CACHE_REMOVABLE_PREFIX = "cache:removable:";
+
     default <T> Optional<T> queryNullableCacheObject(String module, String key,
                                                      Type type,
                                                      Callable<T> callable, int seconds) throws CacheException {
@@ -61,6 +63,10 @@ public interface DistributedCacheService {
     default <T> T queryCacheObject(Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean removeCache(String module, String key) {
         throw new UnsupportedOperationException();
     }
 }

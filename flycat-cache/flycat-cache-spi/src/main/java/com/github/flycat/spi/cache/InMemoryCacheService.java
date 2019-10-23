@@ -18,32 +18,36 @@ package com.github.flycat.spi.cache;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-public interface CacheService {
+public interface InMemoryCacheService {
 
-    default <T> Optional<T> queryNullableCacheString(String module, String key,
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                      Callable<T> callable, int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> Optional<T> queryNullableCacheString(String module, String key,
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                      Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheString(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheString(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Callable<T> callable,
                                    int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
 
-    default <T> T queryAllCacheString(String module,
-                                   Callable<T> callable) throws CacheException {
+    default <T> T queryAllCacheObjects(String module,
+                                       Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean removeCache(String module, String key) {
         throw new UnsupportedOperationException();
     }
 }

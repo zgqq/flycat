@@ -58,7 +58,7 @@ public class RedisCacheService implements DistributedCacheService {
             throws CacheException {
         String cacheValue = null;
         try {
-            String redisKey = "cache:removable:" + module + ":" + key + ":" + seconds;
+            String redisKey = createCacheKey(module, key);
             cacheValue = redisService.get(redisKey);
             if (CACHE_NULL.equals(cacheValue)) {
                 return Optional.empty();
@@ -82,6 +82,10 @@ public class RedisCacheService implements DistributedCacheService {
         } catch (Exception e) {
             throw new CacheException("Unable to read cache from redis, cacheValue " + cacheValue, e);
         }
+    }
+
+    private String createCacheKey(String module, String key) {
+        return CACHE_REMOVABLE_PREFIX + module + ":" + key;
     }
 
     @Override
@@ -124,5 +128,12 @@ public class RedisCacheService implements DistributedCacheService {
         final String methodName = stackTraceElement.getMethodName();
         String flag = className + "." + methodName + "-" + type.getTypeName();
         return queryCacheObject(flag, key + "", type, callable);
+    }
+
+    @Override
+    public boolean removeCache(String module, String key) {
+        final String cacheKey = createCacheKey(module, key);
+        final Long del = redisService.del(cacheKey);
+        return del.intValue() > 0;
     }
 }

@@ -17,6 +17,7 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -77,6 +78,11 @@ public class SpringRedisProviderAdapter implements RedisService, BeanClassLoader
     @Override
     public void setexAsJson(String key, Object object, long seconds) {
         redisTemplate.boundValueOps(key).set(JsonUtils.toJsonString(object), seconds, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public Long del(String... keys) {
+        return redisTemplate.delete(Lists.newArrayList(keys));
     }
 
     public void afterPropertiesSet() throws Exception {
