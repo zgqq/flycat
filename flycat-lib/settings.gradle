@@ -1,3 +1,7 @@
 include 'flycat-lib-markdown'
-
 project (':flycat-lib-markdown').projectDir = new File('./flycat-lib/flycat-markdown')
+
+
+
+include 'flycat-lib-git'
+project (':flycat-lib-git').projectDir = new File('./flycat-lib/flycat-git')
