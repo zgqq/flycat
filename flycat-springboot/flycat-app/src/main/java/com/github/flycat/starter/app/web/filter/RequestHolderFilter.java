@@ -17,10 +17,10 @@ package com.github.flycat.starter.app.web.filter;
 
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.starter.app.web.api.AppRequest;
-import com.github.flycat.web.request.RequestBodyHolder;
 import com.github.flycat.web.request.LocalRequestBody;
+import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.spring.ContentCachingHttpServletRequest;
 import com.github.flycat.web.util.HttpConstants;
-import com.github.flycat.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -54,7 +54,7 @@ public class RequestHolderFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpRequestWrapper httpRequestWrapper = (HttpRequestWrapper) request;
+        ContentCachingHttpServletRequest httpRequestWrapper = (ContentCachingHttpServletRequest) request;
         String method = httpServletRequest.getMethod();
 
         if (method.equalsIgnoreCase("OPTIONS")) {
@@ -63,7 +63,7 @@ public class RequestHolderFilter implements Filter {
             return;
         }
 
-        final String contentType = httpServletRequest.getParameter(HttpConstants.CONTENT_TYPE);
+        final String contentType = httpServletRequest.getHeader(HttpConstants.CONTENT_TYPE);
         boolean readAppRequest = false;
         if (contentType != null) {
             readAppRequest = contentType.startsWith(HttpConstants.APPLICATION_JSON_VALUE);
@@ -80,7 +80,7 @@ public class RequestHolderFilter implements Filter {
             } catch (Throwable throwable) {
             }
 
-            LocalRequestBody.setCurrentApiRequest(new RequestBodyHolder((HttpRequestWrapper) httpServletRequest,
+            LocalRequestBody.setCurrentApiRequest(new RequestBodyHolder(httpServletRequest,
                     jo
             ));
 

@@ -22,7 +22,6 @@ import com.github.flycat.web.response.ResponseBodyUtils;
 import com.github.flycat.web.response.ResponseCode;
 import com.github.flycat.web.response.ResponseFactory;
 import com.github.flycat.web.response.ResponseFactoryHolder;
-import com.github.flycat.web.util.HttpRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,11 @@ public class WebExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public Object handleValidationException(ValidationException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
-        String requestBody = ((HttpRequestWrapper) request).getRequestBody();
+
+        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        String requestBody = getRequestBody(requestWrapper);
+
+
         LOGGER.error("Validation exception! uri:{}, body:{}",
                 request.getRequestURL(),
                 requestBody,
@@ -103,7 +106,10 @@ public class WebExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public Object handleBusinessException(BusinessException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
-        String requestBody = ((HttpRequestWrapper) request).getRequestBody();
+
+        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        String requestBody = getRequestBody(requestWrapper);
+
         LOGGER.error("Business exception! uri:{}, body:{}",
                 request.getRequestURL(),
                 requestBody,
@@ -121,16 +127,10 @@ public class WebExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public Object handleApiException(Throwable ex, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
-        HttpServletRequestWrapper requestWrapper = (HttpServletRequestWrapper) request;
-        String requestBody;
-        for (; ; ) {
-            if (requestWrapper instanceof HttpRequestWrapper) {
-                requestBody = ((HttpRequestWrapper) requestWrapper).getRequestBody();
-                break;
-            } else {
-                requestWrapper = (HttpServletRequestWrapper) requestWrapper.getRequest();
-            }
-        }
+
+        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        String requestBody = getRequestBody(requestWrapper);
+
         LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURL(), requestBody, ex);
         final boolean responseBody = handlerMappingContext.isResponseBody(requestWrapper);
         final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
@@ -144,6 +144,26 @@ public class WebExceptionHandler {
             modelAndView.addObject("error", unknownExceptionResult);
             return modelAndView;
         }
+    }
+
+    private String getRequestBody(HttpServletRequestWrapper requestWrapper) {
+        String requestBody = null;
+        if (requestWrapper instanceof ContentCachingHttpServletRequest) {
+            requestBody = ((ContentCachingHttpServletRequest) requestWrapper).getRequestBody();
+        }
+        return requestBody;
+    }
+
+    private HttpServletRequestWrapper getHttpServletRequestWrapper(HttpServletRequestWrapper request) {
+        HttpServletRequestWrapper requestWrapper = request;
+        for (; ; ) {
+            if (requestWrapper instanceof ContentCachingHttpServletRequest) {
+                break;
+            } else {
+                requestWrapper = (HttpServletRequestWrapper) requestWrapper.getRequest();
+            }
+        }
+        return requestWrapper;
     }
 
     private Object newResponseEntity(Object result) {

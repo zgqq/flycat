@@ -17,4 +17,6 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
     compile 'org.modelmapper:modelmapper:2.3.0'
 
+    compile 'commons-io:commons-io:2.6'
+
 }

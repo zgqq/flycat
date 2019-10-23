@@ -16,14 +16,14 @@
 package com.github.flycat.web.request;
 
 
-import com.github.flycat.web.util.HttpRequestWrapper;
+import javax.servlet.http.HttpServletRequest;
 
 public class RequestBodyHolder {
 
-    private final HttpRequestWrapper httpServletRequest;
+    private final HttpServletRequest httpServletRequest;
     private final Object requestBody;
 
-    public RequestBodyHolder(HttpRequestWrapper httpServletRequest,
+    public RequestBodyHolder(HttpServletRequest httpServletRequest,
                              Object requestBody) {
         this.httpServletRequest = httpServletRequest;
         this.requestBody = requestBody;
@@ -33,7 +33,7 @@ public class RequestBodyHolder {
         return requestBody;
     }
 
-    public HttpRequestWrapper getHttpServletRequest() {
+    public HttpServletRequest getHttpServletRequest() {
         return httpServletRequest;
     }
 }

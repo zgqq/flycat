@@ -26,7 +26,6 @@ import com.github.flycat.web.request.RequestBodyHolder;
 import com.github.flycat.web.response.ResponseBodyUtils;
 import com.github.flycat.web.response.ResponseFactory;
 import com.github.flycat.web.response.ResponseFactoryHolder;
-import com.github.flycat.web.util.HttpRequestWrapper;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +66,7 @@ public class ContentCachingFilter implements Filter {
         Stopwatch started = Stopwatch.createStarted();
         boolean needValidate = false;
 
-        HttpRequestWrapper requestWrapper = new HttpRequestWrapper((HttpServletRequest) request);
+        ContentCachingHttpServletRequest requestWrapper = new ContentCachingHttpServletRequest((HttpServletRequest) request);
         ContentCachingResponseWrapper responseWrapper =
                 new ContentCachingResponseWrapper((HttpServletResponse) response);
 
