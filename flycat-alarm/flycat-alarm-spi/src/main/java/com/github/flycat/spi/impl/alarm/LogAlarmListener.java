@@ -16,6 +16,7 @@
 package com.github.flycat.spi.impl.alarm;
 
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ContextUtils;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
@@ -58,6 +59,8 @@ public class LogAlarmListener extends LogErrorListener {
                 return;
             }
         }
-        this.alarmSender.sendNotify(s);
+        if (!ContextUtils.isTestProfile()) {
+            this.alarmSender.sendNotify(s);
+        }
     }
 }
