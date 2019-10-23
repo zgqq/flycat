@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
@@ -93,7 +94,7 @@ public class JacksonJsonService implements JsonService {
     public String toJsonString(Object result) {
         try {
             return objectMapper.writeValueAsString(result);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new JsonException(e);
         }
     }
