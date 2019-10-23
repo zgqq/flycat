@@ -17,6 +17,7 @@ package com.github.flycat.util;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -26,6 +27,16 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class DateTimeUtils {
+
+
+    // 2019/10/12
+    public static String formatToPathDate(Date date) {
+        return DateFormatUtils.format(date, "yyyy/MM/dd");
+    }
+
+    public static Date parseISO8601Date(String source) throws ParseException {
+        return DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.parse(source);
+    }
 
     public static String toISO8601DateFormat(Date date) {
         return DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(date);

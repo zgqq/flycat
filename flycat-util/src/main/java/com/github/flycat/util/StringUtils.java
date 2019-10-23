@@ -2,6 +2,9 @@ package com.github.flycat.util;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.util.List;
+import java.util.StringJoiner;
+
 public class StringUtils {
 
     public static String capitalize(String str) {
@@ -30,5 +33,16 @@ public class StringUtils {
 
     public static boolean hasLength(String str) {
         return (str != null && !str.isEmpty());
+    }
+
+    public static String joinStringList(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        final StringJoiner stringJoiner = new StringJoiner("");
+        for (String value : list) {
+            stringJoiner.add(value);
+        }
+        return stringJoiner.toString();
     }
 }
