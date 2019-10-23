@@ -1,0 +1,8 @@
+
+dependencies {
+    api project(':flycat-util')
+    api 'com.vladsch.flexmark:flexmark-all:0.50.42'
+}
+
+
+

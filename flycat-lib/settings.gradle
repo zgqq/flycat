@@ -1,0 +1,3 @@
+include 'flycat-lib-markdown'
+
+project (':flycat-lib-markdown').projectDir = new File('./flycat-lib/flycat-markdown')
