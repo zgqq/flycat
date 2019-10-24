@@ -34,8 +34,12 @@ public class DateTimeUtils {
         return DateFormatUtils.format(date, "yyyy/MM/dd");
     }
 
-    public static Date parseISO8601Date(String source) throws ParseException {
+    public static Date parseISO8601DateTime(String source) throws ParseException {
         return DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.parse(source);
+    }
+
+    public static Date parseISO8601Date(String source) throws ParseException {
+        return DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.parse(source);
     }
 
     public static String toISO8601DateFormat(Date date) {
