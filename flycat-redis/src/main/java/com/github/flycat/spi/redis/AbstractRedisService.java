@@ -83,6 +83,16 @@ public class AbstractRedisService implements RedisService {
         return provider.zrange(key, start, end);
     }
 
+    @Override
+    public boolean setnx(String key, String value) {
+        return provider.setnx(key, value);
+    }
+
+    @Override
+    public boolean expire(String key, int seconds) {
+        return provider.expire(key, seconds);
+    }
+
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }

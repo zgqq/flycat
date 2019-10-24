@@ -41,4 +41,8 @@ public interface RedisService {
     boolean zadd(String key, double score, String member);
 
     Set<String> zrange(String key, int start, int end);
+
+    boolean setnx(String key, String value);
+
+    boolean expire(String key, int seconds);
 }

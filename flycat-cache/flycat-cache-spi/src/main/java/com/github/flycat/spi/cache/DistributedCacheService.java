@@ -65,5 +65,8 @@ public interface DistributedCacheService extends CacheOperation {
         throw new UnsupportedOperationException();
     }
 
-
+    default boolean isValueRefreshed(String module, Object key,
+                                     int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
 }

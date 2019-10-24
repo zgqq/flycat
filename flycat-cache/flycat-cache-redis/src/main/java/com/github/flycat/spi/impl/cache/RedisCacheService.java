@@ -154,4 +154,15 @@ public class RedisCacheService implements DistributedCacheService {
         }
         return false;
     }
+
+    @Override
+    public boolean isValueRefreshed(String module, Object key, int seconds) throws CacheException {
+        final String redisKey = module + ":refresh:" + key;
+        final boolean setnx = redisService.setnx(redisKey, "1");
+        if (setnx) {
+            redisService.expire(redisKey, 10);
+            return true;
+        }
+        return false;
+    }
 }

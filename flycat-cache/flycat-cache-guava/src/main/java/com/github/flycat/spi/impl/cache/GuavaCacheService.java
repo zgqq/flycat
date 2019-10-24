@@ -117,4 +117,15 @@ public class GuavaCacheService implements StandaloneCacheService {
         moduleMap.remove(module);
         return true;
     }
+
+    @Override
+    public boolean isValueRefreshed(String module, Object key, int seconds) throws CacheException {
+        final Cache<Object, Object> cache = createCache(module, seconds);
+        final Object o = new Object();
+        try {
+            return o == cache.get(key, () -> o);
+        } catch (ExecutionException e) {
+            throw new CacheException(e);
+        }
+    }
 }
