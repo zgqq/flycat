@@ -18,7 +18,7 @@ package com.github.flycat.spi.cache;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-public interface InMemoryCacheService {
+public interface InMemoryCacheService extends CacheOperation {
 
     default <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                      Callable<T> callable, int seconds) throws CacheException {
@@ -47,7 +47,4 @@ public interface InMemoryCacheService {
         throw new UnsupportedOperationException();
     }
 
-    default boolean removeCache(String module, String key) {
-        throw new UnsupportedOperationException();
-    }
 }

@@ -37,4 +37,8 @@ public interface RedisService {
     void setexAsJson(String key, Object object, long seconds);
 
     Long del(String... key);
+
+    boolean zadd(String key, double score, String member);
+
+    Set<String> zrange(String key, int start, int end);
 }

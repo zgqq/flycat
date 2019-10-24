@@ -85,6 +85,16 @@ public class SpringRedisProviderAdapter implements RedisService, BeanClassLoader
         return redisTemplate.delete(Lists.newArrayList(keys));
     }
 
+    @Override
+    public boolean zadd(String key, double score, String member) {
+        return redisTemplate.boundZSetOps(key).add(member, score);
+    }
+
+    @Override
+    public Set<String> zrange(String key, int start, int end) {
+        return redisTemplate.boundZSetOps(key).range(start, end);
+    }
+
     public void afterPropertiesSet() throws Exception {
         redisTemplate.afterPropertiesSet();
         final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();

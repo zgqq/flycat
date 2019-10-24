@@ -73,7 +73,18 @@ public class AbstractRedisService implements RedisService {
         return provider.del(keys);
     }
 
+    @Override
+    public boolean zadd(String key, double score, String member) {
+        return provider.zadd(key, score, member);
+    }
+
+    @Override
+    public Set<String> zrange(String key, int start, int end) {
+        return provider.zrange(key, start, end);
+    }
+
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }
+
 }

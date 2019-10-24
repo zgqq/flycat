@@ -111,4 +111,10 @@ public class GuavaCacheService implements StandaloneCacheService {
         }
         return false;
     }
+
+    @Override
+    public boolean removeCache(String module) {
+        moduleMap.remove(module);
+        return true;
+    }
 }

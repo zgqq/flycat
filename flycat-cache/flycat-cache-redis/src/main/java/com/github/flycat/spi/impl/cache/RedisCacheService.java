@@ -30,6 +30,7 @@ import javax.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 @Singleton
@@ -74,6 +75,8 @@ public class RedisCacheService implements DistributedCacheService {
                     started.stop();
                     LOGGER.info("Serialized object to json, cost: {}", started);
                     redisService.setex(redisKey, seconds, jsonString);
+                    final String moduleKeys = createModuleKeys(module);
+                    redisService.zadd(moduleKeys, System.currentTimeMillis(), redisKey);
                 }
             } else {
                 result = jsonService.parseObject(cacheValue, type);
@@ -82,6 +85,10 @@ public class RedisCacheService implements DistributedCacheService {
         } catch (Exception e) {
             throw new CacheException("Unable to read cache from redis, cacheValue " + cacheValue, e);
         }
+    }
+
+    private String createModuleKeys(String module) {
+        return CACHE_REMOVABLE_PREFIX + "keys:" + module;
     }
 
     private String createCacheKey(String module, String key) {
@@ -135,5 +142,16 @@ public class RedisCacheService implements DistributedCacheService {
         final String cacheKey = createCacheKey(module, key);
         final Long del = redisService.del(cacheKey);
         return del.intValue() > 0;
+    }
+
+    @Override
+    public boolean removeCache(String module) {
+        final String moduleKeys = createModuleKeys(module);
+        final Set<String> keys = redisService.zrange(moduleKeys, 0, -1);
+        redisService.del(moduleKeys);
+        for (String key : keys) {
+            redisService.del(key);
+        }
+        return false;
     }
 }
