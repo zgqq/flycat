@@ -43,7 +43,7 @@ public class WebFactoryConfigurationAdapter implements WebFactoryConfiguration {
             @Override
             public PostFilterAction postFilter(HttpServletRequest httpServletRequest,
                                                HttpServletResponse httpServletResponse) {
-                final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
+                final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentRequest();
 
                 boolean isDebugUid = false;
                 if (currentApiRequest != null && currentApiRequest.getRequestBody() != null) {

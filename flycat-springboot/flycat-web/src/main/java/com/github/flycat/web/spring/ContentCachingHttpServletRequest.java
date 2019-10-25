@@ -6,6 +6,8 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 
 public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapper {
@@ -29,6 +31,24 @@ public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapp
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public String getDecodedRequestBody() {
+        final String requestBody = getRequestBody();
+        try {
+            return URLDecoder.decode(requestBody, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return requestBody;
+        }
+    }
+
+    public String getDecodedRequestURI() {
+        final String requestURI = getRequestURI();
+        try {
+            return URLDecoder.decode(requestURI, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return requestURI;
         }
     }
 }

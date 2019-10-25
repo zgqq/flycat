@@ -70,7 +70,7 @@ public class ContentCachingFilter implements Filter {
         ContentCachingResponseWrapper responseWrapper =
                 new ContentCachingResponseWrapper((HttpServletResponse) response);
 
-        String uri = requestWrapper.getRequestURI();
+        final String requestURI = requestWrapper.getDecodedRequestURI();
         String method = requestWrapper.getMethod();
 //        MDC.put("HttpUri", uri);
 //        MDC.put("HttpMethod", method);
@@ -92,15 +92,15 @@ public class ContentCachingFilter implements Filter {
             if (e instanceof NestedServletException) {
                 cause = e.getCause();
             }
-            final String requestBody = requestWrapper.getRequestBody();
+            final String requestBody = requestWrapper.getDecodedRequestBody();
             if (cause instanceof BusinessException) {
-                LOGGER.error("BusinessException! uri {}, params {}, method {}", uri, requestBody, method, e);
+                LOGGER.error("BusinessException! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                 BusinessException e1 = (BusinessException) cause;
                 final ResponseFactory factoryResponse = ResponseFactoryHolder.getResponseFactory();
                 String output = JsonUtils.toJsonString(factoryResponse.createResponse(e1.getErrorCode(), e1.getMessage()));
                 responseWrapper.getWriter().write(output);
             } else {
-                LOGGER.error("System error! uri {}, params {}, method {}", uri, requestBody, method, e);
+                LOGGER.error("System error! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                 final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
                         new ExceptionContext(cause, true));
                 String output = JsonUtils.toJsonString(unknownExceptionResult);
@@ -111,7 +111,7 @@ public class ContentCachingFilter implements Filter {
 
             started.stop();
 
-            final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
+            final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentRequest();
 
             String responseContent = null;
 
@@ -127,13 +127,13 @@ public class ContentCachingFilter implements Filter {
             }
 
             responseWrapper.copyBodyToResponse();
-            String requestBody = requestWrapper.getRequestBody();
+            String requestBody = requestWrapper.getDecodedRequestBody();
 
             if (postFilterAction.isLogResponse()) {
                 LOGGER.info("Debug info, uri {}, request:{}, validate status {}, " +
                                 " execute time {}, request params {}, method {},"
                                 + " response:{}",
-                        requestWrapper.getRequestURI(),
+                        requestURI,
                         currentApiRequest.getRequestBody(),
                         needValidate ? "validated" : "ignored",
                         started, requestBody, method, responseContent);
@@ -141,7 +141,7 @@ public class ContentCachingFilter implements Filter {
 
 
             REQUEST_LOGGER.info("Request uri {}, validate status {},  execute time {}, request params {}, method {}",
-                    requestWrapper.getRequestURI(),
+                    requestURI,
                     needValidate ? "validated" : "ignored",
                     started, requestBody, method);
             // Write request and response body, headers, timestamps etc. to log files

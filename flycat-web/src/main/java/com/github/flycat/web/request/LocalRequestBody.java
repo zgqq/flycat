@@ -25,7 +25,7 @@ public final class LocalRequestBody {
         REQUEST_HOLDER.set(apiHttpRequest);
     }
 
-    public static RequestBodyHolder getCurrentApiRequest() {
+    public static RequestBodyHolder getCurrentRequest() {
         return REQUEST_HOLDER.get();
     }
 }

@@ -40,7 +40,7 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
 
     @Override
     public TokenAuthentication requireToken(HttpServletRequest httpServletRequest) {
-        final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentApiRequest();
+        final RequestBodyHolder currentApiRequest = LocalRequestBody.getCurrentRequest();
         final AppRequest apiRequest = (AppRequest) currentApiRequest.getRequestBody();
         if (apiRequest == null) {
             final TokenAuthentication tokenInformation = new TokenAuthentication(null,

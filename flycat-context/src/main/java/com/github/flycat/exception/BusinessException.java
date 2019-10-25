@@ -29,6 +29,11 @@ public class BusinessException extends BaseException {
         this(errorCode, "");
     }
 
+    public BusinessException(String defaultMessage) {
+        super(0, defaultMessage);
+    }
+
+
     public BusinessException(int errorCode, String defaultMessage) {
         super(errorCode, defaultMessage);
     }

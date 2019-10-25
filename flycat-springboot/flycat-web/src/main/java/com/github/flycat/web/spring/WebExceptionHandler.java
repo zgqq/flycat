@@ -149,7 +149,7 @@ public class WebExceptionHandler {
     private String getRequestBody(HttpServletRequestWrapper requestWrapper) {
         String requestBody = null;
         if (requestWrapper instanceof ContentCachingHttpServletRequest) {
-            requestBody = ((ContentCachingHttpServletRequest) requestWrapper).getRequestBody();
+            requestBody = ((ContentCachingHttpServletRequest) requestWrapper).getDecodedRequestBody();
         }
         return requestBody;
     }

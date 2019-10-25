@@ -17,6 +17,9 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
     compile 'org.modelmapper:modelmapper:2.3.0'
 
+// https://mvnrepository.com/artifact/commons-collections/commons-collections
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+
     compile 'commons-io:commons-io:2.6'
 
 }
