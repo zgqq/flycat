@@ -130,12 +130,8 @@ public class RedisCacheService implements DistributedCacheService {
 
     @Override
     public <T> T queryCacheObject(Object key, Type type, Callable<T> callable) throws CacheException {
-        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        final StackTraceElement stackTraceElement = stackTrace[2];
-        final String className = stackTraceElement.getClassName();
-        final String methodName = stackTraceElement.getMethodName();
-        String flag = className + "." + methodName + "-" + type.getTypeName();
-        return queryCacheObject(flag, key + "", type, callable);
+        final String module = createModuleNameByStackTrace(type);
+        return queryCacheObject(module, key + "", type, callable);
     }
 
     @Override

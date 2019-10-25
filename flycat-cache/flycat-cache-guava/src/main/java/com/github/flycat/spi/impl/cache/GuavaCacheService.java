@@ -128,4 +128,9 @@ public class GuavaCacheService implements StandaloneCacheService {
             throw new CacheException(e);
         }
     }
+
+    @Override
+    public <T> T queryCacheObject(Object key, Callable<T> callable) throws CacheException {
+        return queryCacheObject(createModuleNameByStackTrace(null), key, callable);
+    }
 }
