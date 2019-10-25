@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 @Named
@@ -157,12 +158,24 @@ public class RedisCacheService implements DistributedCacheService {
 
     @Override
     public boolean isValueRefreshed(String module, Object key, int seconds) throws CacheException {
-        final String redisKey = module + ":refresh:" + key;
-        final boolean setnx = redisService.setnx(redisKey, "1");
-        if (setnx) {
-            redisService.expire(redisKey, 10);
-            return true;
-        }
-        return false;
+        final String redisKey = CACHE_REMOVABLE_PREFIX + "refresh:" + module + ":" + key;
+        do {
+            final boolean setnx = redisService.setnx(redisKey, (System.currentTimeMillis()
+                    + TimeUnit.SECONDS.toMillis(seconds)) + "");
+            if (setnx) {
+                redisService.expire(redisKey, seconds);
+                return true;
+            } else {
+                final String value = redisService.get(redisKey);
+                if (value != null) {
+                    final long l = Long.parseLong(value);
+                    if (System.currentTimeMillis() > l) {
+                        redisService.del(redisKey);
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } while (true);
     }
 }
