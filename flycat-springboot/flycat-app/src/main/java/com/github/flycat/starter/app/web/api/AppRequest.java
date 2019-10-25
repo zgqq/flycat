@@ -1,12 +1,12 @@
 /**
  * Copyright 2019 zgqq <zgqjava@gmail.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 package com.github.flycat.starter.app.web.api;
 
 import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.util.MapWrapper;
 import com.github.flycat.util.bean.CommonParameters;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ public class AppRequest {
     private Integer channel;
     private Map data;
     private String model;
-    private Integer nettype;
+    private Integer netType;
     private Integer term;
     private String token;
     private Long ts;
@@ -71,12 +72,12 @@ public class AppRequest {
         this.channel = channel;
     }
 
-    public Integer getNettype() {
-        return nettype;
+    public Integer getNetType() {
+        return netType;
     }
 
-    public void setNettype(Integer nettype) {
-        this.nettype = nettype;
+    public void setNetType(Integer netType) {
+        this.netType = netType;
     }
 
     public Integer getTerm() {
@@ -198,6 +199,10 @@ public class AppRequest {
         return resolveParameter("pageSize", Integer.class);
     }
 
+    public DataWrapper dataWrapper() {
+        return new DataWrapper(data);
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", AppRequest.class.getSimpleName() + "[", "]")
@@ -205,7 +210,7 @@ public class AppRequest {
                 .add("channel=" + channel)
                 .add("data=" + data)
                 .add("model='" + model + "'")
-                .add("nettype=" + nettype)
+                .add("nettype=" + netType)
                 .add("term=" + term)
                 .add("token='" + token + "'")
                 .add("ts=" + ts)

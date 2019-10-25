@@ -16,7 +16,19 @@ public class MapWrapper {
         return MapUtils.getString(map, key);
     }
 
+    public String getString(Object key, String defaultValue) {
+        return MapUtils.getString(map, key, defaultValue);
+    }
+
     public Integer getInteger(String key) {
         return MapUtils.getInteger(map, key);
+    }
+
+    public Integer getInteger(Object key, Integer defaultValue) {
+        return MapUtils.getInteger(map, key, defaultValue);
+    }
+
+    public Map getMap() {
+        return map;
     }
 }
