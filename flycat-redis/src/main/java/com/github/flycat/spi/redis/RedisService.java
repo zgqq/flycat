@@ -15,34 +15,16 @@
  */
 package com.github.flycat.spi.redis;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
-public interface RedisService {
-
-    String hget(String redisKey, String key);
-
-    Set<String> smembers(String key);
-
-    String get(String key);
-
-    Map<String, String> hgetAll(String key);
-
-    void hsetAsJson(String key, String hashKey, Object object);
-
-    void setex(String key, long seconds, String value);
+public interface RedisService extends RedisOperations {
 
     <T> T getJsonObject(String key, Class<T> clazz);
 
+    void hsetAsJson(String key, String hashKey, Object object);
+
     void setexAsJson(String key, Object object, long seconds);
 
-    Long del(String... key);
+    <T> T execute(SessionCallback<T> sessionCallback);
 
-    boolean zadd(String key, double score, String member);
-
-    Set<String> zrange(String key, int start, int end);
-
-    boolean setnx(String key, String value);
-
-    boolean expire(String key, int seconds);
 }

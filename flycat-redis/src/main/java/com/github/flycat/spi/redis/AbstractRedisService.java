@@ -15,6 +15,7 @@
  */
 package com.github.flycat.spi.redis;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,6 +70,11 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
+    public <T> T execute(SessionCallback<T> sessionCallback) {
+        return provider.execute(sessionCallback);
+    }
+
+    @Override
     public Long del(String... keys) {
         return provider.del(keys);
     }
@@ -93,8 +99,17 @@ public class AbstractRedisService implements RedisService {
         return provider.expire(key, seconds);
     }
 
+    @Override
+    public void multi() {
+        provider.multi();
+    }
+
+    @Override
+    public List<Object> exec() {
+        return provider.exec();
+    }
+
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }
-
 }

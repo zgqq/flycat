@@ -55,7 +55,7 @@ public class SpringMultipleRedisService extends MultipleRedisService implements 
                 new LettuceConnectionFactory(redisStandaloneConfiguration);
 
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
-        stringRedisTemplate.setEnableTransactionSupport(true);
+//        stringRedisTemplate.setEnableTransactionSupport(true);
         stringRedisTemplate.setConnectionFactory(redisConnectionFactory);
         return stringRedisTemplate;
     }

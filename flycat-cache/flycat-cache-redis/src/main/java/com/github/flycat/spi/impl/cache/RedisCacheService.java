@@ -18,7 +18,9 @@ package com.github.flycat.spi.impl.cache;
 import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.json.JsonService;
+import com.github.flycat.spi.redis.RedisOperations;
 import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.spi.redis.SessionCallback;
 import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
@@ -75,9 +77,13 @@ public class RedisCacheService implements DistributedCacheService {
                     final String jsonString = jsonService.toJsonString(result);
                     started.stop();
                     LOGGER.info("Serialized object to json, cost: {}", started);
-                    redisService.setex(redisKey, seconds, jsonString);
-                    final String moduleKeys = createModuleKeys(module);
-                    redisService.zadd(moduleKeys, System.currentTimeMillis(), redisKey);
+                    redisService.execute(redisOperations -> {
+                        redisOperations.multi();
+                        redisOperations.setex(redisKey, seconds, jsonString);
+                        final String moduleKeys = createModuleKeys(module);
+                        redisOperations.zadd(moduleKeys, System.currentTimeMillis(), redisKey);
+                        return redisOperations.exec();
+                    });
                 }
             } else {
                 result = jsonService.parseObject(cacheValue, type);
