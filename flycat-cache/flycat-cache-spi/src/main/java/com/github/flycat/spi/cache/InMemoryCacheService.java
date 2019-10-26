@@ -67,13 +67,13 @@ public interface InMemoryCacheService extends CacheOperation {
         return queryNullableCacheObject(module, key, callable);
     }
 
-    default <T> T queryCacheObject(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {
         return queryCacheObject(module, key, callable);
     }
 
-    default <T> T queryCacheObject(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable,
                                    int seconds) throws CacheException {

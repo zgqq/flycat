@@ -54,7 +54,7 @@ public class RedisCacheService implements DistributedCacheService {
 
 
     @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, String key,
+    public <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                     Type type,
                                                     Callable<T> callable, int seconds)
             throws CacheException {
@@ -92,23 +92,23 @@ public class RedisCacheService implements DistributedCacheService {
         return CACHE_REMOVABLE_PREFIX + "keys:" + module;
     }
 
-    private String createCacheKey(String module, String key) {
+    private String createCacheKey(String module, Object key) {
         return CACHE_REMOVABLE_PREFIX + module + ":" + key;
     }
 
     @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable)
+    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Type type, Callable<T> callable)
             throws CacheException {
         return queryNullableCacheObject(module, key, type, callable, 300);
     }
 
     @Override
-    public <T> T queryCacheObject(String module, String key, Type type, Callable<T> callable) throws CacheException {
+    public <T> T queryCacheObject(String module, Object key, Type type, Callable<T> callable) throws CacheException {
         return queryCacheObject(module, key, type, callable, 300);
     }
 
     @Override
-    public <T> T queryCacheObject(String module, String key, Type type, Callable<T> callable, int seconds)
+    public <T> T queryCacheObject(String module, Object key, Type type, Callable<T> callable, int seconds)
             throws CacheException {
         return queryNullableCacheObject(module, key, type, callable, seconds).orElseThrow(() -> new CacheException(
                 "Cache value is null, module:" + module + ", key:" + key));

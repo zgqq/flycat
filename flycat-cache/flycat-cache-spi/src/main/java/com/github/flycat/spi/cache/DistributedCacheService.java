@@ -24,25 +24,25 @@ public interface DistributedCacheService extends CacheOperation {
 
     String CACHE_REMOVABLE_PREFIX = "cache:removable:";
 
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                      Type type,
                                                      Callable<T> callable, int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
                                                      Type type,
                                                      Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheObject(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheObject(String module, String key,
+    default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable,
                                    int seconds) throws CacheException {
