@@ -75,6 +75,11 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
+    public <T> List<Object> executePipelined(SessionCallback<T> action) {
+        return provider.executePipelined(action);
+    }
+
+    @Override
     public Long del(String... keys) {
         return provider.del(keys);
     }

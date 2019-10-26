@@ -27,4 +27,6 @@ public interface RedisService extends RedisOperations {
 
     <T> T execute(SessionCallback<T> sessionCallback);
 
+    <T> List<Object> executePipelined(SessionCallback<T> sessionCallback);
+
 }

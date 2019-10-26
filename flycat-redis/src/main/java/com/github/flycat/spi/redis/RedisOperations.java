@@ -31,4 +31,5 @@ public interface RedisOperations {
     void multi();
 
     List<Object> exec();
+
 }

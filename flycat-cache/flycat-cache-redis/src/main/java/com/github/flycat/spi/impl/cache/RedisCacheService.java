@@ -151,10 +151,16 @@ public class RedisCacheService implements DistributedCacheService {
     public boolean removeCache(String module) {
         final String moduleKeys = createModuleKeys(module);
         final Set<String> keys = redisService.zrange(moduleKeys, 0, -1);
-        redisService.del(moduleKeys);
-        for (String key : keys) {
-            redisService.del(key);
-        }
+        redisService.executePipelined(new SessionCallback<Object>() {
+            @Override
+            public Object execute(RedisOperations redisOperations) {
+                redisOperations.del(moduleKeys);
+                for (String key : keys) {
+                    redisOperations.del(key);
+                }
+                return null;
+            }
+        });
         return false;
     }
 

@@ -26,6 +26,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SpringRedisProviderAdapter extends SpringRedisOperations implements RedisService, BeanClassLoaderAware {
@@ -85,6 +86,18 @@ public class SpringRedisProviderAdapter extends SpringRedisOperations implements
             public <K, V> T execute(RedisOperations<K, V> operations) throws DataAccessException {
                 final SpringRedisOperations redisOperations = new SpringRedisOperations(operations);
                 return sessionCallback.execute(redisOperations);
+            }
+        });
+    }
+
+    @Override
+    public <T> List<Object> executePipelined(SessionCallback<T> sessionCallback) {
+        return redisTemplate.executePipelined(new org.springframework.data.redis.core.SessionCallback<T>() {
+            @Override
+            public <K, V> T execute(RedisOperations<K, V> operations) throws DataAccessException {
+                final SpringRedisOperations redisOperations = new SpringRedisOperations(operations);
+                sessionCallback.execute(redisOperations);
+                return null;
             }
         });
     }
