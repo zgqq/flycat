@@ -12,6 +12,8 @@ include 'flycat-web'
 
 include 'flycat-wechat'
 
+include 'flycat-task'
+
 apply from: "./flycat-config/settings.gradle"
 apply from: "./flycat-cache/settings.gradle"
 apply from: "./flycat-alarm/settings.gradle"

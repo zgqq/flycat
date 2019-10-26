@@ -25,3 +25,9 @@ project(':flycat-springboot-web').projectDir = new File('./flycat-springboot/fly
 include 'flycat-springboot-context'
 project(':flycat-springboot-context').projectDir = new File('./flycat-springboot/flycat-context')
 
+
+
+include 'flycat-springboot-task'
+project(':flycat-springboot-task').projectDir = new File('./flycat-springboot/flycat-task')
+
+

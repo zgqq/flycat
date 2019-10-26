@@ -7,6 +7,7 @@ dependencies {
     api project(':flycat-springboot-mybatis')
     api project(':flycat-springboot-security')
     api project(':flycat-springboot-web')
+    api project(':flycat-springboot-task')
 
 
     api project(':flycat-cache-guava')

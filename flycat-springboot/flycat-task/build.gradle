@@ -1,0 +1,7 @@
+dependencies {
+    api project(':flycat-task')
+    api project(':flycat-springboot-context')
+}
+
+
+
