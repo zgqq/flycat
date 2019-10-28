@@ -36,7 +36,6 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 @Singleton
@@ -74,7 +73,7 @@ public class RedisCacheService implements DistributedCacheService {
             if (StringUtils.isBlank(cacheValue)) {
                 result = callable.call();
                 if (result == null) {
-                    redisService.setex(redisKey, seconds, CACHE_NULL);
+                    redisService.setEx(redisKey, seconds, CACHE_NULL);
                 } else {
                     final Stopwatch started = Stopwatch.createStarted();
                     final String jsonString = jsonService.toJsonString(result);
@@ -82,9 +81,9 @@ public class RedisCacheService implements DistributedCacheService {
                     LOGGER.info("Serialized object to json, cost: {}", started);
                     redisService.execute(redisOperations -> {
                         redisOperations.multi();
-                        redisOperations.setex(redisKey, seconds, jsonString);
+                        redisOperations.setEx(redisKey, seconds, jsonString);
                         final String moduleKeys = createModuleKeys(module);
-                        redisOperations.zadd(moduleKeys, System.currentTimeMillis(), redisKey);
+                        redisOperations.zAdd(moduleKeys, System.currentTimeMillis(), redisKey);
                         return redisOperations.exec();
                     });
                 }
@@ -153,7 +152,7 @@ public class RedisCacheService implements DistributedCacheService {
     @Override
     public boolean removeCache(String module) {
         final String moduleKeys = createModuleKeys(module);
-        final Set<String> keys = redisService.zrange(moduleKeys, 0, -1);
+        final Set<String> keys = redisService.zRange(moduleKeys, 0, -1);
         redisService.executePipelined(new SessionCallback<Object>() {
             @Override
             public Object execute(RedisOperations redisOperations) {
@@ -171,7 +170,7 @@ public class RedisCacheService implements DistributedCacheService {
     public boolean isValueRefreshed(String module, Object key, int seconds) throws CacheException {
         final String redisKey = CACHE_REMOVABLE_PREFIX + "refresh:" + module + ":" + key;
         do {
-            final boolean setnx = redisService.setnx(redisKey, (System.currentTimeMillis()
+            final boolean setnx = redisService.setNx(redisKey, (System.currentTimeMillis()
                     + TimeUnit.SECONDS.toMillis(seconds)) + "");
             if (setnx) {
                 redisService.expire(redisKey, seconds);
@@ -199,7 +198,7 @@ public class RedisCacheService implements DistributedCacheService {
                 return redisService.incr(redisKey);
             } else {
                 final long call = callable.call().longValue();
-                final boolean setnx = redisService.setnx(redisKey, call + "");
+                final boolean setnx = redisService.setNx(redisKey, call + "");
                 if (setnx) {
                     return call;
                 } else {
@@ -245,7 +244,7 @@ public class RedisCacheService implements DistributedCacheService {
                     final Object key = numberEntry.getKey();
                     final Number value = numberEntry.getValue();
                     final String countKey = getCountKey(module, key);
-                    redisService.setnx(countKey, value + "");
+                    redisService.setNx(countKey, value + "");
                 }
                 final Map<K, T> ktMap = results.get(module);
                 if (ktMap == null) {

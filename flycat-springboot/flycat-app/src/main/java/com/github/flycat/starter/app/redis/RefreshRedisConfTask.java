@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class RefreshRedisConfTask {
 
@@ -51,7 +50,7 @@ public class RefreshRedisConfTask {
                 "Starting refresh redis conf task");
         taskService.addFixedDelayTaskInSecond(() -> {
             LOGGER.info("Refreshing redis conf");
-            Map<String, String> stringStringMap = redisClient.hgetAll(RedisConfKeys.CONF_RESPONSE_FILTER);
+            Map<String, String> stringStringMap = redisClient.hGetAll(RedisConfKeys.CONF_RESPONSE_FILTER);
             int contentsSize = 0;
             if (stringStringMap != null) {
                 Set<Map.Entry<String, String>> entries = stringStringMap.entrySet();
@@ -91,7 +90,7 @@ public class RefreshRedisConfTask {
             }
             AppConf.setMaintainConfig(maintainConfig);
 
-            Set<String> smembers = redisClient.smembers(RedisConfKeys.CONF_DEBUG_UIDS);
+            Set<String> smembers = redisClient.sMembers(RedisConfKeys.CONF_DEBUG_UIDS);
             if (smembers == null) {
                 smembers = new HashSet<>();
             }

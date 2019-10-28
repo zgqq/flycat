@@ -1,6 +1,5 @@
 package com.github.flycat.spi.impl.redis;
 
-import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisOperations;
 import com.google.common.collect.Lists;
 
@@ -19,12 +18,12 @@ public class SpringRedisOperations implements RedisOperations {
 
 
     @Override
-    public String hget(String redisKey, String key) {
+    public String hGet(String redisKey, String key) {
         return (String) redisTemplate.boundHashOps(redisKey).get(key);
     }
 
     @Override
-    public Set<String> smembers(String key) {
+    public Set<String> sMembers(String key) {
         return redisTemplate.boundSetOps(key).members();
     }
 
@@ -34,14 +33,14 @@ public class SpringRedisOperations implements RedisOperations {
     }
 
     @Override
-    public Map<String, String> hgetAll(String key) {
+    public Map<String, String> hGetAll(String key) {
         Map entries = redisTemplate.boundHashOps(key).entries();
         return entries;
     }
 
 
     @Override
-    public void setex(String key, long seconds, String value) {
+    public void setEx(String key, long seconds, String value) {
         redisTemplate.boundValueOps(key).set(value, seconds, TimeUnit.SECONDS);
     }
 
@@ -52,22 +51,22 @@ public class SpringRedisOperations implements RedisOperations {
     }
 
     @Override
-    public boolean zadd(String key, double score, String member) {
+    public Boolean zAdd(String key, double score, String member) {
         return redisTemplate.boundZSetOps(key).add(member, score);
     }
 
     @Override
-    public Set<String> zrange(String key, int start, int end) {
+    public Set<String> zRange(String key, int start, int end) {
         return redisTemplate.boundZSetOps(key).range(start, end);
     }
 
     @Override
-    public boolean setnx(String key, String value) {
+    public Boolean setNx(String key, String value) {
         return redisTemplate.boundValueOps(key).setIfAbsent(value);
     }
 
     @Override
-    public boolean expire(String key, int seconds) {
+    public Boolean expire(String key, int seconds) {
         return redisTemplate.expire(key, seconds, TimeUnit.SECONDS);
     }
 
@@ -82,7 +81,7 @@ public class SpringRedisOperations implements RedisOperations {
     }
 
     @Override
-    public long incr(String key) {
+    public Long incr(String key) {
         return redisTemplate.boundValueOps(key).increment();
     }
 }

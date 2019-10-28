@@ -86,7 +86,7 @@ public abstract class AbstractTokenAuthenticationService implements TokenAuthent
         if (uid == null) {
             return null;
         }
-        String tokenInfoStr = redisProvider.hget(RedisKeys.USER_REQ_TOKEN, uid + "");
+        String tokenInfoStr = redisProvider.hGet(RedisKeys.USER_REQ_TOKEN, uid + "");
         if (tokenInfoStr != null && tokenInfoStr instanceof String) {
             final TokenInfo tokenInfo = JsonUtils.parseObject(tokenInfoStr, TokenInfo.class);
             return tokenInfo;

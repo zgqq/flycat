@@ -6,31 +6,29 @@ import java.util.Set;
 
 public interface RedisOperations {
 
-    String hget(String redisKey, String key);
+    String hGet(String redisKey, String key);
 
-    Set<String> smembers(String key);
+    Set<String> sMembers(String key);
 
     String get(String key);
 
-    Map<String, String> hgetAll(String key);
+    Map<String, String> hGetAll(String key);
 
-
-    void setex(String key, long seconds, String value);
-
+    void setEx(String key, long seconds, String value);
 
     Long del(String... key);
 
-    boolean zadd(String key, double score, String member);
+    Boolean zAdd(String key, double score, String member);
 
-    Set<String> zrange(String key, int start, int end);
+    Set<String> zRange(String key, int start, int end);
 
-    boolean setnx(String key, String value);
+    Boolean setNx(String key, String value);
 
-    boolean expire(String key, int seconds);
+    Boolean expire(String key, int seconds);
 
     void multi();
 
     List<Object> exec();
 
-    long incr(String key);
+    Long incr(String key);
 }

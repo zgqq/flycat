@@ -30,13 +30,13 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
-    public String hget(String redisKey, String key) {
-        return provider.hget(redisKey, key);
+    public String hGet(String redisKey, String key) {
+        return provider.hGet(redisKey, key);
     }
 
     @Override
-    public Set<String> smembers(String key) {
-        return provider.smembers(key);
+    public Set<String> sMembers(String key) {
+        return provider.sMembers(key);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
-    public Map<String, String> hgetAll(String key) {
-        return provider.hgetAll(key);
+    public Map<String, String> hGetAll(String key) {
+        return provider.hGetAll(key);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
-    public void setex(String key, long seconds, String value) {
-        provider.setex(key, seconds, value);
+    public void setEx(String key, long seconds, String value) {
+        provider.setEx(key, seconds, value);
     }
 
     @Override
@@ -85,22 +85,22 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
-    public boolean zadd(String key, double score, String member) {
-        return provider.zadd(key, score, member);
+    public Boolean zAdd(String key, double score, String member) {
+        return provider.zAdd(key, score, member);
     }
 
     @Override
-    public Set<String> zrange(String key, int start, int end) {
-        return provider.zrange(key, start, end);
+    public Set<String> zRange(String key, int start, int end) {
+        return provider.zRange(key, start, end);
     }
 
     @Override
-    public boolean setnx(String key, String value) {
-        return provider.setnx(key, value);
+    public Boolean setNx(String key, String value) {
+        return provider.setNx(key, value);
     }
 
     @Override
-    public boolean expire(String key, int seconds) {
+    public Boolean expire(String key, int seconds) {
         return provider.expire(key, seconds);
     }
 
@@ -115,7 +115,7 @@ public class AbstractRedisService implements RedisService {
     }
 
     @Override
-    public long incr(String key) {
+    public Long incr(String key) {
         return provider.incr(key);
     }
 
