@@ -24,12 +24,14 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Singleton
 @Named
 public class GuavaCacheService implements StandaloneCacheService {
 
     private ConcurrentMap<String, Cache<Object, Object>> moduleMap = new ConcurrentHashMap();
+    private ConcurrentMap<String, AtomicLong> atomicLongMap = new ConcurrentHashMap();
 
     private static final Object NULL_OBJECT = new Object();
 
@@ -132,5 +134,52 @@ public class GuavaCacheService implements StandaloneCacheService {
     @Override
     public <T> T queryCacheObject(Object key, Callable<T> callable) throws CacheException {
         return queryCacheObject(createModuleNameByStackTrace(null), key, callable);
+    }
+
+
+    @Override
+    public long getCount(String module, Object key, Callable<Number> callable) throws CacheException {
+        final String countKey = module + ":" + key;
+        final AtomicLong atomicLong = atomicLongMap.get(countKey);
+        if (atomicLong != null) {
+            return atomicLong.get();
+        }
+        final Number call;
+        try {
+            call = callable.call();
+        } catch (Exception e) {
+            throw new CacheException(e);
+        }
+        final long initialValue = call.longValue();
+        final AtomicLong prevAtomicLong = atomicLongMap.putIfAbsent(countKey,
+                new AtomicLong(initialValue)
+        );
+        if (prevAtomicLong != null) {
+            return prevAtomicLong.get();
+        }
+        return initialValue;
+    }
+
+    @Override
+    public long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
+        try {
+            final String countKey = module + ":" + key;
+            final AtomicLong atomicLong = atomicLongMap.get(countKey);
+            if (atomicLong == null) {
+                final Long call = callable.call().longValue();
+                final AtomicLong prevAtomicLong = atomicLongMap.putIfAbsent(countKey,
+                        new AtomicLong(call)
+                );
+                if (prevAtomicLong != null) {
+                    return prevAtomicLong.incrementAndGet();
+                } else {
+                    return call.intValue();
+                }
+            } else {
+                return atomicLong.incrementAndGet();
+            }
+        } catch (Exception e) {
+            throw new CacheException("Unable to increase count", e);
+        }
     }
 }

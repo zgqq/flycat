@@ -69,4 +69,8 @@ public interface DistributedCacheService extends CacheOperation {
                                      int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
+
+    default long increaseCount(String module, Object key, Callable<Long> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
 }

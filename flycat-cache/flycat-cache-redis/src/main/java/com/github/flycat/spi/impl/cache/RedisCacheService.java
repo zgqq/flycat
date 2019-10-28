@@ -186,4 +186,25 @@ public class RedisCacheService implements DistributedCacheService {
             }
         } while (true);
     }
+
+    @Override
+    public long increaseCount(String module, Object key, Callable<Long> callable) throws CacheException {
+        final String redisKey = CACHE_REMOVABLE_PREFIX + "count:" + module + ":" + key;
+        try {
+            final String count = redisService.get(redisKey);
+            if (StringUtils.isNotBlank(count)) {
+                return redisService.incr(redisKey);
+            } else {
+                final Long call = callable.call();
+                final boolean setnx = redisService.setnx(redisKey, call + "");
+                if (setnx) {
+                    return call;
+                } else {
+                    return redisService.incr(redisKey);
+                }
+            }
+        } catch (Exception e) {
+            throw new CacheException(e);
+        }
+    }
 }

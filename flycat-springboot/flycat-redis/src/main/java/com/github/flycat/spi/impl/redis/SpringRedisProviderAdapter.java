@@ -101,4 +101,9 @@ public class SpringRedisProviderAdapter extends SpringRedisOperations implements
             }
         });
     }
+
+    @Override
+    public long incr(String key) {
+        return redisTemplate.opsForValue().increment(key);
+    }
 }

@@ -80,4 +80,9 @@ public class SpringRedisOperations implements RedisOperations {
     public List<Object> exec() {
         return redisTemplate.exec();
     }
+
+    @Override
+    public long incr(String key) {
+        return redisTemplate.boundValueOps(key).increment();
+    }
 }

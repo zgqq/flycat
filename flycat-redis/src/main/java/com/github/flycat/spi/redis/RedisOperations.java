@@ -32,4 +32,5 @@ public interface RedisOperations {
 
     List<Object> exec();
 
+    long incr(String key);
 }
