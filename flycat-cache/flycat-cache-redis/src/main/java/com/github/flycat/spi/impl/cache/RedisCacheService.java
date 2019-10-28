@@ -16,6 +16,7 @@
 package com.github.flycat.spi.impl.cache;
 
 import com.github.flycat.spi.cache.CacheException;
+import com.github.flycat.spi.cache.CountMaps;
 import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisOperations;
@@ -23,6 +24,8 @@ import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.spi.redis.SessionCallback;
 import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +33,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 @Singleton
 @Named
@@ -188,14 +191,14 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public long increaseCount(String module, Object key, Callable<Long> callable) throws CacheException {
+    public long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
         final String redisKey = CACHE_REMOVABLE_PREFIX + "count:" + module + ":" + key;
         try {
             final String count = redisService.get(redisKey);
             if (StringUtils.isNotBlank(count)) {
                 return redisService.incr(redisKey);
             } else {
-                final Long call = callable.call();
+                final long call = callable.call().longValue();
                 final boolean setnx = redisService.setnx(redisKey, call + "");
                 if (setnx) {
                     return call;
@@ -206,5 +209,53 @@ public class RedisCacheService implements DistributedCacheService {
         } catch (Exception e) {
             throw new CacheException(e);
         }
+    }
+
+    private String getCountKey(String module, Object key) {
+        return CACHE_REMOVABLE_PREFIX + "count:" + module + ":" + key;
+    }
+
+    @Override
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules, List<K> keys,
+                                                                 Function<List<K>, Map<String, Map<K, T>>> callable) throws CacheException {
+
+        final ArrayList<Object> notFoundKeys = Lists.newArrayList();
+        final Map<String, Map<K, T>> results = Maps.newHashMap();
+        for (String module : modules) {
+            final HashMap<K, T> result = Maps.newHashMap();
+            for (Object key : keys) {
+                final String countKey = getCountKey(module, key);
+                final String value = redisService.get(countKey);
+                if (value != null) {
+                    result.put((K) key, (T) Long.valueOf(value));
+                } else {
+                    notFoundKeys.add(key);
+                }
+            }
+            results.put(module, result);
+        }
+
+        if (!notFoundKeys.isEmpty()) {
+            final Map<String, Map<K, T>> applyResults = callable.apply((List<K>) notFoundKeys);
+            for (Map.Entry<String, Map<K, T>> stringMapEntry : applyResults.entrySet()) {
+                final String module = stringMapEntry.getKey();
+                final Map<K, T> computeResults = stringMapEntry.getValue();
+
+                for (Map.Entry<K, T> numberEntry : computeResults.entrySet()) {
+                    final Object key = numberEntry.getKey();
+                    final Number value = numberEntry.getValue();
+                    final String countKey = getCountKey(module, key);
+                    redisService.setnx(countKey, value + "");
+                }
+                final Map<K, T> ktMap = results.get(module);
+                if (ktMap == null) {
+                    results.put(module, computeResults);
+                } else {
+                    ktMap.putAll(computeResults);
+                }
+            }
+        }
+        final CountMaps countMaps = new CountMaps(results);
+        return countMaps;
     }
 }
