@@ -16,15 +16,19 @@
 package com.github.flycat.spi.impl.cache;
 
 import com.github.flycat.spi.cache.CacheException;
+import com.github.flycat.spi.cache.CountMaps;
 import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 @Singleton
 @Named
@@ -139,7 +143,7 @@ public class GuavaCacheService implements StandaloneCacheService {
 
     @Override
     public long getCount(String module, Object key, Callable<Number> callable) throws CacheException {
-        final String countKey = module + ":" + key;
+        final String countKey = getCountKey(module, key);
         final AtomicLong atomicLong = atomicLongMap.get(countKey);
         if (atomicLong != null) {
             return atomicLong.get();
@@ -160,10 +164,14 @@ public class GuavaCacheService implements StandaloneCacheService {
         return initialValue;
     }
 
+    private String getCountKey(String module, Object key) {
+        return module + ":" + key;
+    }
+
     @Override
     public long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
         try {
-            final String countKey = module + ":" + key;
+            final String countKey = getCountKey(module, key);
             final AtomicLong atomicLong = atomicLongMap.get(countKey);
             if (atomicLong == null) {
                 final Long call = callable.call().longValue();
@@ -181,5 +189,79 @@ public class GuavaCacheService implements StandaloneCacheService {
         } catch (Exception e) {
             throw new CacheException("Unable to increase count", e);
         }
+    }
+
+
+    @Override
+    public <T extends Number, K> Map<K, T> getCountMap(String module, List<K> keys, Function<List<K>, Map<K, T>> callable) throws CacheException {
+        final HashMap<Object, Number> result = Maps.newHashMap();
+        final ArrayList<Object> notFoundKeys = Lists.newArrayList();
+        for (Object key : keys) {
+            final String countKey = getCountKey(module, key);
+            final AtomicLong atomicLong = atomicLongMap.get(countKey);
+            if (atomicLong != null) {
+                final long l = atomicLong.get();
+                result.put(key, l);
+            } else {
+                notFoundKeys.add(key);
+            }
+        }
+        final Map<Object, Number> computeResults = (Map<Object, Number>) callable.apply((List<K>) notFoundKeys);
+        for (Map.Entry<Object, Number> numberEntry : computeResults.entrySet()) {
+            final Object key = numberEntry.getKey();
+            final Number value = numberEntry.getValue();
+            final String countKey = getCountKey(module, key);
+            atomicLongMap.putIfAbsent(countKey,
+                    new AtomicLong((Long) value));
+        }
+        result.putAll(computeResults);
+
+        return (Map<K, T>) result;
+    }
+
+    @Override
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules, List<K> keys,
+                                                                                           Function<List<K>,
+                                                                                     Map<String, Map<K, T>>> callable) throws CacheException {
+        final ArrayList<Object> notFoundKeys = Lists.newArrayList();
+        final Map<String, Map<K, T>> results = Maps.newHashMap();
+        for (String module : modules) {
+            final HashMap<K, T> result = Maps.newHashMap();
+            for (Object key : keys) {
+                final String countKey = getCountKey(module, key);
+                final AtomicLong atomicLong = atomicLongMap.get(countKey);
+                if (atomicLong != null) {
+                    final Long l = atomicLong.get();
+                    result.put((K) key, (T) l);
+                } else {
+                    notFoundKeys.add(key);
+                }
+            }
+            results.put(module, result);
+        }
+
+        if (!notFoundKeys.isEmpty()) {
+            final Map<String, Map<K, T>> applyResults = callable.apply((List<K>) notFoundKeys);
+            for (Map.Entry<String, Map<K, T>> stringMapEntry : applyResults.entrySet()) {
+                final String module = stringMapEntry.getKey();
+                final Map<K, T> computeResults = stringMapEntry.getValue();
+
+                for (Map.Entry<K, T> numberEntry : computeResults.entrySet()) {
+                    final Object key = numberEntry.getKey();
+                    final Number value = numberEntry.getValue();
+                    final String countKey = getCountKey(module, key);
+                    atomicLongMap.putIfAbsent(countKey,
+                            new AtomicLong(value.longValue()));
+                }
+                final Map<K, T> ktMap = results.get(module);
+                if (ktMap == null) {
+                    results.put(module, computeResults);
+                } else {
+                    ktMap.putAll(computeResults);
+                }
+            }
+        }
+        final CountMaps countMaps = new CountMaps(results);
+        return countMaps;
     }
 }
