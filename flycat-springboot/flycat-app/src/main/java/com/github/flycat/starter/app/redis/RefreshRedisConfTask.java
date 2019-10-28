@@ -19,6 +19,7 @@ import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.spi.task.TaskService;
 import com.github.flycat.starter.app.config.AppConf;
 import com.github.flycat.starter.app.config.MaintainConf;
 import com.github.flycat.util.StringUtils;
@@ -27,30 +28,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class RefreshRedisConfTask {
 
-    private ScheduledExecutorService executorService;
     private static final Logger LOGGER = LoggerFactory.getLogger(RefreshRedisConfTask.class);
 
     private final RedisService redisClient;
     private final ApplicationContext applicationContainer;
     private final JsonService jsonService;
+    private final TaskService taskService;
 
-    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient, JsonService jsonService) {
+    public RefreshRedisConfTask(ApplicationContext applicationContainer, RedisService redisClient, JsonService jsonService, TaskService taskService) {
         this.redisClient = redisClient;
         this.applicationContainer = applicationContainer;
         this.jsonService = jsonService;
+        this.taskService = taskService;
     }
 
     public void start() {
         LOGGER.info("" +
                 "Starting refresh redis conf task");
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleWithFixedDelay(() -> {
+        taskService.addFixedDelayTaskInSecond(() -> {
             LOGGER.info("Refreshing redis conf");
             Map<String, String> stringStringMap = redisClient.hgetAll(RedisConfKeys.CONF_RESPONSE_FILTER);
             int contentsSize = 0;
@@ -102,13 +101,7 @@ public class RefreshRedisConfTask {
                             " maintainConf:{}, debugUids:{}", contentsSize,
                     maintainConfig, smembers
             );
-        }, 0, 20, TimeUnit.SECONDS);
+        }, 0, 20);
         LOGGER.info("Started refresh redis conf task");
-    }
-
-    public void close() {
-        if (executorService != null) {
-            executorService.shutdown();
-        }
     }
 }
