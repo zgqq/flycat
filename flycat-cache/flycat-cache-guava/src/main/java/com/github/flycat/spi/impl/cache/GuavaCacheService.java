@@ -234,7 +234,9 @@ public class GuavaCacheService implements StandaloneCacheService {
                     final Long l = atomicLong.get();
                     result.put((K) key, (T) l);
                 } else {
-                    notFoundKeys.add(key);
+                    if (!notFoundKeys.contains(key)) {
+                        notFoundKeys.add(key);
+                    }
                 }
             }
             results.put(module, result);

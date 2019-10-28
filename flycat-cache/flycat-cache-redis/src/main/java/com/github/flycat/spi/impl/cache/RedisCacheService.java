@@ -26,6 +26,7 @@ import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,7 +229,9 @@ public class RedisCacheService implements DistributedCacheService {
                 if (value != null) {
                     result.put((K) key, (T) Long.valueOf(value));
                 } else {
-                    notFoundKeys.add(key);
+                    if (!notFoundKeys.contains(key)) {
+                        notFoundKeys.add(key);
+                    }
                 }
             }
             results.put(module, result);
