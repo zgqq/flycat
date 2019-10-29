@@ -14,4 +14,9 @@ public class IOUtils {
         final FileInputStream fileInputStream = new FileInputStream(file);
         return org.apache.commons.io.IOUtils.toString(fileInputStream, Charset.defaultCharset());
     }
+
+    public static String getFileContentByClasspath(String pathname) throws IOException {
+        final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(pathname);
+        return org.apache.commons.io.IOUtils.toString(resourceAsStream, Charset.defaultCharset());
+    }
 }

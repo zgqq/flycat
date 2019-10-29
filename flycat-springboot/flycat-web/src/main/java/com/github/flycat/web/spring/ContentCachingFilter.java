@@ -17,7 +17,9 @@ package com.github.flycat.web.spring;
 
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.util.io.IOUtils;
 import com.github.flycat.web.WebConfigurationLoader;
+import com.github.flycat.web.WebException;
 import com.github.flycat.web.context.ExceptionContext;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
@@ -42,10 +44,10 @@ public class ContentCachingFilter implements Filter {
     private static final Logger REQUEST_LOGGER = LoggerFactory.getLogger("request");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContentCachingFilter.class);
+    private final PostProcessExceptionHandler postProcessExceptionHandler;
 
-
-    public ContentCachingFilter() {
-
+    public ContentCachingFilter(PostProcessExceptionHandler postProcessExceptionHandler) {
+        this.postProcessExceptionHandler = postProcessExceptionHandler;
     }
 
 
@@ -88,26 +90,8 @@ public class ContentCachingFilter implements Filter {
 //                chain.doFilter(requestWrapper, responseWrapper);
 //            }
         } catch (Throwable e) {
-            Throwable cause = e;
-            if (e instanceof NestedServletException) {
-                cause = e.getCause();
-            }
-            final String requestBody = requestWrapper.getDecodedRequestBody();
-            if (cause instanceof BusinessException) {
-                LOGGER.error("BusinessException! uri {}, params {}, method {}", requestURI, requestBody, method, e);
-                BusinessException e1 = (BusinessException) cause;
-                final ResponseFactory factoryResponse = ResponseFactoryHolder.getResponseFactory();
-                String output = JsonUtils.toJsonString(factoryResponse.createResponse(e1.getErrorCode(), e1.getMessage()));
-                responseWrapper.getWriter().write(output);
-            } else {
-                LOGGER.error("System error! uri {}, params {}, method {}", requestURI, requestBody, method, e);
-                final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
-                        new ExceptionContext(cause, true));
-                String output = JsonUtils.toJsonString(unknownExceptionResult);
-                responseWrapper.getWriter().write(output);
-            }
+            postProcessExceptionHandler.handle(requestWrapper, responseWrapper, e);
         } finally {
-//            MDC.clear();
 
             started.stop();
 

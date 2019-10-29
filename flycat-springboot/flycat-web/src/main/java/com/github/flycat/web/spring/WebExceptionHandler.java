@@ -125,7 +125,7 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler(Throwable.class)
-    public Object handleApiException(Throwable ex, HttpServletRequest request) {
+    public Object handleUnknownException(Throwable ex, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
         HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);

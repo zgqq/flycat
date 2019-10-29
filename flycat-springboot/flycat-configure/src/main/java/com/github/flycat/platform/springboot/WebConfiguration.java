@@ -61,9 +61,9 @@ import java.util.Set;
 public class WebConfiguration {
 
     @Bean
-    public FilterRegistrationBean cacheRequestFilter() {
+    public FilterRegistrationBean cacheRequestFilter(HandlerMappingContext handlerMappingContext) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        Filter customFilter = new ContentCachingFilter();
+        Filter customFilter = new ContentCachingFilter(new PostProcessExceptionHandler(handlerMappingContext));
         registration.setFilter(customFilter);
         registration.addUrlPatterns("/*");
         registration.setOrder(FilterOrder.CONTENT_CACHING_FILTER);
@@ -191,7 +191,7 @@ public class WebConfiguration {
 
 
     @Configuration
-    @ConditionalOnClass({ Servlet.class, Tomcat.class, UpgradeProtocol.class })
+    @ConditionalOnClass({Servlet.class, Tomcat.class, UpgradeProtocol.class})
     public static class TomcatConfiguration {
         @Bean
         public SmoothTomcatWebServerCustomizer tomcatWebServer() {
