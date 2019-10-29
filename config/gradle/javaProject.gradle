@@ -1,15 +1,13 @@
-apply plugin: 'checkstyle'
-apply plugin: 'idea'
 apply plugin: "java"
 apply plugin: "java-library"
 apply plugin: "io.freefair.lombok"
+apply plugin: 'idea'
 generateLombokConfig.enabled = false
 
 lombok {
     version = "1.18.10"
 
 }
-
 
 
 dependencies {
@@ -34,24 +32,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-checkstyle {
-    toolVersion "8.21"
-    configFile file("${checkstyleDir}/checkstyle.xml")
-    configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
-}
-
-checkstyleMain {
-    source = 'src/main/java'
-}
-
-checkstyleTest {
-    source = 'src/test/java'
-}
-
 idea {
     module {
         inheritOutputDirs = false
         outputDir = file("$buildDir/classes/java/main")
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
 
@@ -61,7 +47,7 @@ tasks.withType(JavaCompile) {
 
 repositories {
     maven { url 'https://maven.aliyun.com/repository/jcenter' }
-    mavenLocal()
+    mavenCentral()
     maven {
         url springRepo
     }

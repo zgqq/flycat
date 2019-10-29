@@ -11,7 +11,6 @@ buildscript {
 //    }
     repositories {
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        mavenLocal()
         maven { url springRepo }
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -28,6 +27,7 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
     id "com.github.hierynomus.license" version "0.15.0"
     id "io.freefair.lombok" version "4.1.0"
+    id 'idea'
 }
 
 ext.configDir = "${project.rootDir}/config"
@@ -47,6 +47,21 @@ ext.javaProjects = subprojects.findAll {
 
 configure(javaProjects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
+
+    apply plugin: 'checkstyle'
+    checkstyle {
+        toolVersion "8.21"
+        configFile file("${checkstyleDir}/checkstyle.xml")
+        configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
+    }
+
+    checkstyleMain {
+        source = 'src/main/java'
+    }
+
+    checkstyleTest {
+        source = 'src/test/java'
+    }
 
 
     group "com.github.flycat"

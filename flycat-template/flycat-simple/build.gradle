@@ -6,7 +6,6 @@ buildscript {
 
 	repositories {
 		maven { url 'https://maven.aliyun.com/repository/jcenter' }
-		mavenLocal()
 		maven { url springRepo }
 		maven {
 			url "https://plugins.gradle.org/m2/"
