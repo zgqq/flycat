@@ -77,17 +77,8 @@ public class PostProcessExceptionHandler {
                 final String requestBody = requestWrapper.getDecodedRequestBody();
                 LOGGER.error("System error! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                 if (ContextUtils.isTestProfile()) {
-                    final String stackTrace = ExceptionUtils.getStackTrace(cause);
-                    final StringBuilder stringBuilder = new StringBuilder();
-                    String[] lines = stackTrace.split("\\r?\\n");
-                    for (String line : lines) {
-                        stringBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-                        stringBuilder.append(line);
-                        stringBuilder.append("\n");
-                    }
-                    final String htmlStackTrace = stringBuilder.toString().replace("\n", "<br>")
-                            .replace("\t", "    ");
-                    responseWrapper.getWriter().write(htmlStackTrace);
+                    final String stackTrace = ExceptionUtils.getStackTraceHtml(cause);
+                    responseWrapper.getWriter().write(stackTrace);
                 } else {
                     responseWrapper.getWriter().write(errorHtml);
                 }

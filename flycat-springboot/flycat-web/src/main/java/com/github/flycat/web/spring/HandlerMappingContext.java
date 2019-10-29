@@ -88,7 +88,7 @@ public class HandlerMappingContext implements ApplicationListener<ContextRefresh
                 try {
                     handler = mapping.getHandler(request);
                 } catch (Exception e) {
-                    LOGGER.error("Unable to get handler", e);
+//                    LOGGER.error("Unable to get handler", e);
                 }
                 if (handler != null) {
                     return handler;
@@ -102,10 +102,13 @@ public class HandlerMappingContext implements ApplicationListener<ContextRefresh
         final HandlerExecutionChain handler = getHandler(request);
         boolean responseBody = false;
         if (handler != null) {
-            HandlerMethod handlerHandler = (HandlerMethod) handler.getHandler();
-            final MethodParameter returnType = handlerHandler.getReturnType();
-            responseBody = (AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), ResponseBody.class) ||
-                    returnType.hasMethodAnnotation(ResponseBody.class));
+            final Object mapperHandler = handler.getHandler();
+            if (mapperHandler instanceof HandlerMethod) {
+                HandlerMethod handlerHandler = (HandlerMethod) mapperHandler;
+                final MethodParameter returnType = handlerHandler.getReturnType();
+                responseBody = (AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), ResponseBody.class) ||
+                        returnType.hasMethodAnnotation(ResponseBody.class));
+            }
         }
         return responseBody;
     }

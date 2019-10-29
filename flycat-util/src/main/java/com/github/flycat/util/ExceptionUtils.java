@@ -17,6 +17,20 @@ package com.github.flycat.util;
 
 public class ExceptionUtils {
 
+    public static String getStackTraceHtml(Throwable throwable) {
+        final String stackTrace = getStackTrace(throwable);
+        final StringBuilder stringBuilder = new StringBuilder();
+        String[] lines = stackTrace.split("\\r?\\n");
+        for (String line : lines) {
+            stringBuilder.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            stringBuilder.append(line);
+            stringBuilder.append("\n");
+        }
+        final String stackTraceHtml = stringBuilder.toString().replace("\n", "<br>")
+                .replace("\t", "    ");
+        return stackTraceHtml;
+    }
+
     public static String getStackTrace(Throwable throwable) {
         return org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable);
     }

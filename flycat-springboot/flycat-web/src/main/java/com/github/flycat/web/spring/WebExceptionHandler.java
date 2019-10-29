@@ -16,7 +16,9 @@
 package com.github.flycat.web.spring;
 
 import com.codahale.metrics.MetricRegistry;
+import com.github.flycat.context.ContextUtils;
 import com.github.flycat.exception.BusinessException;
+import com.github.flycat.util.ExceptionUtils;
 import com.github.flycat.web.context.ExceptionContext;
 import com.github.flycat.web.response.ResponseBodyUtils;
 import com.github.flycat.web.response.ResponseCode;
@@ -30,7 +32,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -124,25 +128,43 @@ public class WebExceptionHandler {
         }
     }
 
-    @ExceptionHandler(Throwable.class)
-    public Object handleUnknownException(Throwable ex, HttpServletRequest request) {
+    @ExceptionHandler(Exception.class)
+    public Object handleUnknownException(Exception ex, HttpServletRequest request,
+                                         WebRequest webRequest) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
         HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
-        LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURL(), requestBody, ex);
+        LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURI(), requestBody, ex);
         final boolean responseBody = handlerMappingContext.isResponseBody(requestWrapper);
         final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
                 new ExceptionContext(ex, responseBody)
         );
+        final ResponseEntityExceptionHandler responseEntityExceptionHandler = new ResponseEntityExceptionHandler() {
+        };
+
+        HttpStatus status = null;
+        try {
+            final ResponseEntity<Object> responseEntity = responseEntityExceptionHandler.handleException(ex, webRequest);
+            status = responseEntity.getStatusCode();
+        } catch (Exception e) {
+        }
+        if (status == null) {
+            status = HttpStatus.OK;
+        }
         if (responseBody) {
-            return newResponseEntity(unknownExceptionResult);
+            return newResponseEntity(unknownExceptionResult, status);
         } else {
-            final ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("error");
-            modelAndView.addObject("error", unknownExceptionResult);
-            return modelAndView;
+            if (ContextUtils.isTestProfile()) {
+                return newResponseEntity(ExceptionUtils.getStackTraceHtml(ex), status);
+            } else {
+                final ModelAndView modelAndView = new ModelAndView();
+                modelAndView.setViewName("error");
+                modelAndView.addObject("error", unknownExceptionResult);
+                modelAndView.setStatus(status);
+                return modelAndView;
+            }
         }
     }
 
@@ -166,7 +188,14 @@ public class WebExceptionHandler {
         return requestWrapper;
     }
 
-    private Object newResponseEntity(Object result) {
+    private ResponseEntity newResponseEntity(Object result) {
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    private ResponseEntity newResponseEntity(Object result, HttpStatus status) {
+        if (status == null) {
+            status = HttpStatus.OK;
+        }
+        return new ResponseEntity<>(result, status);
     }
 }

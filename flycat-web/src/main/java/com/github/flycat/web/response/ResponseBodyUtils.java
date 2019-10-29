@@ -58,7 +58,8 @@ public class ResponseBodyUtils {
         Object unknownExceptionResult = responseFactory.createUnknownExceptionResponse(exceptionContext);
         if (unknownExceptionResult == null) {
             if (ContextUtils.isTestProfile()) {
-                final String stackTrace = ExceptionUtils.getStackTrace(exceptionContext.getThrowable());
+                final String stackTrace;
+                stackTrace = ExceptionUtils.getStackTrace(exceptionContext.getThrowable());
                 unknownExceptionResult = responseFactory.createResponse(ResponseBodyUtils
                                 .getSystemErrorCode(ResponseCode.SERVER_UNKNOWN_ERROR),
                         StringUtils.unescapeJson(stackTrace));
