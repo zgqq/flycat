@@ -23,4 +23,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface Transactional {
     String value() default "";
+
+    Class<? extends Throwable>[] rollbackFor() default {};
 }

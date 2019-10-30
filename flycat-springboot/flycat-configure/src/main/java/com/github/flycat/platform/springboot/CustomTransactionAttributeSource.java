@@ -21,13 +21,11 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.SpringTransactionAnnotationParser;
-import org.springframework.transaction.interceptor.AbstractFallbackTransactionAttributeSource;
-import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
-import org.springframework.transaction.interceptor.TransactionAttribute;
-import org.springframework.transaction.interceptor.TransactionAttributeSource;
+import org.springframework.transaction.interceptor.*;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 public class CustomTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource
         implements TransactionAttributeSource {
@@ -67,9 +65,15 @@ public class CustomTransactionAttributeSource extends AbstractFallbackTransactio
                     element, Transactional.class, false, false);
             if (attributes != null) {
                 RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
-                rbta.setRollbackRules(Lists.newArrayList());
+                final ArrayList<RollbackRuleAttribute> rollbackRules = Lists.newArrayList();
+                for (Class<?> rbRule : attributes.getClassArray("rollbackFor")) {
+                    rollbackRules.add(new RollbackRuleAttribute(rbRule));
+                }
+                rbta.setRollbackRules(rollbackRules);
+
                 rbta.setQualifier(attributes.getString("value"));
                 rbta.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
 
                 rbta.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
                 rbta.setTimeout(TransactionDefinition.TIMEOUT_DEFAULT);
