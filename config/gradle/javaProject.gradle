@@ -33,6 +33,8 @@ dependencies {
 }
 
 idea {
+    pathVariables GRADLE_HOME: file("$buildDir")
+    println("build dir $buildDir")
     module {
         inheritOutputDirs = false
         outputDir = file("$buildDir/classes/java/main")

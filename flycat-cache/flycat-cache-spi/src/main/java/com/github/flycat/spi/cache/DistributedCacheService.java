@@ -72,10 +72,6 @@ public interface DistributedCacheService extends CacheOperation {
         throw new UnsupportedOperationException();
     }
 
-    default long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
 //    default <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules,
 //                                                                  List<K> keys,
 //                                                                  Function<List<K>,

@@ -20,6 +20,7 @@ import com.github.flycat.util.collection.StreamUtils;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 public interface CacheOperation {
@@ -36,11 +37,12 @@ public interface CacheOperation {
         return flag;
     }
 
-    default boolean removeCache(String module, String key) {
+
+    default Boolean removeCache(String module, String key) {
         throw new UnsupportedOperationException();
     }
 
-    default boolean removeCache(String module) {
+    default Boolean removeCache(String module) {
         throw new UnsupportedOperationException();
     }
 
@@ -64,4 +66,10 @@ public interface CacheOperation {
             throws CacheException {
         throw new UnsupportedOperationException();
     }
+
+
+    default long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
 }

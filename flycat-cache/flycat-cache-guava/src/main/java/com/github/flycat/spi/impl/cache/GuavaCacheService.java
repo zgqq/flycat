@@ -19,7 +19,6 @@ import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.CountMaps;
 import com.github.flycat.spi.cache.QueryKey;
 import com.github.flycat.spi.cache.StandaloneCacheService;
-import com.github.flycat.util.collection.StreamUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -111,7 +110,7 @@ public class GuavaCacheService implements StandaloneCacheService {
     }
 
     @Override
-    public boolean removeCache(String module, String key) {
+    public Boolean removeCache(String module, String key) {
         final Cache<Object, Object> cache = moduleMap.get(module);
         if (cache != null) {
             cache.invalidate(key);
@@ -121,7 +120,7 @@ public class GuavaCacheService implements StandaloneCacheService {
     }
 
     @Override
-    public boolean removeCache(String module) {
+    public Boolean removeCache(String module) {
         moduleMap.remove(module);
         return true;
     }

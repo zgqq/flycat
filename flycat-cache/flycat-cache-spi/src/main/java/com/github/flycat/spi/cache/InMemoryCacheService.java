@@ -115,7 +115,4 @@ public interface InMemoryCacheService extends CacheOperation {
         throw new UnsupportedOperationException();
     }
 
-    default long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
 }
