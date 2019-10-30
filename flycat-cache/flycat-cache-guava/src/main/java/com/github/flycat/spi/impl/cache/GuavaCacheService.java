@@ -223,12 +223,6 @@ public class GuavaCacheService implements StandaloneCacheService {
     }
 
     @Override
-    public <P, T extends Number, K> CountMaps getCountMapsByModules(List<P> list, Function<? super P, K> mapper, Function<QueryKey<K>, Map<String, Map<String, T>>> callable, String... modules) throws CacheException {
-        final List<K> ks = StreamUtils.mapList(list, mapper);
-        return getCountMapsByModules(ks, callable, modules);
-    }
-
-    @Override
     public <T extends Number, K> CountMaps getCountMapsByModules(
             List<K> keys,
             Function<QueryKey<K>,
@@ -250,7 +244,7 @@ public class GuavaCacheService implements StandaloneCacheService {
                     }
                 }
             }
-            results.put(QueryKey.getSubmoduleName(module), result);
+            results.put(module, result);
         }
 
         if (!notFoundKeys.isEmpty()) {

@@ -1,7 +1,10 @@
 package com.github.flycat.spi.cache;
 
+import com.github.flycat.util.collection.StreamUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QueryKey<K> {
     private final String[] modules;
@@ -54,5 +57,11 @@ public class QueryKey<K> {
             }
         }
         return builder.toString();
+    }
+
+    public <K extends Number> Map<String, Map<String, K>> toMaps(List<Map<String, K>> mapList, String key) {
+        return StreamUtils
+                .toMaps(mapList, key, getModules(), getSubmodules());
+
     }
 }

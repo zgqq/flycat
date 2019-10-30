@@ -63,4 +63,17 @@ public class StreamUtils {
         return maps;
     }
 
+    public static <T> Map<String, Map<String, T>> toMaps(List<Map<String, T>> listMap, String key,
+                                                         String[] keys,
+                                                         String[] values) {
+        final HashMap<String, Map<String, T>> maps = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            final String mapKey = keys[i];
+            String value = values[i];
+            final Map<String, T> map = StreamUtils.toMap(listMap, key,
+                    value, String.class);
+            maps.put(mapKey, map);
+        }
+        return maps;
+    }
 }

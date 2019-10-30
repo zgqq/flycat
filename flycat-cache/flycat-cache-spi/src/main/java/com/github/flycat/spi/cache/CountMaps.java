@@ -27,8 +27,7 @@ public class CountMaps<K> {
     }
 
     public Integer getInteger(String module, Object id) {
-        final String moduleName = QueryKey.getSubmoduleName(module);
-        final Object o = maps.get(moduleName).get(id.toString());
+        final Object o = maps.get(module).get(id.toString());
         return NumberUtils.toInteger(o);
     }
 }

@@ -15,7 +15,12 @@
  */
 package com.github.flycat.spi.cache;
 
+import com.github.flycat.util.collection.StreamUtils;
+
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public interface CacheOperation {
 
@@ -36,6 +41,27 @@ public interface CacheOperation {
     }
 
     default boolean removeCache(String module) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <P, T extends Number, K> CountMaps getCountMapsByModules(
+            List<P> list, Function<? super P, K> mapper,
+            Function<QueryKey<K>,
+                    Map<String, Map<String, T>>>
+                    callable,
+            String... modules)
+            throws CacheException {
+        final List<K> ks = StreamUtils.mapList(list, mapper);
+        return getCountMapsByModules(ks, callable, modules);
+    }
+
+    default <T extends Number, K> CountMaps getCountMapsByModules(List<K> keys,
+                                                                  Function<QueryKey<K>,
+                                                                          Map<String, Map<String, T>>>
+                                                                          callable,
+                                                                  String... modules)
+            throws CacheException {
         throw new UnsupportedOperationException();
     }
 }

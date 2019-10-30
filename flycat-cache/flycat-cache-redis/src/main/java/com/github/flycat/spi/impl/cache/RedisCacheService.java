@@ -18,6 +18,7 @@ package com.github.flycat.spi.impl.cache;
 import com.github.flycat.spi.cache.CacheException;
 import com.github.flycat.spi.cache.CountMaps;
 import com.github.flycat.spi.cache.DistributedCacheService;
+import com.github.flycat.spi.cache.QueryKey;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisOperations;
 import com.github.flycat.spi.redis.RedisService;
@@ -215,20 +216,17 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules,
-                                                                 List<K> keys,
-                                                                 Function<List<K>,
-                                                                         Map<String, Map<K, T>>> callable)
-            throws CacheException {
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<K> keys, Function<QueryKey<K>, Map<String, Map<String, T>>> callable, String... modules) throws CacheException {
+
         final ArrayList<Object> notFoundKeys = Lists.newArrayList();
-        final Map<String, Map<K, T>> results = Maps.newHashMap();
+        final Map<String, Map<String, T>> results = Maps.newHashMap();
         for (String module : modules) {
-            final HashMap<K, T> result = Maps.newHashMap();
+            final HashMap<String, T> result = Maps.newHashMap();
             for (Object key : keys) {
                 final String countKey = getCountKey(module, key);
                 final String value = redisService.get(countKey);
                 if (value != null) {
-                    result.put((K) key, (T) Long.valueOf(value));
+                    result.put(key.toString(), (T) Long.valueOf(value));
                 } else {
                     if (!notFoundKeys.contains(key)) {
                         notFoundKeys.add(key);
@@ -239,18 +237,19 @@ public class RedisCacheService implements DistributedCacheService {
         }
 
         if (!notFoundKeys.isEmpty()) {
-            final Map<String, Map<K, T>> applyResults = callable.apply((List<K>) notFoundKeys);
-            for (Map.Entry<String, Map<K, T>> stringMapEntry : applyResults.entrySet()) {
+            final QueryKey<K> queryKey = new QueryKey<>(modules, keys);
+            final Map<String, Map<String, T>> applyResults = callable.apply(queryKey);
+            for (Map.Entry<String, Map<String, T>> stringMapEntry : applyResults.entrySet()) {
                 final String module = stringMapEntry.getKey();
-                final Map<K, T> computeResults = stringMapEntry.getValue();
+                final Map<String, T> computeResults = stringMapEntry.getValue();
 
-                for (Map.Entry<K, T> numberEntry : computeResults.entrySet()) {
+                for (Map.Entry<String, T> numberEntry : computeResults.entrySet()) {
                     final Object key = numberEntry.getKey();
                     final Number value = numberEntry.getValue();
                     final String countKey = getCountKey(module, key);
                     redisService.setNx(countKey, value + "");
                 }
-                final Map<K, T> ktMap = results.get(module);
+                final Map<String, T> ktMap = results.get(module);
                 if (ktMap == null) {
                     results.put(module, computeResults);
                 } else {
@@ -260,5 +259,6 @@ public class RedisCacheService implements DistributedCacheService {
         }
         final CountMaps countMaps = new CountMaps(results);
         return countMaps;
+
     }
 }
