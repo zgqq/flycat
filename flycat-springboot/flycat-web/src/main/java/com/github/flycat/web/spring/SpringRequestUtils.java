@@ -15,12 +15,15 @@
  */
 package com.github.flycat.web.spring;
 
+import com.github.flycat.util.StringUtils;
+import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-public class RequestUtils {
+public class SpringRequestUtils {
 
     public static String extractVariablePath(HttpServletRequest request) {
         // /elements/CATEGORY1/CATEGORY1_1/ID
@@ -29,5 +32,13 @@ public class RequestUtils {
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         // CATEGORY1/CATEGORY1_1/ID
         return new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, path);
+    }
+
+    public static void attributeToModelIfNotNull(HttpSession session, Model model, String name) {
+        final String value = (String) session.getAttribute(name);
+        if (StringUtils.isNotBlank(value)) {
+            model.addAttribute(name, value);
+            session.removeAttribute(name);
+        }
     }
 }
