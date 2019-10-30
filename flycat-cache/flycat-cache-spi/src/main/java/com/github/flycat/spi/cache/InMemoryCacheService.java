@@ -103,20 +103,31 @@ public interface InMemoryCacheService extends CacheOperation {
     }
 
 
-    default <T extends Number, K> CountMaps getCountMapsByModules(List<String> module,
-                                                                               List<K> keys,
-                                                                               Function<List<K>,
-                                                                                       Map<String, Map<K, T>>>
-                                                                                                     callable)
+    default <P, T extends Number, K> CountMaps getCountMapsByModules(
+            List<P> list, Function<? super P,  K> mapper,
+            Function<QueryKey<K>,
+                    Map<String, Map<String, T>>>
+                    callable,
+            String... modules)
+            throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <T extends Number, K> CountMaps getCountMapsByModules(List<K> keys,
+                                                                  Function<QueryKey<K>,
+                                                                          Map<String, Map<String, T>>>
+                                                                          callable,
+                                                                  String... modules)
             throws CacheException {
         throw new UnsupportedOperationException();
     }
 
 
     default <T extends Number, K> Map<K, T> getCountMap(String module,
-                                                                       List<K> keys,
-                                                                       Function<List<K>,
-                                                                               Map<K, T>> callable)
+                                                        List<K> keys,
+                                                        Function<List<K>,
+                                                                Map<K, T>> callable)
             throws CacheException {
         throw new UnsupportedOperationException();
     }

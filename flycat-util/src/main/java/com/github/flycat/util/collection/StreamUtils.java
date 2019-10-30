@@ -15,6 +15,10 @@
  */
 package com.github.flycat.util.collection;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,18 +31,33 @@ public class StreamUtils {
         return list.stream().map(mapper).collect(Collectors.toList());
     }
 
-    public static <T> Map<T, T> toMap(List<Map<String, T>> listMap, String key, String value) {
+    public static <K, T> Map<K, T> toMap(List<Map<String, T>> listMap,
+                                         String key,
+                                         String value,
+                                         Class<K> keyType) {
+        PropertyEditor editor = null;
+        if (keyType != null) {
+            editor = PropertyEditorManager.findEditor(keyType);
+        }
+        PropertyEditor finalEditor = editor;
         return listMap.stream().collect(Collectors.toMap(
-                (map -> (T) map.get(key)),
+                (map -> {
+                    Object t = map.get(key);
+                    if (finalEditor != null) {
+                        finalEditor.setAsText(t.toString());
+                        t = finalEditor.getValue();
+                    }
+                    return (K) t;
+                }),
                 (map -> (T) map.get(value))));
     }
 
-    public static <T> Map<String, Map<T, T>> toMaps(List<Map<String, T>> listMap, String key,
-                                                    String... values) {
-        final HashMap<String, Map<T, T>> maps = new HashMap<>();
+    public static <T> Map<String, Map<String, T>> toMaps(List<Map<String, T>> listMap, String key,
+                                                         String... values) {
+        final HashMap<String, Map<String, T>> maps = new HashMap<>();
         for (String value : values) {
-            final Map<T, T> map = StreamUtils.toMap(listMap, key,
-                    value);
+            final Map<String, T> map = StreamUtils.toMap(listMap, key,
+                    value, String.class);
             maps.put(value, map);
         }
         return maps;
