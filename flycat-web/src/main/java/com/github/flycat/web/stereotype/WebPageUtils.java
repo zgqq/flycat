@@ -24,7 +24,7 @@ public class WebPageUtils {
             if (password == null) {
                 password = (String) session.getAttribute("user_password_" + flag);
             }
-            needPassword = !(password != null && password.equals(correctPassword));
+            needPassword = (password == null || !password.trim().equalsIgnoreCase(correctPassword.trim()));
             if (passwordParam != null) {
                 session.setAttribute("user_password_" + flag, passwordParam);
             }

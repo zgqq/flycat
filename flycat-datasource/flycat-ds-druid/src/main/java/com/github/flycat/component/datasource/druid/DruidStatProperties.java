@@ -16,9 +16,7 @@
 package com.github.flycat.component.datasource.druid;
 
 
-import lombok.Data;
 
-@Data
 public class DruidStatProperties {
     private String[] aopPatterns;
     private StatViewServlet statViewServlet = new StatViewServlet();
