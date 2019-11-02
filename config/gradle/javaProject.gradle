@@ -2,7 +2,6 @@ apply plugin: "java"
 apply plugin: "java-library"
 apply plugin: 'idea'
 
-
 dependencies {
 //    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
 
@@ -26,7 +25,7 @@ dependencies {
 }
 
 idea {
-    pathVariables GRADLE_HOME: file("$buildDir")
+//    pathVariables GRADLE_HOME: file("$buildDir")
     println("build dir $buildDir")
     module {
         inheritOutputDirs = false

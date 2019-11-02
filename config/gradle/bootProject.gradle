@@ -6,16 +6,16 @@ apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
 processResources.dependsOn copyConfiguration
 
-ext.springJvmArgs = ["-Dspring.profiles.active=$env"]
+ext.springJvmArgs = ["-Dspring.profiles.active=$env".toString()]
 
 if (vJavaLang == '1.11') {
     ext.appJvmArgs = ext.springJvmArgs + [
-            "-Dfile.encoding=UTF-8",
+            '-Dfile.encoding=UTF-8',
             "-Xlog:gc*",
             "-XX:-OmitStackTraceInFastThrow"]
 } else {
     ext.appJvmArgs = ext.springJvmArgs + [
-            "-Dfile.encoding=UTF-8",
+            '-Dfile.encoding=UTF-8',
             "-XX:+PrintGCDetails",
             "-XX:+PrintGCTimeStamps",
             "-XX:-OmitStackTraceInFastThrow"]
@@ -23,17 +23,11 @@ if (vJavaLang == '1.11') {
 
 
 if (!isProd(env)) {
-    ext.appJvmArgs += ["-noverify"
-                   , "-XX:TieredStopAtLevel=1"
-                   , "-XX:+AlwaysPreTouch"]
+    ext.appJvmArgs += ['-noverify'
+                   , '-XX:TieredStopAtLevel=1'
+                   , '-XX:+AlwaysPreTouch']
 }
 
-applicationDefaultJvmArgs = appJvmArgs + [
-        "-Xms512m",
-        "-Xmx512m",
-        "-Xmn128m",
-        "-Xloggc:$projectDir/data/log/gc.log",
-]
 
 ext.debugServerPort = 5005
 if (hasProperty("debugPort")) {
@@ -43,10 +37,17 @@ if (hasProperty("debugPort")) {
 if (isTestServer(env)) {
     ext.appJvmArgs += ["-Xdebug",
                    "-Xnoagent",
-                   "-Djava.compiler=NONE",
-                   "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},server=y,suspend=n"]
+                   '-Djava.compiler=NONE',
+                   "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},server=y,suspend=n".toString()]
 }
 
+
+applicationDefaultJvmArgs = appJvmArgs + [
+        "-Xms512m",
+        "-Xmx512m",
+        "-Xmn128m",
+        "-Xloggc:$projectDir/data/log/gc.log".toString()
+]
 
 
 version = env

@@ -34,7 +34,7 @@ plugins {
     id 'java-library'
 }
 
-ext.flycatVersion = '0.1.2'
+ext.flycatVersion = '0.2.0-SNAPSHOT'
 ext.flycatGroup = 'com.github.zgqq'
 
 ext.configDir = "${project.rootDir}/config"
