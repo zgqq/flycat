@@ -2,6 +2,7 @@
 dependencies {
     api project(':flycat-context')
     api project(':flycat-config-spi')
+    api project(':flycat-task')
     implementation project(':flycat-redis')
 }
 

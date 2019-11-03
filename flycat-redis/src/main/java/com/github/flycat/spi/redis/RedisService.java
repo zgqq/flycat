@@ -29,4 +29,7 @@ public interface RedisService extends RedisOperations {
 
     <T> List<Object> executePipelined(SessionCallback<T> sessionCallback);
 
+    default boolean isAvailable() {
+        return true;
+    }
 }

@@ -59,6 +59,9 @@ public class SpringMultipleRedisService extends MultipleRedisService
     }
 
     public StringRedisTemplate createRedisTemplate(String host, Integer port, String password) {
+        if (StringUtils.isBlank(host)) {
+            return null;
+        }
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         if (StringUtils.isBlank(password)) {
             redisStandaloneConfiguration.setPassword(RedisPassword.none());

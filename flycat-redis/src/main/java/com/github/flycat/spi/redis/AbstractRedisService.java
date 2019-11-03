@@ -127,4 +127,9 @@ public class AbstractRedisService implements RedisService {
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }
+
+    @Override
+    public boolean isAvailable() {
+        return getProvider() != null;
+    }
 }

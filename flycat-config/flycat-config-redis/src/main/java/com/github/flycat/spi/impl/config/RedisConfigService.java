@@ -19,6 +19,7 @@ import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.redis.RedisService;
+import com.github.flycat.spi.task.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 @Named
@@ -36,18 +35,25 @@ public class RedisConfigService implements ConfigService {
 
     private final ConcurrentHashMap<String, RedisConfig>
             systemConfigMap = new ConcurrentHashMap<>();
-    private final RedisService redisClient;
+    private final RedisService redisService;
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisConfigService.class);
     private final JsonService jsonService;
+    private final TaskService taskService;
 
     @Inject
-    public RedisConfigService(RedisService redisService, JsonService jsonService) {
-        this.redisClient = redisService;
+    public RedisConfigService(RedisService redisService,
+                              JsonService jsonService,
+                              TaskService taskService) {
+        this.redisService = redisService;
         this.jsonService = jsonService;
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                    post();
-                }, 5, 30, TimeUnit.SECONDS
-        );
+        this.taskService = taskService;
+        if (redisService.isAvailable()) {
+            this.taskService.addFixedDelayTaskInSecond(
+                    () -> {
+                        post();
+                    }, 30, 5
+            );
+        }
     }
 
     public RedisConfig getRedisConfig(String key) {
@@ -60,7 +66,7 @@ public class RedisConfigService implements ConfigService {
 
     private RedisConfig getAndRefreshConfig(String key) {
         RedisConfig systemConfig;
-        String string = redisClient.get(key);
+        String string = redisService.get(key);
         systemConfig = new RedisConfig(jsonService, key, string);
         systemConfigMap.put(key, systemConfig);
         return systemConfig;
@@ -80,19 +86,19 @@ public class RedisConfigService implements ConfigService {
 
     @Override
     public String getConfig(String dataId) throws ConfigException {
-        String string = redisClient.get(dataId);
+        String string = redisService.get(dataId);
         return string;
     }
 
     @Override
     public String getConfig(String dataId, long timeoutMs) throws ConfigException {
-        String string = redisClient.get(dataId);
+        String string = redisService.get(dataId);
         return string;
     }
 
     @Override
     public String getConfig(String dataId, String group, long timeoutMs) throws ConfigException {
-        String string = redisClient.get(dataId);
+        String string = redisService.get(dataId);
         return string;
     }
 

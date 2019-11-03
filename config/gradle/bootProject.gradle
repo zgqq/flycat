@@ -98,3 +98,4 @@ bootRun {
     systemProperties = System.properties
 }
 
+test.enabled = false

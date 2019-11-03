@@ -18,7 +18,6 @@ package com.github.flycat.starter.app.redis;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.json.JsonUtils;
-import com.github.flycat.spi.redis.AbstractRedisService;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.spi.task.TaskService;
 import com.github.flycat.starter.app.config.AppConf;
@@ -49,13 +48,8 @@ public class RefreshRedisConfTask {
     }
 
     public void start() {
-        if (redisService instanceof AbstractRedisService) {
-            AbstractRedisService client = (AbstractRedisService) redisService;
-            final RedisService provider = client.getProvider();
-            if (provider == null) {
-                LOGGER.info("Not found redis provider");
-                return;
-            }
+        if (!redisService.isAvailable()) {
+            LOGGER.info("Not found redis provider");
         }
 
         LOGGER.info("" +

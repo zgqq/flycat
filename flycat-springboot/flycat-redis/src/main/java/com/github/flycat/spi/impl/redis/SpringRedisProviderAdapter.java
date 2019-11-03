@@ -43,6 +43,9 @@ public class SpringRedisProviderAdapter extends SpringRedisOperations implements
 
 
     public void afterPropertiesSet() throws Exception {
+        if (redisTemplate == null) {
+            return;
+        }
         redisTemplate.afterPropertiesSet();
         final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
         if (connectionFactory instanceof InitializingBean) {
@@ -53,10 +56,16 @@ public class SpringRedisProviderAdapter extends SpringRedisOperations implements
 
     @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
+        if (redisTemplate == null) {
+            return;
+        }
         redisTemplate.setBeanClassLoader(classLoader);
     }
 
     public void destroy() throws Exception {
+        if (redisTemplate == null) {
+            return;
+        }
         final RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
         if (connectionFactory instanceof DisposableBean) {
             DisposableBean factory = (DisposableBean) connectionFactory;
