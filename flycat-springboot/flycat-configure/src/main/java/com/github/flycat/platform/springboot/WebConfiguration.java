@@ -21,9 +21,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.platform.springboot.web.SmoothTomcatWebServerCustomizer;
 import com.github.flycat.util.StringUtils;
-import com.github.flycat.web.WebFactoryConfiguration;
 import com.github.flycat.web.WebConfigurationLoader;
+import com.github.flycat.web.WebFactoryConfiguration;
 import com.github.flycat.web.spring.*;
+import com.github.flycat.web.spring.view.DynamicViewNameTranslator;
 import com.google.common.collect.Sets;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.UpgradeProtocol;
@@ -44,6 +45,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -59,6 +61,11 @@ import java.util.Set;
 @Configuration
 @ConditionalOnClass(WebFactoryConfiguration.class)
 public class WebConfiguration {
+
+    @Bean(name = DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
+    public static DynamicViewNameTranslator requestToViewNameTranslator() {
+        return new DynamicViewNameTranslator();
+    }
 
     @Bean
     public FilterRegistrationBean cacheRequestFilter(HandlerMappingContext handlerMappingContext) {
