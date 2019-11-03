@@ -119,6 +119,11 @@ public class AbstractRedisService implements RedisService {
         return provider.incr(key);
     }
 
+
+    public RedisService getProvider() {
+        return provider;
+    }
+
     public void setProvider(RedisService provider) {
         this.provider = provider;
     }

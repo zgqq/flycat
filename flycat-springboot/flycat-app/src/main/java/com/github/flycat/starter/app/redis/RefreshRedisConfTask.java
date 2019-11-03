@@ -18,6 +18,7 @@ package com.github.flycat.starter.app.redis;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.spi.json.JsonService;
 import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.spi.redis.AbstractRedisService;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.spi.task.TaskService;
 import com.github.flycat.starter.app.config.AppConf;
@@ -33,26 +34,35 @@ public class RefreshRedisConfTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RefreshRedisConfTask.class);
 
-    private final RedisService redisClient;
+    private final RedisService redisService;
     private final ApplicationContext applicationContainer;
     private final JsonService jsonService;
     private final TaskService taskService;
 
     public RefreshRedisConfTask(ApplicationContext applicationContainer,
-                                RedisService redisClient,
+                                RedisService redisService,
                                 JsonService jsonService, TaskService taskService) {
-        this.redisClient = redisClient;
+        this.redisService = redisService;
         this.applicationContainer = applicationContainer;
         this.jsonService = jsonService;
         this.taskService = taskService;
     }
 
     public void start() {
+        if (redisService instanceof AbstractRedisService) {
+            AbstractRedisService client = (AbstractRedisService) redisService;
+            final RedisService provider = client.getProvider();
+            if (provider == null) {
+                LOGGER.info("Not found redis provider");
+                return;
+            }
+        }
+
         LOGGER.info("" +
                 "Starting refresh redis conf task");
         taskService.addFixedDelayTaskInSecond(() -> {
             LOGGER.info("Refreshing redis conf");
-            Map<String, String> stringStringMap = redisClient.hGetAll(RedisConfKeys.CONF_RESPONSE_FILTER);
+            Map<String, String> stringStringMap = redisService.hGetAll(RedisConfKeys.CONF_RESPONSE_FILTER);
             int contentsSize = 0;
             if (stringStringMap != null) {
                 Set<Map.Entry<String, String>> entries = stringStringMap.entrySet();
@@ -79,10 +89,10 @@ public class RefreshRedisConfTask {
             final String applicationName = applicationContainer.getApplicationName();
             final String key = RedisConfKeys.CONF_SYSTEM_MAINTAIN + ":" + applicationName;
             LOGGER.info("Getting app maintain config, key:{}", key);
-            String appMaintainConfig = redisClient.get(key);
+            String appMaintainConfig = redisService.get(key);
 
             if (StringUtils.isBlank(appMaintainConfig)) {
-                appMaintainConfig = redisClient.get(RedisConfKeys.CONF_SYSTEM_MAINTAIN);
+                appMaintainConfig = redisService.get(RedisConfKeys.CONF_SYSTEM_MAINTAIN);
             }
 
             MaintainConf maintainConfig = null;
@@ -92,7 +102,7 @@ public class RefreshRedisConfTask {
             }
             AppConf.setMaintainConfig(maintainConfig);
 
-            Set<String> smembers = redisClient.sMembers(RedisConfKeys.CONF_DEBUG_UIDS);
+            Set<String> smembers = redisService.sMembers(RedisConfKeys.CONF_DEBUG_UIDS);
             if (smembers == null) {
                 smembers = new HashSet<>();
             }
