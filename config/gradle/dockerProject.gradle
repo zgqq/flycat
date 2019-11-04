@@ -1,0 +1,25 @@
+ext.jvmArgs = applicationDefaultJvmArgs
+jib {
+    from {
+        image = 'amazoncorretto:8u232'
+    }
+
+    to {
+        image = dockerImage
+        credHelper = 'docker-credential-osxkeychain'
+        tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString()]
+        auth {
+            username = dockerUsername
+            password = dockerPassword
+        }
+    }
+
+    container {
+        jvmFlags = jvmArgs + ['-Dspring.devtools.restart.enabled=false']
+        mainClass = mainClassName
+        ports = [containerPort]
+        volumes = ['/app/data/logs']
+    }
+}
+
+tasks.jib.dependsOn tasks.build

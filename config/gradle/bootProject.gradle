@@ -99,3 +99,8 @@ bootRun {
 }
 
 test.enabled = false
+
+
+startScripts {
+    mainClassName = "$mainClassName"
+}
