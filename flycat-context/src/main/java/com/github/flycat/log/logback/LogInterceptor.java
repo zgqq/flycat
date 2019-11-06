@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 import com.github.flycat.event.EventManager;
+import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.log.MDCUtils;
 import org.slf4j.MDC;
@@ -32,6 +33,11 @@ public class LogInterceptor extends TurboFilter {
     @Override
     public FilterReply decide(Marker marker, Logger logger,
                               Level level, String s, Object[] objects, Throwable throwable) {
+        String name = logger.getName();
+        if (ErrorLogFileLogger.ERROR.equals(name)) {
+            return FilterReply.NEUTRAL;
+        }
+
         final Map<String, String> contextMap = MDC.getCopyOfContextMap();
         if (contextMap != null && !contextMap.isEmpty()
                 && s != null) {
@@ -39,7 +45,7 @@ public class LogInterceptor extends TurboFilter {
                 final String message = getMessage(s, contextMap);
                 final String fqcn = Logger.FQCN;
                 if (level == Level.ERROR) {
-                    onError(logger, s, throwable);
+                    onError(logger, s, throwable, message, objects);
                 }
                 final org.slf4j.event.Level level4j = org.slf4j.event.Level.valueOf(level.levelStr);
                 logger.log(marker, fqcn, level4j.toInt(), message, objects, throwable);
@@ -48,14 +54,15 @@ public class LogInterceptor extends TurboFilter {
             return FilterReply.NEUTRAL;
         } else {
             if (level == Level.ERROR) {
-                onError(logger, s, throwable);
+                onError(logger, s, throwable, s, objects);
             }
             return FilterReply.NEUTRAL;
         }
     }
 
-    protected void onError(Logger logger, String message, Throwable throwable) {
-        EventManager.post(new LogErrorEvent(logger, message, throwable));
+    protected void onError(Logger logger, String message, Throwable throwable,
+                           String mdcMessage, Object[] args) {
+        EventManager.post(new LogErrorEvent(logger, message, throwable, mdcMessage, args));
     }
 
     public String getMessage(String s, Map<String, String> contextMap) {

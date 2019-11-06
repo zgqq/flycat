@@ -21,11 +21,19 @@ public class LogErrorEvent {
     private final Logger logger;
     private final String message;
     private final Throwable throwable;
+    private final String mdcMessage;
+    private final Object[] args;
 
-    public LogErrorEvent(Logger logger, String message, Throwable throwable) {
+    public LogErrorEvent(Logger logger, String message, Throwable throwable, String mdcMessage, Object[] args) {
         this.logger = logger;
         this.message = message;
         this.throwable = throwable;
+        this.mdcMessage = mdcMessage;
+        this.args = args;
+    }
+
+    public String getMdcMessage() {
+        return mdcMessage;
     }
 
     public Logger getLogger() {
@@ -36,6 +44,10 @@ public class LogErrorEvent {
         return message;
     }
 
+
+    public Object[] getArgs() {
+        return args;
+    }
 
     public Throwable getThrowable() {
         return throwable;
