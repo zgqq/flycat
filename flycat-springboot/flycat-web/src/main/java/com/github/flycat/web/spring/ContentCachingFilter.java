@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.concurrent.TimeUnit;
 
 public class ContentCachingFilter implements Filter {
     private static final Logger REQUEST_LOGGER = LoggerFactory.getLogger("request");
@@ -114,11 +115,21 @@ public class ContentCachingFilter implements Filter {
                         started, requestBody, method, responseContent);
             }
 
+            String responseSpeed;
+            long elapsed = started.elapsed(TimeUnit.MILLISECONDS);
+            if (elapsed > 1000) {
+                responseSpeed = "slow";
+            } else if (elapsed > 500) {
+                responseSpeed = "delay";
+            } else {
+                responseSpeed = "normal";
+            }
 
-            REQUEST_LOGGER.info("Request uri {}, validate status {},  execute time {}, request params {}, method {}",
+            REQUEST_LOGGER.info("Request uri {}, validate status {}, execute time {}, request params {}, method {}, " +
+                            "response speed:{}",
                     requestURI,
                     needValidate ? "validated" : "ignored",
-                    started, requestBody, method);
+                    started, requestBody, method, responseSpeed);
             // Write request and response body, headers, timestamps etc. to log files
         }
     }
