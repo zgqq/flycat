@@ -1,4 +1,3 @@
-
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'org.springframework.boot'
 apply plugin: "java"
@@ -24,8 +23,20 @@ if (vJavaLang == '1.11') {
 
 if (!isProd(env)) {
     ext.appJvmArgs += ['-noverify'
-                   , '-XX:TieredStopAtLevel=1'
-                   , '-XX:+AlwaysPreTouch']
+                       , '-XX:TieredStopAtLevel=1'
+                       , '-XX:+AlwaysPreTouch']
+
+    ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
+                     "-Dcom.sun.management.jmxremote.port=7091",
+                     "-Dcom.sun.management.jmxremote.rmi.port=7091",
+                     "-Dcom.sun.management.jmxremote.authenticate=false",
+                     "-Dcom.sun.management.jmxremote.ssl=false",
+                     "-XX:+UnlockCommercialFeatures",
+                     "-XX:+FlightRecorder",
+                     "-XX:+UnlockDiagnosticVMOptions",
+                     "-XX:+DebugNonSafepoints"
+    ]
+    ext.appJvmArgs += ext.frJvmArgs
 }
 
 
@@ -36,10 +47,21 @@ if (hasProperty("debugPort")) {
 
 if (isTestServer(env)) {
     ext.appJvmArgs += ["-Xdebug",
-                   "-Xnoagent",
-                   '-Djava.compiler=NONE',
-                   "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},server=y,suspend=n".toString()]
+                       "-Xnoagent",
+                       '-Djava.compiler=NONE',
+                       """-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort},
+server=y,suspend=n""".toString()]
+
 }
+
+
+//AVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote=true"
+//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.port=7091"
+//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.rmi.port=7091"
+//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+//JAVA_OPTS="$JAVA_OPTS -XX:+UnlockCommercialFeatures"
+//JAVA_OPTS="$JAVA_OPTS -XX:+FlightRecorder"
 
 
 applicationDefaultJvmArgs = appJvmArgs + [
@@ -93,13 +115,11 @@ bootJar {
 }
 
 
-
 bootRun {
     systemProperties = System.properties
 }
 
 test.enabled = false
-
 
 startScripts {
     mainClassName = "$mainClassName"
