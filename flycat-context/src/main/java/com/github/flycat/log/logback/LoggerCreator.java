@@ -90,7 +90,7 @@ public class LoggerCreator {
         logbackLogger.setAdditive(false);
         logbackLogger.setLevel(level);
         logbackLogger.info("Created {} logger, file:{}", logger, fileName);
-        
+
         // OPTIONAL: print logback internal status messages
         StatusPrinter.print(loggerContext);
     }
