@@ -24,9 +24,13 @@ public final class MDCUtils {
 
     public static final String LOG_MDC = "logMDC";
 
+    public static final String HTTP_URL = "req.requestURL";
+
     public static final String HTTP_URI = "req.requestURI";
     public static final String HTTP_METHOD = "req.method";
     public static final String HTTP_AGENT = "req.userAgent";
+
+    public static final String REQ_ID = "req.id";
 
     public static final Set<String> MDC_CONSTANTS = Sets.newHashSet(HTTP_URI,
             HTTP_METHOD);

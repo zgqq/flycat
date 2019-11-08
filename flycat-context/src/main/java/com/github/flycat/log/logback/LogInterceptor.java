@@ -23,6 +23,7 @@ import com.github.flycat.event.EventManager;
 import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.log.MDCUtils;
+import com.github.flycat.util.CommonUtils;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
@@ -42,7 +43,7 @@ public class LogInterceptor extends TurboFilter {
         if (contextMap != null && !contextMap.isEmpty()
                 && s != null) {
             if (s != null && !s.startsWith(MDCUtils.LOG_MDC)) {
-                final String message = getMessage(s, contextMap);
+                final String message = getMessage(s, contextMap, level);
                 final String fqcn = Logger.FQCN;
                 if (level == Level.ERROR) {
                     onError(logger, s, throwable, message, objects);
@@ -65,15 +66,22 @@ public class LogInterceptor extends TurboFilter {
         EventManager.post(new LogErrorEvent(logger, message, throwable, mdcMessage, args));
     }
 
-    public String getMessage(String s, Map<String, String> contextMap) {
+    public String getMessage(String s, Map<String, String> contextMap, Level level) {
         final String httpUri = contextMap.get(MDCUtils.HTTP_URI);
         String prefix = MDCUtils.LOG_MDC + ": ";
         if (httpUri != null) {
-            String requestURI = httpUri;
-            final String httpMethod = contextMap.get(MDCUtils.HTTP_METHOD);
-            final String httpAgent = contextMap.get(MDCUtils.HTTP_AGENT);
-            prefix += "[uri:" + requestURI + ", method:" + httpMethod + ", " +
-                    "agent:" + httpAgent + "]";
+            final String reqId = contextMap.get(MDCUtils.REQ_ID);
+            if (level == Level.ERROR) {
+                final String httpURL = contextMap.get(MDCUtils.HTTP_URL);
+                String decodeURL = CommonUtils.decodeURL(httpURL);
+                final String httpMethod = contextMap.get(MDCUtils.HTTP_METHOD);
+                final String httpAgent = contextMap.get(MDCUtils.HTTP_AGENT);
+                prefix += "[reqId:" + reqId + ", url:" + decodeURL + ", method:" + httpMethod + ", " +
+                        "agent:" + httpAgent + "]";
+            } else {
+                String requestURI = CommonUtils.decodeURL(httpUri);
+                prefix += "[reqId:" + reqId + ", uri:" + requestURI + "]";
+            }
         }
 
         String postfix = "";

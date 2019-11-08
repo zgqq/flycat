@@ -21,9 +21,25 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
 public class SpringRequestUtils {
+
+    public static ContentCachingHttpServletRequest getContentCachingHttpServletRequest(HttpServletRequestWrapper request) {
+        HttpServletRequestWrapper requestWrapper = request;
+        for (; ; ) {
+            if (requestWrapper == null) {
+                break;
+            }
+            if (requestWrapper instanceof ContentCachingHttpServletRequest) {
+                break;
+            } else {
+                requestWrapper = (HttpServletRequestWrapper) requestWrapper.getRequest();
+            }
+        }
+        return (ContentCachingHttpServletRequest) requestWrapper;
+    }
 
     public static String extractVariablePath(HttpServletRequest request) {
         // /elements/CATEGORY1/CATEGORY1_1/ID

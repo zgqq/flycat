@@ -18,5 +18,5 @@ package com.github.flycat.web.spring;
 import org.springframework.core.Ordered;
 
 public class FilterOrder {
-    public static final int CONTENT_CACHING_FILTER = Ordered.HIGHEST_PRECEDENCE;
+    public static final int CONTENT_CACHING_FILTER = Ordered.HIGHEST_PRECEDENCE + 1;
 }

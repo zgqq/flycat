@@ -60,7 +60,7 @@ public class WebExceptionHandler {
     public Object handleValidationException(ValidationException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        HttpServletRequestWrapper requestWrapper = SpringRequestUtils.getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
 
@@ -111,7 +111,8 @@ public class WebExceptionHandler {
     public Object handleBusinessException(BusinessException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        HttpServletRequestWrapper requestWrapper = SpringRequestUtils
+                .getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
         LOGGER.error("Business exception! uri:{}, body:{}",
@@ -133,7 +134,8 @@ public class WebExceptionHandler {
                                          WebRequest webRequest) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = getHttpServletRequestWrapper((HttpServletRequestWrapper) request);
+        HttpServletRequestWrapper requestWrapper = SpringRequestUtils
+                .getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
         LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURI(), requestBody, ex);
@@ -176,17 +178,17 @@ public class WebExceptionHandler {
         return requestBody;
     }
 
-    private HttpServletRequestWrapper getHttpServletRequestWrapper(HttpServletRequestWrapper request) {
-        HttpServletRequestWrapper requestWrapper = request;
-        for (; ; ) {
-            if (requestWrapper instanceof ContentCachingHttpServletRequest) {
-                break;
-            } else {
-                requestWrapper = (HttpServletRequestWrapper) requestWrapper.getRequest();
-            }
-        }
-        return requestWrapper;
-    }
+//    private HttpServletRequestWrapper getHttpServletRequestWrapper(HttpServletRequestWrapper request) {
+//        HttpServletRequestWrapper requestWrapper = request;
+//        for (; ; ) {
+//            if (requestWrapper instanceof ContentCachingHttpServletRequest) {
+//                break;
+//            } else {
+//                requestWrapper = (HttpServletRequestWrapper) requestWrapper.getRequest();
+//            }
+//        }
+//        return requestWrapper;
+//    }
 
     private ResponseEntity newResponseEntity(Object result) {
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -16,10 +16,23 @@
 package com.github.flycat.util;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 public final class CommonUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
+
+    public static String decodeURL(String url) {
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return url;
+        }
+    }
 
     public static String getUUIDWithoutHyphen() {
         return UUID.randomUUID().toString().replace("-", "");

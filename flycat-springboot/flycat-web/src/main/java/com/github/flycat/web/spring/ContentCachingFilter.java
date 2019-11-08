@@ -15,6 +15,8 @@
  */
 package com.github.flycat.web.spring;
 
+import com.github.flycat.log.MDCUtils;
+import com.github.flycat.util.CommonUtils;
 import com.github.flycat.web.WebConfigurationLoader;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
@@ -23,6 +25,7 @@ import com.github.flycat.web.request.RequestBodyHolder;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.*;
@@ -66,21 +69,13 @@ public class ContentCachingFilter implements Filter {
 
         final String requestURI = requestWrapper.getDecodedRequestURI();
         String method = requestWrapper.getMethod();
-//        MDC.put("HttpUri", uri);
-//        MDC.put("HttpMethod", method);
+        MDC.put(MDCUtils.REQ_ID, CommonUtils.getUUIDWithoutHyphen());
 
         final ContentCachingHandler contentCachingHandler = WebConfigurationLoader.getContentCachingHandler();
         try {
             if (contentCachingHandler.executeNextFilter(requestWrapper, responseWrapper)) {
                 chain.doFilter(requestWrapper, responseWrapper);
             }
-
-//            if (AppConf.isResponseMaintaining()) {
-//                HttpResponseUtils.writeError(responseWrapper, AppConf.getMaintainConfig().getResponseMsg(),
-//                        ResultCode.BIZ_MAINTAINING);
-//            } else {
-//                chain.doFilter(requestWrapper, responseWrapper);
-//            }
         } catch (Throwable e) {
             postProcessExceptionHandler.handle(requestWrapper, responseWrapper, e);
         } finally {

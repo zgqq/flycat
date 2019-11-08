@@ -55,15 +55,6 @@ server=y,suspend=n""".toString()]
 }
 
 
-//AVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote=true"
-//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.port=7091"
-//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.rmi.port=7091"
-//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
-//JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
-//JAVA_OPTS="$JAVA_OPTS -XX:+UnlockCommercialFeatures"
-//JAVA_OPTS="$JAVA_OPTS -XX:+FlightRecorder"
-
-
 applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
         "-Xmx512m",
