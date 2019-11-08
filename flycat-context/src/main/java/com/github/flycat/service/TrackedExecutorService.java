@@ -15,12 +15,15 @@
  */
 package com.github.flycat.service;
 
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Singleton
@@ -84,12 +87,16 @@ public class TrackedExecutorService {
 
 
     private Runnable wrap(final Runnable task, final Exception clientStack, String clientThreadName) {
+        Map<String, String> contextMap = MDC.getCopyOfContextMap();
         return () -> {
+            MDC.setContextMap(contextMap);
             try {
                 task.run();
             } catch (Exception e) {
                 LOGGER.error("Exception {} in task submitted from thread {} here:", e, clientThreadName, clientStack);
                 throw e;
+            } finally {
+                MDC.setContextMap(Maps.newHashMap());
             }
         };
     }
