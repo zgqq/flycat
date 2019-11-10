@@ -3,10 +3,14 @@ package com.github.flycat.agent.monitor.command;
 import com.github.flycat.agent.monitor.AdviceListener;
 import com.github.flycat.agent.monitor.AdviceWeaver;
 import com.github.flycat.agent.monitor.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandProcessImpl implements CommandProcess {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandProcessImpl.class);
 
     private int enhanceLock = -1;
     private AtomicInteger times = new AtomicInteger();
@@ -25,6 +29,7 @@ public class CommandProcessImpl implements CommandProcess {
 
     @Override
     public CommandProcess write(String data) {
+        LOGGER.info(data);
         return this;
     }
 
