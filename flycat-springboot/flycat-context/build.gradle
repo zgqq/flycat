@@ -3,6 +3,8 @@ dependencies {
     api project(':flycat-context')
     api project(':flycat-agent')
     api "org.springframework.boot:spring-boot:$springBootVersion"
+    api "org.springframework.boot:spring-boot-starter-aop:$springBootVersion"
+
 }
 
 

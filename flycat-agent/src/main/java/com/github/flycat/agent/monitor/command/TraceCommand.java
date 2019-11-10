@@ -8,6 +8,7 @@ import com.github.flycat.agent.monitor.matcher.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * 调用跟踪命令<br/>
@@ -161,5 +162,18 @@ public class TraceCommand extends EnhancerCommand {
 
     private Matcher<String> getPathTracingMethodMatcher() {
         return new TrueMatcher<String>();
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", TraceCommand.class.getSimpleName() + "[", "]")
+                .add("classPattern='" + classPattern + "'")
+                .add("methodPattern='" + methodPattern + "'")
+                .add("conditionExpress='" + conditionExpress + "'")
+                .add("isRegEx=" + isRegEx)
+                .add("numberOfLimit=" + numberOfLimit)
+                .add("pathPatterns=" + pathPatterns)
+                .add("skipJDKTrace=" + skipJDKTrace)
+                .toString();
     }
 }
