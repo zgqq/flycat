@@ -17,6 +17,7 @@ package com.github.flycat.util.io;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.zip.ZipFile;
 
 public class IOUtils {
 
@@ -33,5 +34,46 @@ public class IOUtils {
     public static String getFileContentByClasspath(String pathname) throws IOException {
         final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(pathname);
         return org.apache.commons.io.IOUtils.toString(resourceAsStream, Charset.defaultCharset());
+    }
+
+
+
+    public static IOException close(InputStream input) {
+        return close((Closeable) input);
+    }
+
+    public static IOException close(OutputStream output) {
+        return close((Closeable) output);
+    }
+
+    public static IOException close(final Reader input) {
+        return close((Closeable) input);
+    }
+
+    public static IOException close(final Writer output) {
+        return close((Closeable) output);
+    }
+
+    public static IOException close(final Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (final IOException ioe) {
+            return ioe;
+        }
+        return null;
+    }
+
+    // support jdk6
+    public static IOException close(final ZipFile zip) {
+        try {
+            if (zip != null) {
+                zip.close();
+            }
+        } catch (final IOException ioe) {
+            return ioe;
+        }
+        return null;
     }
 }

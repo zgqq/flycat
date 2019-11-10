@@ -143,4 +143,36 @@ public class StringUtils {
         }
         return encode;
     }
+
+
+    /**
+     * 翻译类名称<br/>
+     * 将 java/lang/String 的名称翻译成 java.lang.String
+     *
+     * @param className 类名称 java/lang/String
+     * @return 翻译后名称 java.lang.String
+     */
+    public static String normalizeClassName(String className) {
+        return StringUtils.replace(className, "/", ".");
+    }
+
+    public static String replace(String inString, String oldPattern, String newPattern) {
+        if(hasLength(inString) && hasLength(oldPattern) && newPattern != null) {
+            StringBuilder sb = new StringBuilder();
+            int pos = 0;
+            int index = inString.indexOf(oldPattern);
+
+            for(int patLen = oldPattern.length(); index >= 0; index = inString.indexOf(oldPattern, pos)) {
+                sb.append(inString.substring(pos, index));
+                sb.append(newPattern);
+                pos = index + patLen;
+            }
+
+            sb.append(inString.substring(pos));
+            return sb.toString();
+        } else {
+            return inString;
+        }
+    }
+
 }

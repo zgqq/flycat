@@ -1,0 +1,18 @@
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    api project(':flycat-util')
+
+
+    implementation 'org.ow2.asm:asm-commons:7.0'
+    implementation 'org.ow2.asm:asm:7.0'
+
+    compile 'ognl:ognl:3.1.19'
+
+    compileOnly 'com.github.olivergondza:maven-jdk-tools-wrapper:0.1'
+
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
+//    runtime files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+
+
+}
