@@ -16,3 +16,21 @@ dependencies {
 
 
 }
+
+
+jar {
+    manifest {
+        attributes(
+                'Premain-Class': 'com.github.flycat.agent.monitor.AgentMain',
+                'Agent-Class': 'com.github.flycat.agent.monitor.AgentMain',
+                'Can-Redefine-Classes': true,
+                'Can-Retransform-Classes': true,
+                'Specification-Title': 'flycat-agent',
+                'Specification-Version': '0.1',
+                'Implementation-Title': 'flycat-agent',
+                'Implementation-Version': '0.1'
+        )
+    }
+}
+
+

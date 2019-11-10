@@ -101,6 +101,8 @@ dependencies {
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
 
+
+
 bootJar {
     archiveClassifier = 'boot'
 }
@@ -112,6 +114,14 @@ bootRun {
 
 test.enabled = false
 
-startScripts {
-    mainClassName = "$mainClassName"
+
+if (hasProperty("mainClassName") && mainClassName != null) {
+    println "Main class: $mainClassName"
+    startScripts {
+        mainClassName = "$mainClassName"
+    }
 }
+
+
+
+

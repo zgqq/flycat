@@ -23,8 +23,8 @@ public abstract class EnhancerCommand extends AnnotatedCommand {
 
     private static final Logger logger = LogUtil.getArthasLogger();
     protected static final List<String> EMPTY = Collections.emptyList();
-    public static final String[] EXPRESS_EXAMPLES = { "params", "returnObj", "throwExp", "target", "clazz", "method",
-                                                       "{params,returnObj}", "params[0]" };
+    public static final String[] EXPRESS_EXAMPLES = {"params", "returnObj", "throwExp", "target", "clazz", "method",
+            "{params,returnObj}", "params[0]"};
 
     protected Matcher classNameMatcher;
     protected Matcher methodNameMatcher;
@@ -58,7 +58,6 @@ public abstract class EnhancerCommand extends AnnotatedCommand {
     }
 
 
-
     protected void enhance(CommandProcess process) {
         Session session = process.session();
         if (!session.tryLock()) {
@@ -75,7 +74,7 @@ public abstract class EnhancerCommand extends AnnotatedCommand {
                 return;
             }
             boolean skipJDKTrace = false;
-            if(listener instanceof AbstractTraceAdviceListener) {
+            if (listener instanceof AbstractTraceAdviceListener) {
                 skipJDKTrace = ((AbstractTraceAdviceListener) listener).getCommand().isSkipJDKTrace();
             }
 
@@ -86,9 +85,9 @@ public abstract class EnhancerCommand extends AnnotatedCommand {
                 // no class effected
                 // might be method code too large
                 process.write("No class or method is affected, try:\n"
-                              + "1. sm CLASS_NAME METHOD_NAME to make sure the method you are tracing actually exists (it might be in your parent class).\n"
-                              + "2. reset CLASS_NAME and try again, your method body might be too large.\n"
-                              );
+                        + "1. sm CLASS_NAME METHOD_NAME to make sure the method you are tracing actually exists (it might be in your parent class).\n"
+                        + "2. reset CLASS_NAME and try again, your method body might be too large.\n"
+                );
                 process.end();
                 return;
             }

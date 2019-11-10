@@ -9,9 +9,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * 
  * @author hengyunabc 2015年12月7日 下午2:29:28
- *
  */
 abstract public class ThreadUtil {
 
@@ -30,7 +28,7 @@ abstract public class ThreadUtil {
 
     /**
      * 获取所有线程Map，以线程Name-ID为key
-     * 
+     *
      * @return
      */
     public static Map<String, Thread> getThreads() {
@@ -55,7 +53,7 @@ abstract public class ThreadUtil {
 
     /**
      * 获取所有线程List
-     * 
+     *
      * @return
      */
     public static List<Thread> getThreadList() {
@@ -75,8 +73,9 @@ abstract public class ThreadUtil {
 
     /**
      * get the top N busy thread
+     *
      * @param sampleInterval the interval between two samples
-     * @param topN the number of thread
+     * @param topN           the number of thread
      * @return a Map representing <ThreadID, cpuUsage>
      */
     public static Map<Long, Long> getTopNThreads(int sampleInterval, int topN) {
@@ -92,8 +91,7 @@ abstract public class ThreadUtil {
         try {
             // Sleep for some time
             Thread.sleep(sampleInterval);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
@@ -148,7 +146,7 @@ abstract public class ThreadUtil {
         List<Thread> topThreads = topN > 0 && topN <= threads.size()
                 ? threads.subList(0, topN) : threads;
 
-        for (Thread thread: topThreads) {
+        for (Thread thread : topThreads) {
             // Compute cpu usage
             topNThreads.put(thread.getId(), cpus.get(thread));
         }
@@ -159,7 +157,7 @@ abstract public class ThreadUtil {
 
     /**
      * Find the thread and lock that is blocking the most other threads.
-     *
+     * <p>
      * Time complexity of this algorithm: O(number of thread)
      * Space complexity of this algorithm: O(number of locks)
      *
@@ -174,7 +172,7 @@ abstract public class ThreadUtil {
         // a map of <LockInfo.getIdentityHashCode, the thread info that holding this lock
         Map<Integer, ThreadInfo> ownerThreadPerLock = new HashMap<Integer, ThreadInfo>();
 
-        for (ThreadInfo info: infos) {
+        for (ThreadInfo info : infos) {
             if (info == null) {
                 continue;
             }
@@ -189,14 +187,14 @@ abstract public class ThreadUtil {
                 blockCountPerLock.put(lockInfo.getIdentityHashCode(), blockedCount + 1);
             }
 
-            for (MonitorInfo monitorInfo: info.getLockedMonitors()) {
+            for (MonitorInfo monitorInfo : info.getLockedMonitors()) {
                 // the object monitor currently held by this thread
                 if (ownerThreadPerLock.get(monitorInfo.getIdentityHashCode()) == null) {
                     ownerThreadPerLock.put(monitorInfo.getIdentityHashCode(), info);
                 }
             }
 
-            for (LockInfo lockedSync: info.getLockedSynchronizers()) {
+            for (LockInfo lockedSync : info.getLockedSynchronizers()) {
                 // the ownable synchronizer currently held by this thread
                 if (ownerThreadPerLock.get(lockedSync.getIdentityHashCode()) == null) {
                     ownerThreadPerLock.put(lockedSync.getIdentityHashCode(), info);
@@ -207,7 +205,7 @@ abstract public class ThreadUtil {
         // find the thread that is holding the lock that blocking the largest number of threads.
         int mostBlockingLock = 0; // System.identityHashCode(null) == 0
         int maxBlockingCount = 0;
-        for (Map.Entry<Integer, Integer> entry: blockCountPerLock.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : blockCountPerLock.entrySet()) {
             if (entry.getValue() > maxBlockingCount && ownerThreadPerLock.get(entry.getKey()) != null) {
                 // the lock is explicitly held by anther thread.
                 maxBlockingCount = entry.getValue();
@@ -241,10 +239,11 @@ abstract public class ThreadUtil {
 
     /**
      * 完全从 ThreadInfo 中 copy 过来
-     * @param threadInfo the thread info object
-     * @param cpuUsage will be ignore if cpuUsage < 0 or cpuUsage > 100
+     *
+     * @param threadInfo           the thread info object
+     * @param cpuUsage             will be ignore if cpuUsage < 0 or cpuUsage > 100
      * @param lockIdentityHashCode 阻塞了其他线程的锁的identityHashCode
-     * @param blockingThreadCount 阻塞了其他线程的数量
+     * @param blockingThreadCount  阻塞了其他线程的数量
      * @return the string representation of the thread stack
      */
     public static String getFullStacktrace(ThreadInfo threadInfo, long cpuUsage, int lockIdentityHashCode,
@@ -402,8 +401,8 @@ abstract public class ThreadUtil {
             // access to ThreadLocal$ThreadLocalMap#table filed
             Field tableFiled = threadLocalMap.getClass().getDeclaredField("table");
             tableFiled.setAccessible(true);
-            Object[] tableEntries = (Object[])tableFiled.get(threadLocalMap);
-            for (Object entry: tableEntries) {
+            Object[] tableEntries = (Object[]) tableFiled.get(threadLocalMap);
+            for (Object entry : tableEntries) {
                 if (entry == null) {
                     continue;
                 }
@@ -416,18 +415,18 @@ abstract public class ThreadUtil {
                     // finally we got the chance to access trace id
                     Method getTraceIdMethod = threadLocalValue.getClass().getMethod("getTraceId");
                     getTraceIdMethod.setAccessible(true);
-                    String traceId = (String)getTraceIdMethod.invoke(threadLocalValue);
+                    String traceId = (String) getTraceIdMethod.invoke(threadLocalValue);
                     sb.append(";trace_id=").append(traceId);
                     // get rpc id
                     Method getRpcIdMethod = threadLocalValue.getClass().getMethod("getRpcId");
                     getTraceIdMethod.setAccessible(true);
-                    String rpcId = (String)getRpcIdMethod.invoke(threadLocalValue);
+                    String rpcId = (String) getRpcIdMethod.invoke(threadLocalValue);
                     sb.append(";rpc_id=").append(rpcId);
                     return;
                 }
             }
         } catch (Exception e) {
-           // ignore
+            // ignore
         }
     }
 

@@ -20,8 +20,9 @@ public class AttachAgent {
         try {
             File appHomeDir = null;
             CodeSource codeSource = AttachAgent.class.getProtectionDomain().getCodeSource();
+            File bootJarPath;
             if (codeSource != null) {
-                File bootJarPath = new File(codeSource.getLocation().toURI().getSchemeSpecificPart());
+                bootJarPath = new File(codeSource.getLocation().toURI().getSchemeSpecificPart());
                 appHomeDir = bootJarPath.getParentFile();
             }
 
@@ -34,5 +35,4 @@ public class AttachAgent {
             }
         }
     }
-
 }

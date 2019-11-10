@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author <a href="mailto:julien@julienviet.com">Julien Viet</a>
  */
 public class SessionImpl implements Session {
-    private final static AtomicInteger lockSequence = new AtomicInteger();
-    private final static int LOCK_TX_EMPTY = -1;
+    private static final AtomicInteger LOCK_SEQUENCE = new AtomicInteger();
+    private static final int LOCK_TX_EMPTY = -1;
     private final AtomicInteger lock = new AtomicInteger(LOCK_TX_EMPTY);
 
     private Map<String, Object> data = new HashMap<String, Object>();
@@ -37,7 +37,7 @@ public class SessionImpl implements Session {
 
     @Override
     public boolean tryLock() {
-        return lock.compareAndSet(LOCK_TX_EMPTY, lockSequence.getAndIncrement());
+        return lock.compareAndSet(LOCK_TX_EMPTY, LOCK_SEQUENCE.getAndIncrement());
     }
 
     @Override

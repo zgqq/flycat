@@ -17,10 +17,8 @@ package com.github.flycat.spi.cache;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public interface DistributedCacheService extends CacheOperation {
 

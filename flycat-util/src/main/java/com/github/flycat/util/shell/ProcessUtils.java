@@ -1,19 +1,33 @@
+/**
+ * Copyright 2019 zgqq <zgqjava@gmail.com>
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.flycat.util.shell;
-
-
 
 import com.github.flycat.util.io.IOUtils;
 import com.github.flycat.util.java.JavaVersionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- *
  * @author hengyunabc 2018-11-06
- *
  */
 public class ProcessUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessUtils.class);
@@ -87,9 +101,9 @@ public class ProcessUtils {
 
         String[] command = null;
         if (v) {
-            command = new String[] { jps, "-v", "-l" };
+            command = new String[]{jps, "-v", "-l"};
         } else {
-            command = new String[] { jps, "-l" };
+            command = new String[]{jps, "-l"};
         }
 
         List<String> lines = runNative(command);
@@ -167,7 +181,7 @@ public class ProcessUtils {
                 }
 
                 throw new IllegalArgumentException("Can not find tools.jar under java home: " + javaHome
-                                + ", please try to start arthas-boot with full path java. Such as /opt/jdk/bin/java -jar arthas-boot.jar");
+                        + ", please try to start arthas-boot with full path java. Such as /opt/jdk/bin/java -jar arthas-boot.jar");
             }
         } else {
             FOUND_JAVA_HOME = javaHome;
@@ -178,7 +192,7 @@ public class ProcessUtils {
 
     private static File findJava() {
         String javaHome = findJavaHome();
-        String[] paths = { "bin/java", "bin/java.exe", "../bin/java", "../bin/java.exe" };
+        String[] paths = {"bin/java", "bin/java.exe", "../bin/java", "../bin/java.exe"};
 
         List<File> javaList = new ArrayList<File>();
         for (String path : paths) {
@@ -237,7 +251,7 @@ public class ProcessUtils {
     private static File findJps() {
         // Try to find jps under java.home and System env JAVA_HOME
         String javaHome = System.getProperty("java.home");
-        String[] paths = { "bin/jps", "bin/jps.exe", "../bin/jps", "../bin/jps.exe" };
+        String[] paths = {"bin/jps", "bin/jps.exe", "../bin/jps", "../bin/jps.exe"};
 
         List<File> jpsList = new ArrayList<File>();
         for (String path : paths) {
@@ -292,10 +306,9 @@ public class ProcessUtils {
      * Executes a command on the native command line and returns the result line by
      * line.
      *
-     * @param cmdToRunWithArgs
-     *            Command to run and args, in an array
+     * @param cmdToRunWithArgs Command to run and args, in an array
      * @return A list of Strings representing the result of the command, or empty
-     *         string if the command failed
+     * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
         Process p = null;

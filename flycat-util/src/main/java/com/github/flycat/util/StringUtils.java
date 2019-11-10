@@ -157,12 +157,12 @@ public class StringUtils {
     }
 
     public static String replace(String inString, String oldPattern, String newPattern) {
-        if(hasLength(inString) && hasLength(oldPattern) && newPattern != null) {
+        if (hasLength(inString) && hasLength(oldPattern) && newPattern != null) {
             StringBuilder sb = new StringBuilder();
             int pos = 0;
             int index = inString.indexOf(oldPattern);
 
-            for(int patLen = oldPattern.length(); index >= 0; index = inString.indexOf(oldPattern, pos)) {
+            for (int patLen = oldPattern.length(); index >= 0; index = inString.indexOf(oldPattern, pos)) {
                 sb.append(inString.substring(pos, index));
                 sb.append(newPattern);
                 pos = index + patLen;

@@ -55,19 +55,21 @@ ext.javaProjects = subprojects.findAll {
 configure(javaProjects) { project ->
     apply from: "${gradleConfigDir}/javaProject.gradle"
 
-    apply plugin: 'checkstyle'
-    checkstyle {
-        toolVersion "8.21"
-        configFile file("${checkstyleDir}/checkstyle.xml")
-        configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
-    }
+    ext.needCheck=!project.name.endsWith("agent")
 
-    checkstyleMain {
-        source = 'src/main/java'
-    }
-
-    checkstyleTest {
-        source = 'src/test/java'
+    if (needCheck) {
+        apply plugin: 'checkstyle'
+        checkstyle {
+            toolVersion "8.21"
+            configFile file("${checkstyleDir}/checkstyle.xml")
+            configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
+        }
+        checkstyleMain {
+            source = 'src/main/java'
+        }
+        checkstyleTest {
+            source = 'src/test/java'
+        }
     }
 
 
@@ -98,20 +100,21 @@ configure(javaProjects) { project ->
         }
     }
 
-    apply plugin: 'com.github.hierynomus.license'
 
-    license {
-        header rootProject.file("LICENSE")
-    }
-
-    license {
-        header = rootProject.file('LICENSE')
-        ext.year = Calendar.getInstance().get(Calendar.YEAR)
-        ext.name = 'zgqq'
-        ext.email = 'zgqjava@gmail.com'
-        exclude "**/*Test.java"
-        include "**/*.groovy"
-        includes(["**/*.java", "**/*.properties"])
+    if (needCheck) {
+        apply plugin: 'com.github.hierynomus.license'
+        license {
+            header rootProject.file("LICENSE")
+        }
+        license {
+            header = rootProject.file('LICENSE')
+            ext.year = Calendar.getInstance().get(Calendar.YEAR)
+            ext.name = 'zgqq'
+            ext.email = 'zgqjava@gmail.com'
+            exclude "**/*Test.java"
+            include "**/*.groovy"
+            includes(["**/*.java", "**/*.properties"])
+        }
     }
 }
 
@@ -212,7 +215,6 @@ configure(jarProjects) { project ->
     }
 
 
-
     model {
         tasks.generatePomFileForMavenJavaPublication {
             destination = file("$buildDir/generated-pom.xml")
@@ -271,3 +273,7 @@ def customizePom(pom) {
         }
     }
 }
+
+bootJar.enabled = false
+
+
