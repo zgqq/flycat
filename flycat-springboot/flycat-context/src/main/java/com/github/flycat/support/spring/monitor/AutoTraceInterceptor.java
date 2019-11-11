@@ -12,12 +12,27 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class AutoTraceInterceptor implements MethodInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutoTraceInterceptor.class);
 
-    private Set<Method> methods = ConcurrentHashMap.newKeySet();
+    private final Set<Method> methods = ConcurrentHashMap.newKeySet();
+    private final ConcurrentHashMap<Method, AtomicLong> timeCounter = new ConcurrentHashMap<>();
+
+    private final int elapsedThreshold;
+    private final int exceedTimes;
+
+    public AutoTraceInterceptor(int elapsedThreshold, int exceedTimes) {
+        this.elapsedThreshold = elapsedThreshold;
+        this.exceedTimes = exceedTimes;
+    }
+
+    public AutoTraceInterceptor() {
+        this(100, 2);
+    }
+
 
     protected Object invokeUnderTrace(MethodInvocation invocation) throws Throwable {
         Stopwatch started = Stopwatch.createStarted();
@@ -26,26 +41,38 @@ public class AutoTraceInterceptor implements MethodInterceptor {
         } finally {
             started.stop();
             long elapsed = started.elapsed(TimeUnit.MILLISECONDS);
-            if (elapsed > 200) {
+            int threshold = this.elapsedThreshold;
+            if (elapsed > threshold) {
                 Method method = invocation.getMethod();
                 String className = method.getDeclaringClass().getName();
-                if (!methods.contains(method)) {
-                    synchronized (this) {
-                        if (!methods.contains(method)) {
-                            TraceCommand traceCommand = new TraceCommand();
-                            traceCommand.setClassPattern(className);
-                            traceCommand.setMethodPattern(method.getName());
-                            traceCommand.setConditionExpress("#cost>100");
-                            traceCommand.setRegEx(false);
-                            traceCommand.setNumberOfLimit(100);
-                            traceCommand.setSkipJDKTrace(true);
-                            LOGGER.info("Sending trace command, {}", traceCommand);
-                            AgentMain.sendCommand(traceCommand);
-                            methods.add(method);
+                AtomicLong initValue = new AtomicLong(1);
+                AtomicLong atomicLong = timeCounter.putIfAbsent(method, initValue);
+                if (atomicLong != null) {
+                    atomicLong.incrementAndGet();
+                } else {
+                    atomicLong = initValue;
+                }
+                int times = this.exceedTimes;
+                if (atomicLong != null && atomicLong.get() > times) {
+                    if (!methods.contains(method)) {
+                        synchronized (this) {
+                            if (!methods.contains(method)) {
+                                TraceCommand traceCommand = new TraceCommand();
+                                traceCommand.setClassPattern(className);
+                                traceCommand.setMethodPattern(method.getName());
+                                traceCommand.setConditionExpress("#cost>100");
+                                traceCommand.setRegEx(false);
+                                traceCommand.setNumberOfLimit(Integer.MAX_VALUE);
+                                traceCommand.setSkipJDKTrace(true);
+                                LOGGER.info("Sending trace command, {}", traceCommand);
+                                AgentMain.sendCommand(traceCommand);
+                                methods.add(method);
+                            }
                         }
                     }
                 }
-                LOGGER.warn("Method " + className + "execution longer than 10 ms!");
+                LOGGER.warn("Method (" + className + "#" + method.getName() + ") execution " +
+                        "cost " + elapsed + " ms, greater than " + (atomicLong.get() - 1) + " times ");
             }
         }
     }

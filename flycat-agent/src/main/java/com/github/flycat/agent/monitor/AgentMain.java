@@ -22,13 +22,12 @@ public class AgentMain {
     }
 
     private final static Object lock = new Object();
-    private static CommandProcess commandProcess;
+    private static Session session;
 
     private static void main(String args, final Instrumentation inst) {
         synchronized (lock) {
-            Session session = new SessionImpl();
+            session = new SessionImpl();
             session.put(INSTRUMENTATION, inst);
-            commandProcess = new CommandProcessImpl(session);
         }
     }
 
@@ -64,9 +63,10 @@ public class AgentMain {
 
     public static void sendCommand(EnhancerCommand command) {
         synchronized (lock) {
-            if (commandProcess == null) {
+            if (session == null) {
                 throw new RuntimeException("Not initiated yet");
             }
+            CommandProcess commandProcess = new CommandProcessImpl(session);
             command.process(commandProcess);
         }
     }
