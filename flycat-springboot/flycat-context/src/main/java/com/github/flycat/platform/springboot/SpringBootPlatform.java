@@ -15,6 +15,8 @@
  */
 package com.github.flycat.platform.springboot;
 
+import com.github.flycat.agent.monitor.AgentMain;
+import com.github.flycat.agent.monitor.AttachAgent;
 import com.github.flycat.context.ContextManager;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.module.Module;
@@ -32,6 +34,7 @@ public class SpringBootPlatform {
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(modules);
             SpringApplication.run(primarySource, args);
+            AttachAgent.attachAgent();
         } catch (Exception e) {
             LOGGER.warn("Startup exception", e);
             if (!ContextUtils.isLocalProfile()) {

@@ -219,7 +219,8 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public <T extends Number, K> CountMaps getCountMapsByModules(List<K> keys, Function<QueryKey<K>, Map<String, Map<String, T>>> callable, String... modules) throws CacheException {
+    public <T extends Number, K> CountMaps getCountMapsByModules(List<K> keys, Function<QueryKey<K>,
+            Map<String, Map<String, T>>> callable, String... modules) throws CacheException {
 
         final ArrayList<Object> notFoundKeys = Lists.newArrayList();
         final Map<String, Map<String, T>> results = Maps.newHashMap();

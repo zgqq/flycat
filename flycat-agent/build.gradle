@@ -1,0 +1,36 @@
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    api project(':flycat-util')
+
+
+    implementation 'org.ow2.asm:asm-commons:7.0'
+    implementation 'org.ow2.asm:asm:7.0'
+
+    compile 'ognl:ognl:3.1.19'
+
+    compileOnly 'com.github.olivergondza:maven-jdk-tools-wrapper:0.1'
+
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
+//    runtime files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+
+
+}
+
+
+jar {
+    manifest {
+        attributes(
+                'Premain-Class': 'com.github.flycat.agent.monitor.AgentMain',
+                'Agent-Class': 'com.github.flycat.agent.monitor.AgentMain',
+                'Can-Redefine-Classes': true,
+                'Can-Retransform-Classes': true,
+                'Specification-Title': 'flycat-agent',
+                'Specification-Version': '0.1',
+                'Implementation-Title': 'flycat-agent',
+                'Implementation-Version': '0.1'
+        )
+    }
+}
+
+

@@ -15,8 +15,6 @@
  */
 package com.github.flycat.util.collection;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.util.HashMap;

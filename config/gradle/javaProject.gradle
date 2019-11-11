@@ -30,7 +30,7 @@ idea {
     module {
         inheritOutputDirs = false
         outputDir = file("$buildDir/classes/java/main")
-        downloadJavadoc = true
+        downloadJavadoc = false
         downloadSources = true
     }
 }
@@ -47,6 +47,6 @@ repositories {
     }
 }
 
-
+javadoc.enabled = false
 
 
