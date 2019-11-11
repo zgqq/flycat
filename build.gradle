@@ -24,7 +24,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
     id "com.github.hierynomus.license" version "0.15.0"
     id "io.freefair.lombok" version "4.1.0"
     id 'idea'
@@ -32,6 +32,8 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'java-library'
+
+    id "net.ltgt.errorprone" version "1.1.1" apply false
 }
 
 ext.flycatVersion = '0.2.0-SNAPSHOT'
@@ -136,6 +138,13 @@ configure(jarProjects) { project ->
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
+    apply plugin: "net.ltgt.errorprone"
+
+    dependencies {
+        errorprone("com.google.errorprone:error_prone_core:2.3.3")
+        errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+    }
+
 
     task sourceJar(type: Jar) {
         classifier "sources"
@@ -212,6 +221,9 @@ configure(jarProjects) { project ->
                 }
             }
         }
+
+
+
     }
 
 
@@ -226,6 +238,8 @@ configure(jarProjects) { project ->
             dependsOn project.tasks.signArchives
         }
     }
+
+
 }
 
 
@@ -274,6 +288,6 @@ def customizePom(pom) {
     }
 }
 
-bootJar.enabled = false
+//bootJar.enabled = false
 
 
