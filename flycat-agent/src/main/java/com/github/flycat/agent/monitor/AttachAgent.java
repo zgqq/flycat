@@ -14,10 +14,9 @@ public class AttachAgent {
 
     public static void attachAgent() throws Exception {
 
-        VirtualMachineDescriptor virtualMachineDescriptor = null;
         String currentPid = PidUtils.currentPid();
 
-        VirtualMachine virtualMachine = null;
+        VirtualMachine virtualMachine;
         virtualMachine = VirtualMachine.attach(currentPid);
 
         try {
