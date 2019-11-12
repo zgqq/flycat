@@ -55,9 +55,22 @@ ext.javaProjects = subprojects.findAll {
 }
 
 configure(javaProjects) { project ->
+
+    ext.needCheckCompile = !project.name.endsWith("agent")
+
     apply from: "${gradleConfigDir}/javaProject.gradle"
 
-    ext.needCheck=!project.name.endsWith("agent")
+    ext.needCheck = !project.name.endsWith("agent")
+
+
+    if (needCheck) {
+        apply plugin: "net.ltgt.errorprone"
+        dependencies {
+            errorprone("com.google.errorprone:error_prone_core:2.3.3")
+            errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+        }
+    }
+
 
     if (needCheck) {
         apply plugin: 'checkstyle'
@@ -118,6 +131,7 @@ configure(javaProjects) { project ->
             includes(["**/*.java", "**/*.properties"])
         }
     }
+
 }
 
 ext.bootProjects = javaProjects.findAll {
@@ -138,12 +152,7 @@ configure(jarProjects) { project ->
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
-    apply plugin: "net.ltgt.errorprone"
 
-    dependencies {
-        errorprone("com.google.errorprone:error_prone_core:2.3.3")
-        errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
-    }
 
 
     task sourceJar(type: Jar) {
@@ -223,7 +232,6 @@ configure(jarProjects) { project ->
         }
 
 
-
     }
 
 
@@ -289,5 +297,9 @@ def customizePom(pom) {
 }
 
 //bootJar.enabled = false
+
+tasks.named("compileTestJava").configure {
+    options.errorprone.enabled = false
+}
 
 
