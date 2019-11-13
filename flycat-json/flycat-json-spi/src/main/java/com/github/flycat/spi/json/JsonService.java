@@ -30,6 +30,7 @@ public interface JsonService {
 
     <T> T parseObject(String json, Class<T> type);
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     <T> T parseObject(String json, Object type);
 
     String toJsonString(Object result);

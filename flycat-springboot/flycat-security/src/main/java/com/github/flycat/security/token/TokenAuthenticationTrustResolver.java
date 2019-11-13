@@ -25,7 +25,7 @@ public class TokenAuthenticationTrustResolver extends AuthenticationTrustResolve
     public boolean isAnonymous(Authentication authentication) {
         if (authentication instanceof TokenAuthentication) {
             TokenAuthentication tokenAuthentication = (TokenAuthentication) authentication;
-            return !(tokenAuthentication.isValid());
+            return !tokenAuthentication.isValid();
         }
         return super.isAnonymous(authentication);
     }

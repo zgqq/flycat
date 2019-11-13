@@ -20,15 +20,11 @@ import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
 import de.codecentric.boot.admin.server.notify.AbstractStatusChangeNotifier;
-import de.codecentric.boot.admin.server.notify.LoggingNotifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import reactor.core.publisher.Mono;
 
 public class CustomEventNotifier extends AbstractStatusChangeNotifier {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingNotifier.class);
     private String template = "classpath:/META-INF/spring-boot-admin-server/mail/status-changed.html";
     private TemplateEngine templateEngine;
 
