@@ -297,9 +297,8 @@ def customizePom(pom) {
 }
 
 //bootJar.enabled = false
-
-tasks.named("compileTestJava").configure {
-    options.errorprone.enabled = false
-}
+//tasks.named("compileTestJava").configure {
+//    options.errorprone.enabled = false
+//}
 
 

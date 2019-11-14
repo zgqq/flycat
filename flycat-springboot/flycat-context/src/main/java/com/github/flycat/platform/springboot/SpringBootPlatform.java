@@ -16,12 +16,15 @@
 package com.github.flycat.platform.springboot;
 
 import com.github.flycat.agent.monitor.AttachAgent;
+import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.ContextManager;
 import com.github.flycat.context.ContextUtils;
+import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 public class SpringBootPlatform {
 
@@ -31,9 +34,11 @@ public class SpringBootPlatform {
     public static void run(Class<?> primarySource, String[] args, Class<? extends Module>... modules) {
         try {
             SpringBootPlatform.primarySource = primarySource;
-            ContextManager.beforeRun(modules);
-            SpringApplication.run(primarySource, args);
+            ContextManager.beforeRun(new RunContext(modules));
+            ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
             AttachAgent.attachAgent();
+            ApplicationContext applicationContext = configurableApplicationContext.getBean(ApplicationContext.class);
+            ContextManager.afterRun(applicationContext);
         } catch (Exception e) {
             LOGGER.warn("Startup exception", e);
             if (!ContextUtils.isLocalProfile()) {

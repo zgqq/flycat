@@ -17,6 +17,7 @@ package com.github.flycat.context;
 
 import com.github.flycat.module.Module;
 import com.github.flycat.module.ModuleManager;
+import com.github.flycat.util.CollectionUtils;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.properties.ServerEnvUtils;
 
@@ -24,10 +25,22 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.ServiceLoader;
 
 public class ContextManager {
 
-    public static void beforeRun(Class<? extends Module>... modules) {
+    static List<ContextListener> contextListeners;
+
+    static {
+        ServiceLoader<ContextListener> loader = ServiceLoader.load(ContextListener.class);
+        contextListeners = CollectionUtils.iteratorToList(loader.iterator());
+    }
+
+    public static void beforeRun(RunContext runContext) {
+        for (ContextListener contextListener : contextListeners) {
+            contextListener.beforeRun(runContext);
+        }
         if (!ContextUtils.isLocalProfile()) {
             final String logDir = ServerEnvUtils.getProperty("logging.path");
             if (StringUtils.isNotBlank(logDir)) {
@@ -40,6 +53,13 @@ public class ContextManager {
                 }
             }
         }
+        Class<? extends Module>[] modules = runContext.getModules();
         ModuleManager.load(modules);
+    }
+
+    public static void afterRun(ApplicationContext applicationContext) {
+        for (ContextListener contextListener : contextListeners) {
+            contextListener.afterRun(applicationContext);
+        }
     }
 }

@@ -15,17 +15,16 @@
  */
 package com.github.flycat.context;
 
-public interface ApplicationContext {
+import com.github.flycat.module.Module;
 
-    <T> T getBean(Class<T> clazz);
+public class RunContext {
+    private final Class<? extends Module>[] modules;
 
-    Object getBean(String name);
-
-    default String getApplicationName() {
-        return getApplicationConfiguration().getApplicationName();
+    public RunContext(Class<? extends Module>... modules) {
+        this.modules = modules;
     }
 
-    default ApplicationConfiguration getApplicationConfiguration() {
-        return getBean(ApplicationConfiguration.class);
+    public Class<? extends Module>[] getModules() {
+        return modules;
     }
 }

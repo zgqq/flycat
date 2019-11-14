@@ -15,17 +15,8 @@
  */
 package com.github.flycat.context;
 
-public interface ApplicationContext {
+public interface ContextListener {
+    void beforeRun(RunContext runContext);
 
-    <T> T getBean(Class<T> clazz);
-
-    Object getBean(String name);
-
-    default String getApplicationName() {
-        return getApplicationConfiguration().getApplicationName();
-    }
-
-    default ApplicationConfiguration getApplicationConfiguration() {
-        return getBean(ApplicationConfiguration.class);
-    }
+    void afterRun(ApplicationContext applicationContext);
 }

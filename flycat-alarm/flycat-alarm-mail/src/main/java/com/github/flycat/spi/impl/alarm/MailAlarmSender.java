@@ -18,6 +18,7 @@ package com.github.flycat.spi.impl.alarm;
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.alarm.AbstractAlarmSender;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.properties.ServerEnvUtils;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.Mailer;
@@ -36,6 +37,11 @@ public class MailAlarmSender extends AbstractAlarmSender {
     private Mailer mailer;
     private String receiver;
 
+    public MailAlarmSender() {
+        this(null);
+    }
+
+
     @Inject
     public MailAlarmSender(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
@@ -43,10 +49,22 @@ public class MailAlarmSender extends AbstractAlarmSender {
     }
 
     private void createSender() {
-        final String smtpHost = applicationConfiguration.getString("flycat.alarm.mail.sender.smtp");
-        final Integer smtpPort = applicationConfiguration.getInteger("flycat.alarm.mail.sender.smtp.port");
-        final String mailUser = applicationConfiguration.getString("flycat.alarm.mail.sender.user");
-        final String mailPassword = applicationConfiguration.getString("flycat.alarm.mail.sender.password");
+        String smtpHost = null;
+        Integer smtpPort = null;
+        String mailUser = null;
+        String mailPassword = null;
+        if (applicationConfiguration != null) {
+            smtpHost = applicationConfiguration.getString("flycat.mail.sender.smtp");
+            smtpPort = applicationConfiguration.getInteger("flycat.mail.sender.smtp.port");
+            mailUser = applicationConfiguration.getString("flycat.mail.sender.user");
+            mailPassword = applicationConfiguration.getString("flycat.mail.sender.password");
+        } else {
+            smtpHost = ServerEnvUtils.getProperty("flycat.mail.sender.smtp");
+            smtpPort = ServerEnvUtils.getIntegerProperty("flycat.mail.sender.smtp.port");
+            mailUser = ServerEnvUtils.getProperty("flycat.mail.sender.user");
+            mailPassword = ServerEnvUtils.getProperty("flycat.mail.sender.password");
+        }
+
         receiver = applicationConfiguration.getString("flycat.alarm.mail.receiver");
         if (StringUtils.isNotBlank(smtpHost) && smtpPort != null) {
             mailer = MailerBuilder

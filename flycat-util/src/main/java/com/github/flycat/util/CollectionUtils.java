@@ -15,7 +15,9 @@
  */
 package com.github.flycat.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,5 +43,13 @@ public final class CollectionUtils {
         return list.stream()
                 .map(mapper)
                 .collect(Collectors.toList());
+    }
+
+    public static <T> List<T> iteratorToList(Iterator<T> iterator) {
+        List<T> list = new ArrayList<>();
+        while (iterator.hasNext()) {
+            list.add(iterator.next());
+        }
+        return list;
     }
 }
