@@ -1,9 +1,0 @@
-
-dependencies {
-    api project(':flycat-context')
-    api project(':flycat-spi')
-//    compile project(':base-core')
-}
-
-
-

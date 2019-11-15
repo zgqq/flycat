@@ -1,7 +1,5 @@
-include 'flycat-config-spi'
 include 'flycat-config-redis'
 include 'flycat-config-nacos'
 
-project (':flycat-config-spi').projectDir = new File('./flycat-config/flycat-config-spi')
 project (':flycat-config-redis').projectDir = new File('./flycat-config/flycat-config-redis')
 project (':flycat-config-nacos').projectDir = new File('./flycat-config/flycat-config-nacos')
