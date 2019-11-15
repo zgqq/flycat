@@ -26,17 +26,6 @@ if (!isProd(env)) {
                        , '-XX:TieredStopAtLevel=1'
                        , '-XX:+AlwaysPreTouch']
 
-    ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
-                     "-Dcom.sun.management.jmxremote.port=7091",
-                     "-Dcom.sun.management.jmxremote.rmi.port=7091",
-                     "-Dcom.sun.management.jmxremote.authenticate=false",
-                     "-Dcom.sun.management.jmxremote.ssl=false",
-                     "-XX:+UnlockCommercialFeatures",
-                     "-XX:+FlightRecorder",
-                     "-XX:+UnlockDiagnosticVMOptions",
-                     "-XX:+DebugNonSafepoints"
-    ]
-    ext.appJvmArgs += ext.frJvmArgs
 }
 
 
@@ -54,6 +43,29 @@ server=y,suspend=n""".toString()]
 
 }
 
+ext.useDcevm = false
+
+if (!isProd(env) && !isTestServer(env) && hasProperty("hotswapAgentPath")) {
+    ext.appJvmArgs += ['-XXaltjvm=dcevm',
+                       "-javaagent:${hotswapAgentPath}=autoHotswap=true".toString()]
+    ext.useDcevm = true
+}
+
+
+if (!isProd(env) && !useDcevm) {
+    ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
+                     "-Dcom.sun.management.jmxremote.port=7091",
+                     "-Dcom.sun.management.jmxremote.rmi.port=7091",
+                     "-Dcom.sun.management.jmxremote.authenticate=false",
+                     "-Dcom.sun.management.jmxremote.ssl=false",
+                     "-XX:+UnlockCommercialFeatures",
+                     "-XX:+FlightRecorder",
+                     "-XX:+UnlockDiagnosticVMOptions",
+                     "-XX:+DebugNonSafepoints"
+    ]
+    ext.appJvmArgs += ext.frJvmArgs
+}
+
 
 applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
@@ -61,6 +73,9 @@ applicationDefaultJvmArgs = appJvmArgs + [
         "-Xmn128m",
         "-Xloggc:$projectDir/data/log/gc.log".toString()
 ]
+
+println 'Run java home:' + System.properties['java.home']
+println 'App jvm args: ' + applicationDefaultJvmArgs.join(",")
 
 
 version = env
@@ -100,7 +115,6 @@ dependencies {
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
-
 
 
 bootJar {
