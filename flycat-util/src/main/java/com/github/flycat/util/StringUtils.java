@@ -15,11 +15,13 @@
  */
 package com.github.flycat.util;
 
+import com.google.common.base.Splitter;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -175,4 +177,17 @@ public class StringUtils {
         }
     }
 
+    public static String trimFirstElement(String text, String delimiter) {
+        List<String> strings = Splitter
+                .on(delimiter).omitEmptyStrings().splitToList(text);
+        StringJoiner stringJoiner = new StringJoiner(delimiter);
+        ArrayList<String> contents = new ArrayList<>();
+        if (!strings.isEmpty()) {
+            for (int i = 1; i < strings.size(); i++) {
+                contents.add(strings.get(i));
+            }
+            contents.stream().forEach(str -> stringJoiner.add(str));
+        }
+        return stringJoiner.toString();
+    }
 }
