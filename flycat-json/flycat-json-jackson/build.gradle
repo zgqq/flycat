@@ -1,6 +1,6 @@
 
 dependencies {
-    api project(':flycat-json-spi')
+    api project(':flycat-spi')
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.9'
 }

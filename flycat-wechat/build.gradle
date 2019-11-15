@@ -2,6 +2,6 @@
 dependencies {
     implementation project(':flycat-web')
     implementation project(':flycat-util')
-    implementation project(':flycat-json-spi')
+    implementation project(':flycat-spi')
     compileOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.4'
 }
