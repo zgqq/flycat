@@ -1,6 +1,6 @@
 
 dependencies {
-    api project(':flycat-cache-spi')
+    api project(':flycat-spi')
 }
 
 
