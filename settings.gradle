@@ -12,9 +12,6 @@ include 'flycat-wechat'
 apply from: "./flycat-spi-impl/settings.gradle"
 apply from: "./flycat-datasource/settings.gradle"
 apply from: "./flycat-springboot/settings.gradle"
-
-apply from: "./flycat-json/settings.gradle"
-
 apply from: "./flycat-lib/settings.gradle"
 
 

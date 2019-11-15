@@ -1,3 +1,0 @@
-include 'flycat-json-jackson'
-
-project (':flycat-json-jackson').projectDir = new File('./flycat-json/flycat-json-jackson')

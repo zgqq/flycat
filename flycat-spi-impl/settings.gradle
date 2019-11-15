@@ -19,3 +19,7 @@ include 'flycat-config-redis'
 include 'flycat-config-nacos'
 project (':flycat-config-redis').projectDir = new File('./flycat-spi-impl/flycat-config-redis')
 project (':flycat-config-nacos').projectDir = new File('./flycat-spi-impl/flycat-config-nacos')
+
+
+include 'flycat-json-jackson'
+project (':flycat-json-jackson').projectDir = new File('./flycat-spi-impl/flycat-json-jackson')
