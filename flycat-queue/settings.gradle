@@ -1,6 +1,4 @@
-include 'flycat-queue-spi'
 include 'flycat-queue-ali'
 
-project (':flycat-queue-spi').projectDir = new File('./flycat-queue/flycat-queue-spi')
 project (':flycat-queue-ali').projectDir = new File('./flycat-queue/flycat-queue-ali')
 
