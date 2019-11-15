@@ -4,6 +4,12 @@ project (':flycat-sms-qcloud').projectDir = new File('./flycat-spi-impl/flycat-s
 include 'flycat-alarm-mail'
 project (':flycat-alarm-mail').projectDir = new File('./flycat-spi-impl/flycat-alarm-mail')
 
-
 include 'flycat-queue-ali'
 project (':flycat-queue-ali').projectDir = new File('./flycat-spi-impl/flycat-queue-ali')
+
+include 'flycat-cache-guava'
+include 'flycat-cache-ehcache'
+include 'flycat-cache-redis'
+project (':flycat-cache-guava').projectDir = new File('./flycat-spi-impl/flycat-cache-guava')
+project (':flycat-cache-ehcache').projectDir = new File('./flycat-spi-impl/flycat-cache-ehcache')
+project (':flycat-cache-redis').projectDir = new File('./flycat-spi-impl/flycat-cache-redis')
