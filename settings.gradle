@@ -12,10 +12,9 @@ include 'flycat-web'
 include 'flycat-wechat'
 
 
+apply from: "./flycat-spi-impl/settings.gradle"
 apply from: "./flycat-config/settings.gradle"
 apply from: "./flycat-cache/settings.gradle"
-apply from: "./flycat-alarm/settings.gradle"
-apply from: "./flycat-sms/settings.gradle"
 apply from: "./flycat-queue/settings.gradle"
 apply from: "./flycat-datasource/settings.gradle"
 apply from: "./flycat-springboot/settings.gradle"

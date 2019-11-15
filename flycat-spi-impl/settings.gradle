@@ -1,0 +1,5 @@
+include 'flycat-sms-qcloud'
+project (':flycat-sms-qcloud').projectDir = new File('./flycat-spi-impl/flycat-sms-qcloud')
+
+include 'flycat-alarm-mail'
+project (':flycat-alarm-mail').projectDir = new File('./flycat-spi-impl/flycat-alarm-mail')

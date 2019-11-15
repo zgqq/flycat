@@ -1,4 +1,0 @@
-include 'flycat-sms-qcloud'
-
-project (':flycat-sms-qcloud').projectDir = new File('./flycat-sms/flycat-sms-qcloud')
-

@@ -1,4 +1,1 @@
-include 'flycat-alarm-mail'
-
-project (':flycat-alarm-mail').projectDir = new File('./flycat-alarm/flycat-alarm-mail')
 
