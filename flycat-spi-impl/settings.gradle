@@ -13,3 +13,9 @@ include 'flycat-cache-redis'
 project (':flycat-cache-guava').projectDir = new File('./flycat-spi-impl/flycat-cache-guava')
 project (':flycat-cache-ehcache').projectDir = new File('./flycat-spi-impl/flycat-cache-ehcache')
 project (':flycat-cache-redis').projectDir = new File('./flycat-spi-impl/flycat-cache-redis')
+
+
+include 'flycat-config-redis'
+include 'flycat-config-nacos'
+project (':flycat-config-redis').projectDir = new File('./flycat-spi-impl/flycat-config-redis')
+project (':flycat-config-nacos').projectDir = new File('./flycat-spi-impl/flycat-config-nacos')

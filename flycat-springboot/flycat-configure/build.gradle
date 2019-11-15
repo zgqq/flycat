@@ -3,7 +3,7 @@ dependencies {
     api "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
 
     compileOnly project(':flycat-context')
-    compileOnly project(':flycat-redis')
+    compileOnly project(':flycat-spi')
     compileOnly project(':flycat-wechat')
 
     compileOnly project(':flycat-springboot-context')
