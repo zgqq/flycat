@@ -1,6 +1,4 @@
-include 'flycat-sms-spi'
 include 'flycat-sms-qcloud'
 
-project (':flycat-sms-spi').projectDir = new File('./flycat-sms/flycat-sms-spi')
 project (':flycat-sms-qcloud').projectDir = new File('./flycat-sms/flycat-sms-qcloud')
 
