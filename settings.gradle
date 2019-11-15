@@ -4,7 +4,6 @@ include 'flycat-util'
 
 include 'flycat-redis'
 
-include 'flycat-configure'
 
 include 'flycat-context'
 
