@@ -1,4 +1,0 @@
-include 'flycat-queue-ali'
-
-project (':flycat-queue-ali').projectDir = new File('./flycat-queue/flycat-queue-ali')
-

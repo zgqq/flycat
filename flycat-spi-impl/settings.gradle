@@ -3,3 +3,7 @@ project (':flycat-sms-qcloud').projectDir = new File('./flycat-spi-impl/flycat-s
 
 include 'flycat-alarm-mail'
 project (':flycat-alarm-mail').projectDir = new File('./flycat-spi-impl/flycat-alarm-mail')
+
+
+include 'flycat-queue-ali'
+project (':flycat-queue-ali').projectDir = new File('./flycat-spi-impl/flycat-queue-ali')
