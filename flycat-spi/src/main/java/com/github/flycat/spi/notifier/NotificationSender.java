@@ -13,21 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.alarm;
+package com.github.flycat.spi.notifier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface NotificationSender {
 
-public class LogAlarmSender implements AlarmSender {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogAlarmSender.class);
-
-    @Override
-    public void sendNotify(String message) {
-        LOGGER.info("send nothing, message:{}", message);
-    }
-
-//    @Override
-//    public void sendNotify(String type, String token, String message) {
-//        LOGGER.info("Nothing send notify");
-//    }
+    void send(String message);
 }

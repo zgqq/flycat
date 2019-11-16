@@ -32,6 +32,9 @@ public class ExceptionUtils {
     }
 
     public static String getStackTrace(Throwable throwable) {
+        if (throwable == null) {
+            return "";
+        }
         return org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable);
     }
 }

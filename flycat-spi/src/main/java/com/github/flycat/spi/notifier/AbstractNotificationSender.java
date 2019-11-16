@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.alarm;
+package com.github.flycat.spi.notifier;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
@@ -28,18 +28,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public abstract class AbstractAlarmSender implements AlarmSender {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAlarmSender.class);
+public abstract class AbstractNotificationSender implements NotificationSender {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNotificationSender.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();
     private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
     private static ThreadPoolExecutor threadPoolExecutor;
 
     static {
-        threadPoolExecutor = ExecutorUtils.newExecutor(1, "notify-executor");
+        threadPoolExecutor = ExecutorUtils.newExecutor(1, "notifier-executor");
     }
 
     @Override
-    public void sendNotify(String message) {
+    public void send(String message) {
         if (StringUtils.isBlank(message)) {
             return;
         }
@@ -74,8 +74,8 @@ public abstract class AbstractAlarmSender implements AlarmSender {
             LOGGER.warn("Unable to get applicationName", e);
         }
         message = "Server ip:" + inetAddress + ", App name:" + applicationName + "\n notification:" + message;
-        doSendNotify(message);
+        doSend(message);
     }
 
-    public abstract void doSendNotify(String message);
+    public abstract void doSend(String message);
 }

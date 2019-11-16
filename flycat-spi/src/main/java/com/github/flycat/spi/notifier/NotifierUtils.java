@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.alarm;
+package com.github.flycat.spi.notifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,59 +24,59 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AlarmUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AlarmUtils.class);
-    private static final Map<String, AlarmSender> SENDERS = new ConcurrentHashMap<>();
-    private static AlarmSender defaultSender;
+public class NotifierUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotifierUtils.class);
+    private static final Map<String, NotificationSender> SENDERS = new ConcurrentHashMap<>();
+    private static NotificationSender defaultSender;
 
     static {
-        final ServiceLoader<AlarmSender> load = ServiceLoader.load(AlarmSender.class);
-        final Iterator<AlarmSender> iterator = load.iterator();
+        final ServiceLoader<NotificationSender> load = ServiceLoader.load(NotificationSender.class);
+        final Iterator<NotificationSender> iterator = load.iterator();
         while (iterator.hasNext()) {
-            final AlarmSender next = iterator.next();
+            final NotificationSender next = iterator.next();
             registerSender(next.getClass().getName(),
                     next
             );
         }
     }
 
-    public static void registerSender(String name, AlarmSender alarmSender) {
+    public static void registerSender(String name, NotificationSender alarmSender) {
         LOGGER.info("Registering sender, name:{}", name);
         SENDERS.put(name, alarmSender);
     }
 
-    public static void setDefaultSender(AlarmSender defaultSender) {
+    public static void setDefaultSender(NotificationSender defaultSender) {
         LOGGER.info("Setting default sender, {}", defaultSender.getClass().getName());
-        if (AlarmUtils.defaultSender != null) {
+        if (NotifierUtils.defaultSender != null) {
             LOGGER.warn("Default alarm sender exists! before:{}, after:{}",
-                    AlarmUtils.defaultSender.getClass().getName(),
+                    NotifierUtils.defaultSender.getClass().getName(),
                     defaultSender.getClass().getName()
             );
         }
-        AlarmUtils.defaultSender = defaultSender;
+        NotifierUtils.defaultSender = defaultSender;
         registerSender(defaultSender.getClass().getName(), defaultSender);
     }
 
-    public static void sendNotify(String message) {
-        AlarmSender alarmSender = getDefaultAlarmSender();
-        if (alarmSender == null) {
+    public static void sendNotification(String message) {
+        NotificationSender defaultNotificationSender = getDefaultNotificationSender();
+        if (defaultNotificationSender == null) {
             LOGGER.warn("Not found any alarm sender, message:{}", message);
         } else {
-            alarmSender.sendNotify(message);
+            defaultNotificationSender.send(message);
         }
     }
 
     @Nullable
-    public static AlarmSender getDefaultAlarmSender() {
-        AlarmSender alarmSender = null;
-        if (AlarmUtils.defaultSender != null) {
-            alarmSender = AlarmUtils.defaultSender;
+    public static NotificationSender getDefaultNotificationSender() {
+        NotificationSender notificationSender = null;
+        if (NotifierUtils.defaultSender != null) {
+            notificationSender = NotifierUtils.defaultSender;
         } else {
-            final Iterator<Map.Entry<String, AlarmSender>> iterator = SENDERS.entrySet().iterator();
+            final Iterator<Map.Entry<String, NotificationSender>> iterator = SENDERS.entrySet().iterator();
             if (iterator.hasNext()) {
-                alarmSender = iterator.next().getValue();
+                notificationSender = iterator.next().getValue();
             }
         }
-        return alarmSender;
+        return notificationSender;
     }
 }

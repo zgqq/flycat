@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.impl.alarm;
+package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.ContextFreeConfiguration;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.exception.BusinessException;
-import com.github.flycat.spi.alarm.AlarmSender;
-import com.github.flycat.spi.alarm.LogErrorListener;
+import com.github.flycat.spi.notifier.LogErrorListener;
+import com.github.flycat.spi.notifier.NotificationSender;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,14 +30,12 @@ import javax.inject.Singleton;
 @Singleton
 @Named
 public class LogAlarmListener extends LogErrorListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogAlarmListener.class);
-    private final AlarmSender alarmSender;
+    private final NotificationSender notificationSender;
 
     @Inject
-    public LogAlarmListener(AlarmSender alarmSender, ApplicationConfiguration applicationConfiguration) {
-        super(applicationConfiguration.getString("app.name"),
-                applicationConfiguration.getString("flycat.alarm.log.package"));
-        this.alarmSender = alarmSender;
+    public LogAlarmListener(NotificationSender notificationSender, ApplicationConfiguration applicationConfiguration) {
+        super(applicationConfiguration.getString("flycat.alarm.exclude.packages"));
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -56,7 +53,7 @@ public class LogAlarmListener extends LogErrorListener {
     }
 
     @Override
-    protected void sendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
-        this.alarmSender.sendNotify(message);
+    protected void doSendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
+        this.notificationSender.send(message);
     }
 }

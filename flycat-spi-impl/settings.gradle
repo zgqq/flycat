@@ -1,8 +1,6 @@
 include 'flycat-sms-qcloud'
 project (':flycat-sms-qcloud').projectDir = new File('./flycat-spi-impl/flycat-sms-qcloud')
 
-include 'flycat-alarm-mail'
-project (':flycat-alarm-mail').projectDir = new File('./flycat-spi-impl/flycat-alarm-mail')
 
 include 'flycat-queue-ali'
 project (':flycat-queue-ali').projectDir = new File('./flycat-spi-impl/flycat-queue-ali')
@@ -23,3 +21,7 @@ project (':flycat-config-nacos').projectDir = new File('./flycat-spi-impl/flycat
 
 include 'flycat-json-jackson'
 project (':flycat-json-jackson').projectDir = new File('./flycat-spi-impl/flycat-json-jackson')
+
+
+include 'flycat-notifier'
+project (':flycat-notifier').projectDir = new File('./flycat-spi-impl/flycat-notifier')

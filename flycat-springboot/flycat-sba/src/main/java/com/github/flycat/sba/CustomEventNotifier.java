@@ -15,7 +15,7 @@
  */
 package com.github.flycat.sba;
 
-import com.github.flycat.spi.alarm.AlarmUtils;
+import com.github.flycat.spi.notifier.NotifierUtils;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.entities.InstanceRepository;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
@@ -41,7 +41,7 @@ public class CustomEventNotifier extends AbstractStatusChangeNotifier {
             ctx.setVariable("instance", instance);
             ctx.setVariable("lastStatus", getLastStatus(event.getInstance()));
             final String process = templateEngine.process(this.template, ctx);
-            AlarmUtils.sendNotify(process);
+            NotifierUtils.sendNotification(process);
         });
     }
 }

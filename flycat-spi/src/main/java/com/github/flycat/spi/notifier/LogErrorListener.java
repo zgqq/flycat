@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.alarm;
+package com.github.flycat.spi.notifier;
 
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.util.ExceptionUtils;
+import com.google.common.base.Splitter;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 
+import java.util.List;
+
 public class LogErrorListener {
 
-//    private static String applicationName;
-//    private static String packageName;
-//
-//    static {
-//        applicationName = ServerEnvUtils.getProperty("spring.application.name");
-//        packageName = ServerEnvUtils.getProperty("flycat.alarm.log.package");
-//        System.out.println("Alarm log package name " + packageName);
-//    }
 
+    private final List<String> excludePackageNames;
 
-    private final String applicationName;
-    private final String packageName;
-
-    public LogErrorListener(String applicationName, String packageName) {
-        this.applicationName = applicationName;
-        this.packageName = packageName;
+    public LogErrorListener(String packages) {
+        this.excludePackageNames = Splitter.on(",").omitEmptyStrings().splitToList(packages);
     }
 
 
@@ -62,26 +54,27 @@ public class LogErrorListener {
         return true;
     }
 
-    protected void sendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
+    protected final void sendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
         final String name = logger.getName();
-        if (packageName != null && name.startsWith(packageName)) {
-            AlarmUtils.sendNotify(
-                    message
-            );
+        if (excludePackageNames != null && !excludePackageNames.isEmpty()) {
+            for (String excludePackageName : excludePackageNames) {
+                if (name.startsWith(excludePackageName)) {
+                    return;
+                }
+            }
         }
+        doSendAlarm(logger, message, throwable, objects);
     }
 
-    private String getAlarmMessage(Logger logger, String message, Throwable throwable) {
+    protected void doSendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
+        NotifierUtils.sendNotification(
+                message
+        );
+    }
+
+    protected String getAlarmMessage(Logger logger, String message, Throwable throwable) {
         return " Logger name: " + logger.getName() + "\n"
                 + "Log message: " + message + " \nException: "
                 + ExceptionUtils.getStackTrace(throwable);
-    }
-
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public String getPackageName() {
-        return packageName;
     }
 }

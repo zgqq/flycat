@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.spi.impl.alarm;
+package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
-import com.github.flycat.spi.alarm.AbstractAlarmSender;
+import com.github.flycat.spi.notifier.AbstractNotificationSender;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.properties.ServerEnvUtils;
 import org.simplejavamail.email.Email;
@@ -26,24 +26,19 @@ import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
-@Singleton
-@Named
-public class MailAlarmSender extends AbstractAlarmSender {
+public class MailNotificationSender extends AbstractNotificationSender {
 
     private final ApplicationConfiguration applicationConfiguration;
     private Mailer mailer;
     private String receiver;
 
-    public MailAlarmSender() {
+    public MailNotificationSender() {
         this(null);
     }
 
-
     @Inject
-    public MailAlarmSender(ApplicationConfiguration applicationConfiguration) {
+    public MailNotificationSender(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
         this.createSender();
     }
@@ -80,7 +75,7 @@ public class MailAlarmSender extends AbstractAlarmSender {
     }
 
     @Override
-    public void doSendNotify(String message) {
+    public void doSend(String message) {
         if (message != null) {
             if (mailer != null && receiver != null) {
                 Email email = EmailBuilder.startingBlank()
