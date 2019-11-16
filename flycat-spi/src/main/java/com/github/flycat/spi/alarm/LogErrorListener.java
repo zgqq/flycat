@@ -16,6 +16,7 @@
 package com.github.flycat.spi.alarm;
 
 import com.github.flycat.log.LogErrorEvent;
+import com.github.flycat.util.ExceptionUtils;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 
@@ -42,27 +43,38 @@ public class LogErrorListener {
 
     @Subscribe
     public void listen(LogErrorEvent logErrorEvent) {
-        sendAlarm((Logger) logErrorEvent.getLogger(), logErrorEvent.getMessage(),
-                logErrorEvent.getThrowable());
+        sendAlarm(logErrorEvent);
     }
 
-    private void sendAlarm(Logger logger, String s, Throwable throwable, Object... objects) {
-        if (!shouldSendAlarm(logger, s, throwable, objects)) {
+    private void sendAlarm(LogErrorEvent logErrorEvent) {
+        Logger logger = logErrorEvent.getLogger();
+        String message = logErrorEvent.getFormattedMessage();
+        Throwable throwable = logErrorEvent.getThrowable();
+        Object[] args = logErrorEvent.getArgs();
+        if (!shouldSendAlarm(logger, message, throwable, args)) {
             return;
         }
-        sendAlarm(logger, s, objects);
+        String alarmMessage = getAlarmMessage(logger, message, throwable);
+        sendAlarm(logger, alarmMessage, throwable, args);
     }
 
-    protected boolean shouldSendAlarm(Logger logger, String s, Throwable throwable, Object[] objects) {
+    protected boolean shouldSendAlarm(Logger logger, String message, Throwable throwable, Object[] objects) {
         return true;
     }
 
-    protected void sendAlarm(Logger logger, String s, Object... objects) {
+    protected void sendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
         final String name = logger.getName();
         if (packageName != null && name.startsWith(packageName)) {
-            AlarmUtils.sendNotify("app:" + applicationName
-                    + " logger name:" + logger.getName() + " message:" + s);
+            AlarmUtils.sendNotify(
+                    message
+            );
         }
+    }
+
+    private String getAlarmMessage(Logger logger, String message, Throwable throwable) {
+        return " Logger name: " + logger.getName() + "\n"
+                + "Log message: " + message + " \nException: "
+                + ExceptionUtils.getStackTrace(throwable);
     }
 
     public String getApplicationName() {

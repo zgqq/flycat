@@ -121,7 +121,7 @@ public class TrackedExecutorService {
     public synchronized void tryCreateThreadFactory() {
         if (threadFactory == null) {
             threadFactory = new ThreadFactoryBuilder()
-                    .setNameFormat("executor-pool-%d")
+                    .setNameFormat("traced-executor-%d")
                     .setDaemon(true)
                     .build();
         }

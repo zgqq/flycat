@@ -99,7 +99,6 @@ public interface ApplicationConfiguration {
         return this.getObject(key, clazz);
     }
 
-
     default String getString(String key) {
         return retryGet(key, String.class);
     }

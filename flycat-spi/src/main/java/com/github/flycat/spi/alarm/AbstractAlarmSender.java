@@ -19,47 +19,62 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.executor.ExecutorUtils;
 import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class AbstractAlarmSender implements AlarmSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractAlarmSender.class);
     private static final MetricRegistry REGISTRY = new MetricRegistry();
     private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
+    private static ThreadPoolExecutor threadPoolExecutor;
+
+    static {
+        threadPoolExecutor = ExecutorUtils.newExecutor(1, "notify-executor");
+    }
 
     @Override
     public void sendNotify(String message) {
         if (StringUtils.isBlank(message)) {
             return;
         }
+        threadPoolExecutor.execute(() -> buildMessageAndSend(message));
+    }
+
+    private void sendLimitedNotify(String message) {
         final boolean require = RATE_LIMITER.tryAcquire();
         if (require) {
             final Meter meter = REGISTRY.meter("log." + message);
             meter.mark();
             if (meter.getOneMinuteRate() < 0.4) {
-                InetAddress inetAddress = null;
-                try {
-                    inetAddress = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
-                }
-                String applicationName = "unknown";
-                try {
-                    applicationName = ContextUtils.getApplicationName();
-                } catch (Exception e) {
-                    LOGGER.warn("Unable to get applicationName", e);
-                }
-                message = "machine info:" + inetAddress + ", app name:" + applicationName + ", error:" + message;
-                doSendNotify(message);
+                buildMessageAndSend(message);
             } else {
                 LOGGER.warn("Alarm too frequently, aborted, message:{}", message);
             }
         } else {
             LOGGER.info("Unable to get token, abort alarm, message:{}", message);
         }
+    }
+
+    private void buildMessageAndSend(String message) {
+        InetAddress inetAddress = null;
+        try {
+            inetAddress = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+        }
+        String applicationName = "unknown";
+        try {
+            applicationName = ContextUtils.getApplicationName();
+        } catch (Exception e) {
+            LOGGER.warn("Unable to get applicationName", e);
+        }
+        message = "Server ip:" + inetAddress + ", App name:" + applicationName + "\n notification:" + message;
+        doSendNotify(message);
     }
 
     public abstract void doSendNotify(String message);

@@ -58,14 +58,15 @@ public class MailAlarmSender extends AbstractAlarmSender {
             smtpPort = applicationConfiguration.getInteger("flycat.mail.sender.smtp.port");
             mailUser = applicationConfiguration.getString("flycat.mail.sender.user");
             mailPassword = applicationConfiguration.getString("flycat.mail.sender.password");
+            receiver = applicationConfiguration.getString("flycat.alarm.mail.receiver");
         } else {
             smtpHost = ServerEnvUtils.getProperty("flycat.mail.sender.smtp");
             smtpPort = ServerEnvUtils.getIntegerProperty("flycat.mail.sender.smtp.port");
             mailUser = ServerEnvUtils.getProperty("flycat.mail.sender.user");
             mailPassword = ServerEnvUtils.getProperty("flycat.mail.sender.password");
+            receiver = ServerEnvUtils.getProperty("flycat.alarm.mail.receiver");
         }
 
-        receiver = applicationConfiguration.getString("flycat.alarm.mail.receiver");
         if (StringUtils.isNotBlank(smtpHost) && smtpPort != null) {
             mailer = MailerBuilder
                     .withSMTPServer(smtpHost, smtpPort, mailUser, mailPassword)
@@ -85,7 +86,7 @@ public class MailAlarmSender extends AbstractAlarmSender {
                 Email email = EmailBuilder.startingBlank()
                         .from(receiver)
                         .to(receiver, receiver)
-                        .withSubject("Alarming")
+                        .withSubject("Server notification")
                         .withPlainText(message)
                         .withReturnReceiptTo()
                         .buildEmail();

@@ -15,10 +15,7 @@
  */
 package com.github.flycat.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,5 +48,9 @@ public final class CollectionUtils {
             list.add(iterator.next());
         }
         return list;
+    }
+
+    public static String toPrettyString(Map<String, String> map) {
+        return Arrays.toString(map.entrySet().toArray());
     }
 }

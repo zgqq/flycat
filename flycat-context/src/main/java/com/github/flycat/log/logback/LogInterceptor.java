@@ -17,6 +17,7 @@ package com.github.flycat.log.logback;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
 import com.github.flycat.event.EventManager;
@@ -24,12 +25,16 @@ import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.log.MDCUtils;
 import com.github.flycat.util.CommonUtils;
+import com.google.common.collect.Lists;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 
+import java.util.List;
 import java.util.Map;
 
 public class LogInterceptor extends TurboFilter {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LogInterceptor.class);
 
     @Override
     public FilterReply decide(Marker marker, Logger logger,
@@ -45,7 +50,7 @@ public class LogInterceptor extends TurboFilter {
             if (s != null && !s.startsWith(MDCUtils.LOG_MDC)) {
                 final String message = getMessage(s, contextMap, level);
                 final String fqcn = Logger.FQCN;
-                if (level == Level.ERROR) {
+                if (level.levelInt == Level.ERROR_INT) {
                     onError(logger, s, throwable, message, objects);
                 }
                 final org.slf4j.event.Level level4j = org.slf4j.event.Level.valueOf(level.levelStr);
@@ -54,19 +59,30 @@ public class LogInterceptor extends TurboFilter {
             }
             return FilterReply.NEUTRAL;
         } else {
-            if (level == Level.ERROR) {
+            if (level.levelInt == Level.ERROR_INT) {
                 onError(logger, s, throwable, s, objects);
             }
             return FilterReply.NEUTRAL;
         }
     }
 
+    private static List<String> ignoredLoggers = Lists.newArrayList("org.springframework");
+
     protected void onError(Logger logger, String message, Throwable throwable,
                            String mdcMessage, Object[] args) {
-        EventManager.post(new LogErrorEvent(logger, message, throwable, mdcMessage, args));
+        final String name = logger.getName();
+        for (String ignoredLogger : ignoredLoggers) {
+            if (name.startsWith(ignoredLogger)) {
+                LOGGER.info("Ignored exception, logger:{}, message:{}", logger, message);
+                return;
+            }
+        }
+        LoggingEvent loggingEvent = new LoggingEvent(null, logger, Level.ERROR, mdcMessage, throwable, args);
+        String formattedMessage = loggingEvent.getFormattedMessage();
+        EventManager.post(new LogErrorEvent(logger, message, throwable, formattedMessage, args));
     }
 
-    public String getMessage(String s, Map<String, String> contextMap, Level level) {
+    public String getMessage(String originMessage, Map<String, String> contextMap, Level level) {
         final String httpUri = contextMap.get(MDCUtils.HTTP_URI);
         String prefix = MDCUtils.LOG_MDC + ": ";
         if (httpUri != null) {
@@ -96,6 +112,6 @@ public class LogInterceptor extends TurboFilter {
         if (postfix.endsWith(",")) {
             postfix = postfix.substring(0, postfix.length() - 1);
         }
-        return prefix + " " + s + ", context[" + postfix + "]";
+        return prefix + " " + originMessage + ", context[" + postfix + "]";
     }
 }

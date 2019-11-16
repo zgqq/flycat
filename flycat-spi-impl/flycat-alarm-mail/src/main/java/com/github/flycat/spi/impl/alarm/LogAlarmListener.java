@@ -16,18 +16,17 @@
 package com.github.flycat.spi.impl.alarm;
 
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ContextFreeConfiguration;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.exception.BusinessException;
 import com.github.flycat.spi.alarm.AlarmSender;
 import com.github.flycat.spi.alarm.LogErrorListener;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.List;
 
 @Singleton
 @Named
@@ -43,25 +42,21 @@ public class LogAlarmListener extends LogErrorListener {
     }
 
     @Override
-    protected boolean shouldSendAlarm(Logger logger, String s, Throwable throwable, Object[] objects) {
-        return !(throwable instanceof BusinessException
+    protected boolean shouldSendAlarm(Logger logger, String message, Throwable throwable, Object[] objects) {
+        boolean shouldSend = !(throwable instanceof BusinessException
                 ||
                 (throwable != null && throwable.getCause() instanceof BusinessException));
+        if (!shouldSend) {
+            return shouldSend;
+        }
+        ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
+        boolean alarmEnabled = contextFreeConfiguration
+                .getBooleanValue("flycat.alarm.enabled", false);
+        return (!ContextUtils.isTestProfile()) || alarmEnabled;
     }
 
-    private static List<String> ignoredLoggers = Lists.newArrayList("org.springframework.boot.devtools");
-
     @Override
-    protected void sendAlarm(Logger logger, String s, Object... objects) {
-        final String name = logger.getName();
-        for (String ignoredLogger : ignoredLoggers) {
-            if (name.startsWith(ignoredLogger)) {
-                LOGGER.info("Ignored exception, abort alarm, logger:{}, message:{}", logger, s);
-                return;
-            }
-        }
-        if (!ContextUtils.isTestProfile()) {
-            this.alarmSender.sendNotify(s);
-        }
+    protected void sendAlarm(Logger logger, String message, Throwable throwable, Object... objects) {
+        this.alarmSender.sendNotify(message);
     }
 }

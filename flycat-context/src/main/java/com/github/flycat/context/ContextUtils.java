@@ -56,6 +56,9 @@ public final class ContextUtils {
 
     public static ApplicationConfiguration getApplicationConfiguration() {
         final ApplicationContext contextHolder = getContextHolder();
+        if (contextHolder == null) {
+            return null;
+        }
         final ApplicationConfiguration bean = contextHolder.getBean(ApplicationConfiguration.class);
         return bean;
     }
@@ -88,7 +91,11 @@ public final class ContextUtils {
     }
 
     public static String getApplicationName() {
-        final ApplicationConfiguration applicationConfiguration = getApplicationConfiguration();
-        return applicationConfiguration.getApplicationName();
+        ContextFreeConfiguration contextFreeConfiguration = createContextFreeConfiguration();
+        return contextFreeConfiguration.getApplicationName();
+    }
+
+    public static ContextFreeConfiguration createContextFreeConfiguration() {
+        return new ContextFreeConfiguration(getApplicationConfiguration());
     }
 }

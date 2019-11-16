@@ -25,7 +25,7 @@ public class ErrorLogFileLogger {
 
     @Subscribe
     public void onError(LogErrorEvent logErrorEvent) {
-        LOGGER.error(logErrorEvent.getMdcMessage(),
+        LOGGER.error(logErrorEvent.getFormattedMessage(),
                 logErrorEvent.getArgs(), logErrorEvent.getThrowable());
     }
 }

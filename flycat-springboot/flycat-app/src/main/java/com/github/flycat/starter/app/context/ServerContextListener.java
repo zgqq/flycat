@@ -15,17 +15,15 @@
  */
 package com.github.flycat.starter.app.context;
 
-import com.github.flycat.context.ApplicationConfiguration;
-import com.github.flycat.context.ApplicationContext;
-import com.github.flycat.context.ContextListener;
-import com.github.flycat.context.RunContext;
+import com.github.flycat.context.*;
 import com.github.flycat.spi.alarm.AlarmUtils;
 
 public class ServerContextListener implements ContextListener {
 
     @Override
     public void beforeRun(RunContext runContext) {
-        AlarmUtils.sendNotify("Starting server");
+        ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
+        AlarmUtils.sendNotify("Server[" + contextFreeConfiguration.getApplicationName() + "] starting");
     }
 
     @Override
