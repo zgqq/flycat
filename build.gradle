@@ -130,13 +130,13 @@ configure(javaProjects) { project ->
 
 }
 
-ext.bootProjects = javaProjects.findAll {
-    it.name.startsWith("flycat-springboot-sba")
-}
+//ext.bootProjects = javaProjects.findAll {
+//    it.name.startsWith("flycat-springboot-sba")
+//}
 
-configure(bootProjects) { project ->
-    apply from: "${gradleConfigDir}/bootProject.gradle"
-}
+//configure(bootProjects) { project ->
+//    apply from: "${gradleConfigDir}/bootProject.gradle"
+//}
 
 ext.jarProjects = javaProjects.findAll {
     !it.name.endsWith("-sba")

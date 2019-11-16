@@ -1,6 +1,5 @@
-startScripts {
-    mainClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
-}
+ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
+apply from: "${gradleConfigDir}/bootProject.gradle"
 
 dependencies {
     implementation project(':flycat-context')

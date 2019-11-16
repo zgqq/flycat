@@ -5,6 +5,11 @@ apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
 processResources.dependsOn copyConfiguration
 
+if (hasProperty("appClassName")) {
+    println "Current main class name: ${mainClassName}, appClassName: ${appClassName}"
+    mainClassName = ext.appClassName
+}
+
 ext.springJvmArgs = ["-Dspring.profiles.active=$env".toString()]
 
 if (vJavaLang == '1.11') {
@@ -19,7 +24,6 @@ if (vJavaLang == '1.11') {
             "-XX:+PrintGCTimeStamps",
             "-XX:-OmitStackTraceInFastThrow"]
 }
-
 
 if (!isProd(env)) {
     ext.appJvmArgs += ['-noverify'
@@ -83,11 +87,17 @@ if (isProd(env)) {
 }
 
 
-defaultTasks 'compileJava', 'checkStyle'
+//defaultTasks 'compileJava', 'checkStyle'
+
+
+// disable to fix distTar(not copy app self jar)
+jar.enabled = true
+bootJar.enabled = false
+
 
 distZip.enabled = false
-distTar.enabled = false
-//bootDistTar.enabled = false
+distTar.enabled = true
+bootDistTar.enabled = false
 bootDistZip.enabled = false
 
 //    processResources.dependsOn copyConfiguration
@@ -127,14 +137,12 @@ bootRun {
 
 test.enabled = false
 
-
 if (hasProperty("mainClassName") && mainClassName != null) {
     println "Main class: $mainClassName"
     startScripts {
         mainClassName = "$mainClassName"
     }
 }
-
 
 
 

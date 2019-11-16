@@ -24,14 +24,14 @@ public class AttachAgent {
             CodeSource codeSource = AttachAgent.class.getProtectionDomain().getCodeSource();
             File bootJarPath = null;
             if (codeSource != null) {
+//                bootJarPath = new File(codeSource.getLocation().toURI().getSchemeSpecificPart());
                 bootJarPath = new File(codeSource.getLocation().toURI().getSchemeSpecificPart());
                 appHomeDir = bootJarPath.getParentFile();
             }
 
-
 //            String agentPath = new File(appHomeDir, "flycat-agent.jar").getAbsolutePath();
             String agentPath = bootJarPath.getAbsolutePath();
-            LOGGER.info("Agent path jar:{}", agentPath);
+            LOGGER.info("Agent path jar, parent:{}, path:{}", appHomeDir.getAbsolutePath(), agentPath);
             virtualMachine.loadAgent(agentPath,
                     "");
         } finally {
