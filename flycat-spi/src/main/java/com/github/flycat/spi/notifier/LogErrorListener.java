@@ -21,17 +21,20 @@ import com.github.flycat.util.StringUtils;
 import com.google.common.base.Splitter;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LogErrorListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogErrorListener.class);
 
     private final List<String> excludePackageNames;
 
     public LogErrorListener(String packages) {
-        if (StringUtils.isBlank(packages)) {
+        if (StringUtils.isNotBlank(packages)) {
             this.excludePackageNames = Splitter.on(",").omitEmptyStrings().splitToList(packages);
         } else {
             this.excludePackageNames = new ArrayList<>();
@@ -41,7 +44,11 @@ public class LogErrorListener {
 
     @Subscribe
     public void listen(LogErrorEvent logErrorEvent) {
-        sendAlarm(logErrorEvent);
+        try {
+            sendAlarm(logErrorEvent);
+        } catch (Exception e) {
+            LOGGER.warn("Unable to send alarm", e);
+        }
     }
 
     private void sendAlarm(LogErrorEvent logErrorEvent) {

@@ -26,6 +26,7 @@ import com.github.flycat.web.WebFactoryConfiguration;
 import com.github.flycat.web.spring.*;
 import com.github.flycat.web.spring.view.DynamicViewNameTranslator;
 import com.google.common.collect.Sets;
+import jdk.nashorn.internal.ir.CallNode;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.UpgradeProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,12 +204,12 @@ public class WebConfiguration {
     public static class TomcatConfiguration {
         @Bean
         public SmoothTomcatWebServerCustomizer tomcatWebServer() {
-            final String changePort = SystemProperties.get("changePort");
-            boolean needChange = ContextUtils.isTestServerProfile();
-            if (StringUtils.isNotBlank(changePort)) {
-                needChange = "true".equalsIgnoreCase(changePort);
+            final String killAfterStartedConf = ContextUtils.createContextFreeConfiguration().getString("flycat.kill-after-started");
+            boolean killAfterStarted = true;
+            if (StringUtils.isNotBlank(killAfterStartedConf)) {
+                killAfterStarted = "true".equalsIgnoreCase(killAfterStartedConf);
             }
-            return new SmoothTomcatWebServerCustomizer(needChange);
+            return new SmoothTomcatWebServerCustomizer(killAfterStarted);
         }
     }
 }

@@ -30,13 +30,13 @@ public class SmoothTomcatWebServerCustomizer extends AbstractSmoothWebServerCust
     private volatile Connector mainConnector;
     private volatile int serverPort;
 
-    public SmoothTomcatWebServerCustomizer(boolean tryKillProcess) {
-        super(tryKillProcess);
+    public SmoothTomcatWebServerCustomizer(boolean killAfterStarted) {
+        super(killAfterStarted);
     }
 
     @Override
     protected void retryStartConnector() throws Throwable {
-        for (; ;) {
+        for (; ; ) {
             LOGGER.info("Trying start connector");
             final boolean success = startConnector();
             if (success) {

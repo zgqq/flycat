@@ -137,7 +137,9 @@ public abstract class AbstractSmoothWebServerCustomizer implements
             }
             final String pid = getPid(serverPort);
             LOGGER.info("Changing server port, port:{}, previous pid:{}, needChange:{}", serverPort, pid, tryKillProcess);
-            stopConnector();
+            try {
+                stopConnector();
+            } catch (Throwable throwable) { }
             if (StringUtils.isNotBlank(pid)) {
                 final Stopwatch started = Stopwatch.createStarted();
                 kill(Integer.valueOf(pid));
@@ -150,9 +152,6 @@ public abstract class AbstractSmoothWebServerCustomizer implements
             } else {
                 startConnector();
             }
-
-
-
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
