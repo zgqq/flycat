@@ -1,0 +1,18 @@
+apply plugin: "net.ltgt.errorprone"
+
+dependencies {
+    errorprone("com.uber.nullaway:nullaway:0.7.8")
+    errorprone("com.google.errorprone:error_prone_core:2.3.3")
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
+}
+
+tasks.named("compileTestJava").configure {
+    options.errorprone.enabled = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone {
+        option("NullAway:AnnotatedPackages", "${checkPackage}")
+        warn("NullAway")
+    }
+}

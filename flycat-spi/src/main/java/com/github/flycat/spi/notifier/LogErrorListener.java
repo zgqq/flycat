@@ -17,10 +17,12 @@ package com.github.flycat.spi.notifier;
 
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.util.ExceptionUtils;
+import com.github.flycat.util.StringUtils;
 import com.google.common.base.Splitter;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LogErrorListener {
@@ -29,7 +31,11 @@ public class LogErrorListener {
     private final List<String> excludePackageNames;
 
     public LogErrorListener(String packages) {
-        this.excludePackageNames = Splitter.on(",").omitEmptyStrings().splitToList(packages);
+        if (StringUtils.isBlank(packages)) {
+            this.excludePackageNames = Splitter.on(",").omitEmptyStrings().splitToList(packages);
+        } else {
+            this.excludePackageNames = new ArrayList<>();
+        }
     }
 
 
