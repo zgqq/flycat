@@ -72,8 +72,8 @@ if (!isProd(env) && !useDcevm) {
 }
 
 if (!isDevEnv) {
-    ext.appJvmArgs +=  ["-XX:-IgnoreUnrecognizedVMOptions",
-                        '-Dspring.devtools.restart.enabled=false']
+    ext.appJvmArgs += ["-XX:-IgnoreUnrecognizedVMOptions",
+                       '-Dspring.devtools.restart.enabled=false']
 }
 
 
@@ -148,6 +148,12 @@ if (hasProperty("mainClassName") && mainClassName != null) {
     println "Main class: $mainClassName"
     startScripts {
         mainClassName = "$mainClassName"
+        doLast {
+            unixScript.text = unixScript.text.replace('CLASSPATH=$APP_HOME', 'CLASSPATH=$JAVA_HOME/lib/tools.jar:$APP_HOME')
+            windowsScript.text = windowsScript.text.replace('set CLASSPATH=%APP_HOME%',
+                    'set CLASSPATH=%JAVA_HOME%\\lib\\tools.jar;%APP_HOME%'
+            )
+        }
     }
 }
 

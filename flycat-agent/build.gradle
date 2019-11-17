@@ -11,9 +11,8 @@ dependencies {
 
     compileOnly 'com.github.olivergondza:maven-jdk-tools-wrapper:0.1'
 
-    compile files("${System.properties['java.home']}/../lib/tools.jar")
+    compileOnly files("${System.properties['java.home']}/../lib/tools.jar")
 //    runtime files(org.gradle.internal.jvm.Jvm.current().toolsJar)
-
 
 }
 
