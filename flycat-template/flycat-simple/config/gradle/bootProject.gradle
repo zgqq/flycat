@@ -32,7 +32,7 @@ applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
         "-Xmx512m",
         "-Xmn128m",
-        "-Xloggc:$projectDir/data/log/gc.log",
+        "-Xloggc:~/deploy/logs/${project.name}/gc.log".toString(),
 ]
 
 ext.debugServerPort = 5005

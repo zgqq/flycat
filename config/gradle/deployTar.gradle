@@ -19,13 +19,38 @@ def deployServer(serverRole, tarFile) {
     if (remotes.role(serverRole)) {
         ssh.run {
             session(remotes.role(serverRole)) {
-                def deployDir = "/home/${remote.user}/deploy/${project.name}/"
-                println "Deploying ${tarFile.absolutePath} to ${remote.host}:${deployDir}"
+                def sdkDir = "/home/${remote.user}/.sdkman/candidates/java/current"
+                def deployDir = "/home/${remote.user}/deploy/apps/${project.name}/"
+                def releaseDir = "/home/${remote.user}/deploy/releases/"
+                def logDir = "/home/${remote.user}/deploy/logs/${project.name}/"
+                println "Deploying ${tarFile.absolutePath} to ${remote.user}@${remote.host}:${deployDir}"
                 execute "mkdir -p ${deployDir}"
-                put from: tarFile, into: deployDir
+                execute "mkdir -p ${releaseDir}"
+                execute "mkdir -p ${logDir}"
+
+                put from: tarFile, into: releaseDir
                 ext.fileName = tarFile.name
                 ext.dirName = fileName.take(fileName.lastIndexOf('.'))
-                def result = execute "cd ${deployDir} && tar xf ${tarFile.name} && sh ${dirName}/bin/${project.name}"
+
+                def javaHome = execute """
+                           if [ -z \$JAVA_HOME]; then 
+                                export JAVA_HOME="$sdkDir"
+                           fi
+                           echo \$JAVA_HOME
+                """
+                println "Java home $javaHome"
+
+                execute """
+                        cd ${releaseDir} && tar xf ${tarFile.name} -C ${deployDir} 
+                """
+
+                execute """
+                        cd ${deployDir} && rm -f current && ln -s ${dirName} current 
+                """
+
+                def result = execute """
+                        nohup ${dirName}/bin/${project.name} 2>&1 1>>${project.name}.out.log &
+                        """
                 println "Execute result ${result}"
             }
         }

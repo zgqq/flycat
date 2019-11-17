@@ -81,7 +81,7 @@ applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
         "-Xmx512m",
         "-Xmn128m",
-        "-Xloggc:$projectDir/data/log/gc.log".toString()
+        "-Xloggc:gc.log".toString()
 ]
 
 println 'Run java home:' + System.properties['java.home']
