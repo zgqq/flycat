@@ -2,7 +2,6 @@ package com.github.flycat.agent.monitor;
 
 import com.github.flycat.util.shell.PidUtils;
 import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

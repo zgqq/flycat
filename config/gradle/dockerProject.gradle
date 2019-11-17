@@ -15,7 +15,7 @@ jib {
     }
 
     container {
-        jvmFlags = jvmArgs + ['-Dspring.devtools.restart.enabled=false']
+        jvmFlags = jvmArgs
         mainClass = mainClassName
         ports = [containerPort]
         volumes = ['/app/data/logs']

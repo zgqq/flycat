@@ -1,0 +1,98 @@
+ssh.settings {
+    dryRun = project.hasProperty('dryRun')
+//    fileTransfer = 'sftp'
+}
+
+task showPlatformVersion {
+    doLast {
+        println ssh.version
+        ssh.run {
+            session(remotes.role('all')) {
+                execute 'uname -a'
+                execute 'cat /etc/*-release', ignoreError: true
+            }
+        }
+    }
+}
+
+def deployServer(serverRole, tarFile) {
+    if (remotes.role(serverRole)) {
+        ssh.run {
+            session(remotes.role(serverRole)) {
+                def deployDir = "/home/${remote.user}/deploy/${project.name}/"
+                println "Deploying ${tarFile.absolutePath} to ${remote.host}:${deployDir}"
+                execute "mkdir -p ${deployDir}"
+                put from: tarFile, into: deployDir
+                ext.fileName = tarFile.name
+                ext.dirName = fileName.take(fileName.lastIndexOf('.'))
+                def result = execute "cd ${deployDir} && tar xf ${tarFile.name} && sh ${dirName}/bin/${project.name}"
+                println "Execute result ${result}"
+            }
+        }
+    } else {
+        println "Nothing to do, not found any ${serverRole} server."
+    }
+}
+
+
+task deployTest() {
+    dependsOn 'distTar'
+    setTestEnv()
+    doLast {
+        deployServer('test', distTar.archiveFile.get().asFile)
+    }
+}
+
+def setTestEnv() {
+    println "Setting env, before: ${ext.env}, after: test"
+    ext.env = "test"
+}
+
+def setProductionEnv() {
+    println "Setting env, before: ${ext.env}, after: production"
+    ext.env = "production"
+}
+
+task deployProduction {
+    dependsOn 'distTar'
+    setProductionEnv()
+    doLast {
+        deployServer('production', distTar.archiveFile.get().asFile)
+    }
+}
+
+task deploy {
+    dependsOn 'deployProduction'
+}
+
+def addServer(serverIp,
+              serverUser,
+              serverRole) {
+    println "Adding server, ip:${serverIp}, user:${serverUser}, role:${serverRole}"
+    remotes {
+        "${serverIp}" {
+            role("${serverRole}")
+            role("all")
+            host = "${serverIp}"
+            user = "${serverUser}"
+            identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+        }
+    }
+}
+
+def addTestServer(serverIp,
+                  serverUser) {
+    addServer(serverIp, serverUser, 'test')
+}
+
+def addProductionServer(serverIp,
+                        serverUser) {
+    addServer(serverIp, serverUser, 'production')
+}
+
+ext {
+    addTestServer = this.&addTestServer
+    addProductionServer = this.&addProductionServer
+    addServer = this.&addServer
+}
+

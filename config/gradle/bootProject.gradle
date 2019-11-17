@@ -10,7 +10,7 @@ if (hasProperty("appClassName")) {
     mainClassName = ext.appClassName
 }
 
-ext.springJvmArgs = ["-Dspring.profiles.active=$env".toString()]
+ext.springJvmArgs = ["-Dspring.profiles.active=${ext.env}".toString()]
 
 if (vJavaLang == '1.11') {
     ext.appJvmArgs = ext.springJvmArgs + [
@@ -48,6 +48,8 @@ if (isTestServer(env)) {
 
 ext.useDcevm = false
 
+ext.isDevEnv = (!isProd(env) && !isTestServer(env))
+
 if (!isProd(env) && !isTestServer(env) && hasProperty("hotswapAgentPath")) {
     ext.appJvmArgs += ['-XXaltjvm=dcevm',
                        "-javaagent:${hotswapAgentPath}=autoHotswap=true".toString()]
@@ -67,6 +69,11 @@ if (!isProd(env) && !useDcevm) {
                      "-XX:+DebugNonSafepoints"
     ]
     ext.appJvmArgs += ext.frJvmArgs
+}
+
+if (!isDevEnv) {
+    ext.appJvmArgs +=  ["-XX:-IgnoreUnrecognizedVMOptions",
+                        '-Dspring.devtools.restart.enabled=false']
 }
 
 
@@ -144,5 +151,6 @@ if (hasProperty("mainClassName") && mainClassName != null) {
     }
 }
 
+println 'distTar path:' + distTar.archiveFile.get()
 
 
