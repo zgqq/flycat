@@ -15,7 +15,10 @@
  */
 package com.github.flycat.platform.springboot.web;
 
+import com.github.flycat.context.RunContext;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.web.WebException;
+import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,7 @@ import org.springframework.context.ApplicationListener;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.function.Consumer;
 
 public abstract class AbstractSmoothWebServerCustomizer implements
         ApplicationListener<ServletWebServerInitializedEvent> {
@@ -33,22 +37,27 @@ public abstract class AbstractSmoothWebServerCustomizer implements
 
     private volatile int serverPort;
     private final boolean tryKillProcess;
-    private static volatile WebServer webServer;
+    protected static volatile WebServer webServer;
 
-    static {
+    public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
+        this.tryKillProcess = tryKillProcess;
+        this.addHook(null);
+    }
+
+    public void addHook(Consumer<WebServer> beforeStop) {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 if (webServer != null) {
                     LOGGER.info("Closing web server");
+                    if (beforeStop != null) {
+                        beforeStop.accept(webServer);
+                    }
                     webServer.stop();
+                    LOGGER.info("Closed web server");
                 }
             }
         });
-    }
-
-    public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
-        this.tryKillProcess = tryKillProcess;
     }
 
     public static String getPid(int port) {
@@ -139,7 +148,8 @@ public abstract class AbstractSmoothWebServerCustomizer implements
             LOGGER.info("Changing server port, port:{}, previous pid:{}, needChange:{}", serverPort, pid, tryKillProcess);
             try {
                 stopConnector();
-            } catch (Throwable throwable) { }
+            } catch (Throwable throwable) {
+            }
             if (StringUtils.isNotBlank(pid)) {
                 final Stopwatch started = Stopwatch.createStarted();
                 kill(Integer.valueOf(pid));
@@ -153,7 +163,7 @@ public abstract class AbstractSmoothWebServerCustomizer implements
                 startConnector();
             }
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new WebException(e);
         }
     }
 

@@ -49,7 +49,7 @@ public class DataSourceConfiguration {
     @ConditionalOnBean(PrimaryDataSourceConfiguration.class)
     public static class CreatePrimaryDataSourceConfiguration {
 
-        @Bean(name = "primaryDataSource")
+        @Bean(name = "primaryDataSource", destroyMethod = "close")
         @Primary
         public DataSource primaryDataSource(
                 @Autowired DataSourceFactory dataSourceFactory,
@@ -76,7 +76,7 @@ public class DataSourceConfiguration {
     @ConditionalOnBean(SecondaryDataSourceConfiguration.class)
     public static class CreateSecondaryDataSourceConfiguration {
 
-        @Bean(name = "secondaryDataSource")
+        @Bean(name = "secondaryDataSource", destroyMethod = "close")
         public DataSource secondaryDataSource(
                 @Autowired DataSourceFactory dataSourceFactory,
                 @Qualifier("secondaryDataSourceConfig")

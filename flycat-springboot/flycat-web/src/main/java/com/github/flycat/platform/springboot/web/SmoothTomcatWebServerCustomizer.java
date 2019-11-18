@@ -15,6 +15,7 @@
  */
 package com.github.flycat.platform.springboot.web;
 
+import com.github.flycat.web.WebException;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
@@ -26,6 +27,7 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 public class SmoothTomcatWebServerCustomizer extends AbstractSmoothWebServerCustomizer
         implements WebServerFactoryCustomizer<TomcatServletWebServerFactory> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SmoothTomcatWebServerCustomizer.class);
+    public static final int MAX_TRY_COUNT = 999;
 
     private volatile Connector mainConnector;
     private volatile int serverPort;
@@ -34,17 +36,28 @@ public class SmoothTomcatWebServerCustomizer extends AbstractSmoothWebServerCust
         super(killAfterStarted);
     }
 
+    public Connector getMainConnector() {
+        return mainConnector;
+    }
+
     @Override
     protected void retryStartConnector() throws Throwable {
-        for (; ; ) {
+
+        Throwable throwable = null;
+        for (int i = 0; i < MAX_TRY_COUNT; i++) {
             LOGGER.info("Trying start connector");
-            final boolean success = startConnector();
-            if (success) {
-                break;
-            } else {
-                stopConnector();
+            try {
+                final boolean success = startConnector();
+                if (success) {
+                    return;
+                }
+            } catch (Throwable e) {
+                LOGGER.warn("Start connector exception, cause:{}", e.getMessage());
+                throwable = e;
             }
+            Thread.sleep(20L);
         }
+        throw new WebException("Unable to start connector", throwable);
     }
 
     @Override

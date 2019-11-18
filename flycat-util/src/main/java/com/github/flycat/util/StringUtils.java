@@ -16,6 +16,7 @@
 package com.github.flycat.util;
 
 import com.google.common.base.Splitter;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -189,5 +190,9 @@ public class StringUtils {
             contents.stream().forEach(str -> stringJoiner.add(str));
         }
         return stringJoiner.toString();
+    }
+
+    public static String md5(String data) {
+        return DigestUtils.md5Hex(data);
     }
 }
