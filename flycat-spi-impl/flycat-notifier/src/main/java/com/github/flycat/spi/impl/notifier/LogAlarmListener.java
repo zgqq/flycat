@@ -19,8 +19,11 @@ import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.ContextFreeConfiguration;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.exception.BusinessException;
+import com.github.flycat.spi.cache.InMemoryCacheService;
 import com.github.flycat.spi.notifier.LogErrorListener;
 import com.github.flycat.spi.notifier.NotificationSender;
+import com.github.flycat.util.ExceptionUtils;
+import com.github.flycat.util.StringUtils;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -31,11 +34,13 @@ import javax.inject.Singleton;
 @Named
 public class LogAlarmListener extends LogErrorListener {
     private final NotificationSender notificationSender;
+    private final InMemoryCacheService inMemoryCacheService;
 
     @Inject
-    public LogAlarmListener(NotificationSender notificationSender, ApplicationConfiguration applicationConfiguration) {
+    public LogAlarmListener(NotificationSender notificationSender, ApplicationConfiguration applicationConfiguration, InMemoryCacheService inMemoryCacheService) {
         super(applicationConfiguration.getString("flycat.alarm.exclude.packages"));
         this.notificationSender = notificationSender;
+        this.inMemoryCacheService = inMemoryCacheService;
     }
 
     @Override
@@ -49,7 +54,20 @@ public class LogAlarmListener extends LogErrorListener {
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         boolean alarmEnabled = contextFreeConfiguration
                 .getBooleanValue("flycat.alarm.enabled", false);
-        return (!ContextUtils.isTestProfile()) || alarmEnabled;
+        if (!alarmEnabled) {
+            return false;
+        }
+
+        if (ContextUtils.isTestProfile()) {
+            return false;
+        }
+
+        if (throwable != null) {
+            String stackTrace = ExceptionUtils.getStackTrace(throwable);
+            String exceptionId = StringUtils.md5(stackTrace);
+            return inMemoryCacheService.isValueRefreshed("shouldSendAlarm", exceptionId, 3600 * 24);
+        }
+        return true;
     }
 
     @Override
