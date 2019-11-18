@@ -15,10 +15,7 @@
  */
 package com.github.flycat.spi.impl.cache;
 
-import com.github.flycat.spi.cache.CacheException;
-import com.github.flycat.spi.cache.CountMaps;
-import com.github.flycat.spi.cache.QueryKey;
-import com.github.flycat.spi.cache.StandaloneCacheService;
+import com.github.flycat.spi.cache.*;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -28,6 +25,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
@@ -270,5 +268,20 @@ public class GuavaCacheService implements StandaloneCacheService {
         }
         final CountMaps countMaps = new CountMaps(results);
         return countMaps;
+    }
+
+    @Override
+    public <T> ExecuteResult<T> executeOnceAction(String module, Object key,
+                                                  Callable<T> callable, int seconds) {
+        AtomicBoolean newValue = new AtomicBoolean(false);
+        T returnValue = queryCacheObject(module, key,
+                () -> {
+                    T call = callable.call();
+                    newValue.set(true);
+                    return call;
+                }, 3600 * 24
+        );
+        ExecuteResult<T> result = new ExecuteResult<>(newValue.get(), returnValue);
+        return result;
     }
 }
