@@ -33,9 +33,6 @@ def deployServer(serverRole, tarFile) {
                 ext.dirName = fileName.take(fileName.lastIndexOf('.'))
 
                 def javaHome = execute """
-                           if [ -z \$JAVA_HOME]; then 
-                                export JAVA_HOME="$sdkDir"
-                           fi
                            echo \$JAVA_HOME
                 """
                 println "Java home $javaHome"
@@ -49,7 +46,10 @@ def deployServer(serverRole, tarFile) {
                 """
 
                 def result = execute """
-                        nohup ${dirName}/bin/${project.name} 2>&1 1>>${project.name}.out.log &
+                        if [ -z \$JAVA_HOME]; then 
+                                export JAVA_HOME="$sdkDir"
+                        fi
+                        cd ${deployDir} && nohup ${dirName}/bin/${project.name} 2>&1 1>>${project.name}.out.log &
                         """
                 println "Execute result ${result}"
             }
