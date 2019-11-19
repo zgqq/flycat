@@ -15,10 +15,9 @@
  */
 package com.github.flycat.platform.springboot.web;
 
-import com.github.flycat.context.RunContext;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.reflect.FieldUtils;
 import com.github.flycat.web.WebException;
-import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +36,15 @@ public abstract class AbstractSmoothWebServerCustomizer implements
 
     private volatile int serverPort;
     private final boolean tryKillProcess;
-    protected static volatile WebServer webServer;
+    protected volatile WebServer webServer;
+    protected Object monitor;
 
     public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
         this.tryKillProcess = tryKillProcess;
+        addShutdownHook();
+    }
+
+    protected void addShutdownHook() {
         this.addHook(null);
     }
 
@@ -48,13 +52,17 @@ public abstract class AbstractSmoothWebServerCustomizer implements
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                if (webServer != null) {
-                    LOGGER.info("Closing web server");
-                    if (beforeStop != null) {
-                        beforeStop.accept(webServer);
+                if (monitor != null) {
+                    synchronized (monitor) {
+                        if (webServer != null) {
+                            LOGGER.info("Closing web server");
+                            if (beforeStop != null) {
+                                beforeStop.accept(webServer);
+                            }
+                            webServer.stop();
+                            LOGGER.info("Closed web server");
+                        }
                     }
-                    webServer.stop();
-                    LOGGER.info("Closed web server");
                 }
             }
         });
@@ -141,6 +149,8 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     public void onApplicationEvent(ServletWebServerInitializedEvent event) {
         try {
             webServer = event.getWebServer();
+            monitor = FieldUtils.readDeclaredField(webServer, "monitor", true);
+            beforeStart(webServer);
             if (!tryKillProcess) {
                 return;
             }
@@ -176,4 +186,7 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     protected abstract boolean startConnector() throws Throwable;
 
     protected abstract void stopConnector() throws Throwable;
+
+    protected void beforeStart(WebServer webServer) throws Throwable {
+    }
 }

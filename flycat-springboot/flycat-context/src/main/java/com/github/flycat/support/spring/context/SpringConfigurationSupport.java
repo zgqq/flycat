@@ -18,23 +18,18 @@ package com.github.flycat.support.spring.context;
 import com.github.flycat.context.ApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
-@Named
-@Singleton
-public class SpringConfiguration extends SpringConfigurationSupport implements ApplicationConfiguration {
+public class SpringConfigurationSupport implements ApplicationConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfiguration.class);
-    private final ApplicationContext applicationContext;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfigurationSupport.class);
+    private final Environment environment;
 
     @Inject
-    public SpringConfiguration(ApplicationContext applicationContext) {
-        super(applicationContext.getEnvironment());
-        this.applicationContext = applicationContext;
+    public SpringConfigurationSupport(Environment environment) {
+        this.environment = environment;
     }
 
     @Override
@@ -45,5 +40,9 @@ public class SpringConfiguration extends SpringConfigurationSupport implements A
     @Override
     public String getApplicationName() {
         return getString("spring.application.name");
+    }
+
+    public Environment getEnvironment() {
+        return environment;
     }
 }

@@ -65,7 +65,7 @@ public class MailNotificationSender extends AbstractNotificationSender {
         if (StringUtils.isNotBlank(smtpHost) && smtpPort != null) {
             mailer = MailerBuilder
                     .withSMTPServer(smtpHost, smtpPort, mailUser, mailPassword)
-                    .withTransportStrategy(TransportStrategy.SMTP_TLS)
+                    .withTransportStrategy(TransportStrategy.SMTP)
                     .withSessionTimeout(10 * 1000)
                     .clearEmailAddressCriteria() // turns off email validation
                     .withProperty("mail.smtp.sendpartial", "true")

@@ -1,6 +1,6 @@
 ssh.settings {
     dryRun = project.hasProperty('dryRun')
-//    fileTransfer = 'sftp'
+    fileTransfer = 'scp'
 }
 
 task showPlatformVersion {
