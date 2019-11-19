@@ -139,6 +139,7 @@ bootJar {
 
 
 bootRun {
+    classpath += files("${System.properties['java.home']}/../lib/tools.jar".toString())
     systemProperties = System.properties
 }
 

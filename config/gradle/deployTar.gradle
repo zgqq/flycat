@@ -59,35 +59,15 @@ def deployServer(serverRole, tarFile) {
     }
 }
 
-
-task deployTest() {
-    dependsOn 'distTar'
-    setTestEnv()
-    doLast {
-        deployServer('test', distTar.archiveFile.get().asFile)
-    }
-}
-
-def setTestEnv() {
-    println "Setting env, before: ${ext.env}, after: test"
-    ext.env = "test"
-}
-
-def setProductionEnv() {
-    println "Setting env, before: ${ext.env}, after: production"
-    ext.env = "production"
-}
-
-task deployProduction {
-    dependsOn 'distTar'
-    setProductionEnv()
-    doLast {
-        deployServer('production', distTar.archiveFile.get().asFile)
-    }
-}
-
 task deploy {
-    dependsOn 'deployProduction'
+    dependsOn 'distTar'
+    doLast {
+        def serverRole = 'all'
+        if (hasProperty("env") && ext.env != 'default') {
+            serverRole = ext.env
+        }
+        deployServer(serverRole, distTar.archiveFile.get().asFile)
+    }
 }
 
 def addServer(serverIp,
