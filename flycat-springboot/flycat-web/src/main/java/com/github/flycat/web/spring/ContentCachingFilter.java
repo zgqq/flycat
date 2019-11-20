@@ -15,18 +15,25 @@
  */
 package com.github.flycat.web.spring;
 
+import com.github.flycat.exception.BusinessException;
 import com.github.flycat.log.MDCUtils;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.util.CommonUtils;
 import com.github.flycat.web.WebConfigurationLoader;
+import com.github.flycat.web.context.ExceptionContext;
 import com.github.flycat.web.filter.ContentCachingHandler;
 import com.github.flycat.web.filter.PostFilterAction;
 import com.github.flycat.web.request.LocalRequestBody;
 import com.github.flycat.web.request.RequestBodyHolder;
+import com.github.flycat.web.response.ResponseBodyUtils;
+import com.github.flycat.web.response.ResponseFactory;
+import com.github.flycat.web.response.ResponseFactoryHolder;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.util.ContentCachingResponseWrapper;
+import org.springframework.web.util.NestedServletException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -72,12 +79,17 @@ public class ContentCachingFilter implements Filter {
         MDC.put(MDCUtils.REQ_ID, CommonUtils.getUUIDWithoutHyphen());
 
         final ContentCachingHandler contentCachingHandler = WebConfigurationLoader.getContentCachingHandler();
+        Throwable cause = null;
         try {
             if (contentCachingHandler.executeNextFilter(requestWrapper, responseWrapper)) {
                 chain.doFilter(requestWrapper, responseWrapper);
             }
         } catch (Throwable e) {
             postProcessExceptionHandler.handle(requestWrapper, responseWrapper, e);
+            cause = e;
+            if (e instanceof NestedServletException) {
+                cause = e.getCause();
+            }
         } finally {
 
             started.stop();
@@ -108,6 +120,16 @@ public class ContentCachingFilter implements Filter {
                         currentApiRequest.getRequestBody(),
                         needValidate ? "validated" : "ignored",
                         started, requestBody, method, responseContent);
+            }
+
+            if (cause != null) {
+                if (cause instanceof BusinessException) {
+                    LOGGER.error("BusinessException! uri {}, params {}, method {}, response {}", requestURI,
+                            requestBody, method, responseContent, cause);
+                } else {
+                    LOGGER.error("System error! uri {}, params {}, method {}, response {}",
+                            requestURI, requestBody, method, response, cause);
+                }
             }
 
             String responseSpeed;

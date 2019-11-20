@@ -61,13 +61,11 @@ public class PostProcessExceptionHandler {
             if (responseBody) {
                 final String requestBody = requestWrapper.getDecodedRequestBody();
                 if (cause instanceof BusinessException) {
-                    LOGGER.error("BusinessException! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                     BusinessException e1 = (BusinessException) cause;
                     final ResponseFactory factoryResponse = ResponseFactoryHolder.getResponseFactory();
                     String output = JsonUtils.toJsonString(factoryResponse.createResponse(e1.getErrorCode(), e1.getMessage()));
                     responseWrapper.getWriter().write(output);
                 } else {
-                    LOGGER.error("System error! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                     final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
                             new ExceptionContext(cause, true));
                     String output = JsonUtils.toJsonString(unknownExceptionResult);
@@ -75,7 +73,6 @@ public class PostProcessExceptionHandler {
                 }
             } else {
                 final String requestBody = requestWrapper.getDecodedRequestBody();
-                LOGGER.error("System error! uri {}, params {}, method {}", requestURI, requestBody, method, e);
                 if (ContextUtils.isTestProfile()) {
                     final String stackTrace = ExceptionUtils.getStackTraceHtml(cause);
                     responseWrapper.getWriter().write(stackTrace);
