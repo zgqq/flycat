@@ -23,13 +23,19 @@ public class ServerContextListener implements ContextListener {
     @Override
     public void beforeRun(RunContext runContext) {
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
-        NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting");
+        boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
+        if (booleanValue) {
+            NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting");
+        }
     }
 
     @Override
     public void afterRun(ApplicationContext applicationContext) {
         ApplicationConfiguration applicationConfiguration = applicationContext.getApplicationConfiguration();
-        String applicationName = applicationConfiguration.getApplicationName();
-        NotifierUtils.sendNotification("Server[" + applicationName + "] started");
+        boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", false);
+        if (booleanValue) {
+            String applicationName = applicationConfiguration.getApplicationName();
+            NotifierUtils.sendNotification("Server[" + applicationName + "] started");
+        }
     }
 }

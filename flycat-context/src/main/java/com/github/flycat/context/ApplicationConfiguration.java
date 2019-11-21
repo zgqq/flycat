@@ -123,5 +123,14 @@ public interface ApplicationConfiguration {
         return retryGet(key, Boolean.class);
     }
 
+    default boolean getBooleanValue(String key, boolean defaultValue) {
+        Boolean value = getBoolean(key);
+        if (value != null) {
+            return value;
+        }
+        return defaultValue;
+    }
+
+
     String getApplicationName();
 }
