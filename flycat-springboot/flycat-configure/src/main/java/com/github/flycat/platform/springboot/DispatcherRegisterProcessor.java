@@ -41,7 +41,12 @@ public class DispatcherRegisterProcessor implements BeanDefinitionRegistryPostPr
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final Reflections reflections = new Reflections(ModuleManager.getModulePackages(),
+        String[] modulePackages = ModuleManager.getModulePackages();
+        LOGGER.info("Scanning module, packages:{}", modulePackages);
+        if (modulePackages.length == 0) {
+            return;
+        }
+        final Reflections reflections = new Reflections(modulePackages,
                 contextClassLoader);
         Set<Class<?>> typesAnnotatedWith = reflections.getTypesAnnotatedWith(Dispatcher.class, false);
         typesAnnotatedWith = typesAnnotatedWith.stream().filter(Class::isInterface).collect(Collectors.toSet());

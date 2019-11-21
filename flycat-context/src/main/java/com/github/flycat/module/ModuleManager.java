@@ -103,6 +103,9 @@ public class ModuleManager {
     }
 
     public static String getModulePackagesAsString(String name) {
+        if (name == null) {
+            return null;
+        }
         final String[] modulePackages = getModulePackages();
         final StringJoiner stringJoiner = new StringJoiner(",");
         if (StringUtils.isNotBlank(name)) {

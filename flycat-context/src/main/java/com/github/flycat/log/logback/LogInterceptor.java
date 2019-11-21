@@ -73,7 +73,7 @@ public class LogInterceptor extends TurboFilter {
         final String name = logger.getName();
         for (String ignoredLogger : ignoredLoggers) {
             if (name.startsWith(ignoredLogger)) {
-                LOGGER.info("Ignored exception, logger:{}, message:{}", logger, message);
+                LOGGER.debug("Ignored exception, logger:{}, message:{}", logger, message);
                 return;
             }
         }
