@@ -15,11 +15,14 @@
  */
 package com.github.flycat.context;
 
+import com.github.flycat.log.logback.LogInterceptor;
 import com.github.flycat.module.Module;
 import com.github.flycat.module.ModuleManager;
 import com.github.flycat.util.CollectionUtils;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.properties.ServerEnvUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +32,8 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 public class ContextManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContextManager.class);
 
     static List<ContextListener> contextListeners;
 
@@ -61,5 +66,7 @@ public class ContextManager {
         for (ContextListener contextListener : contextListeners) {
             contextListener.afterRun(applicationContext);
         }
+        LogInterceptor.disableTrace = true;
+        LOGGER.info("Slow log, content:{}", LogInterceptor.slowLog.get("main"));
     }
 }

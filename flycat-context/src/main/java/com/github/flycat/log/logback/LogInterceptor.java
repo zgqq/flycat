@@ -25,6 +25,7 @@ import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.LogErrorEvent;
 import com.github.flycat.log.MDCUtils;
 import com.github.flycat.util.CommonUtils;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -32,15 +33,22 @@ import org.slf4j.Marker;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class LogInterceptor extends TurboFilter {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(LogInterceptor.class);
+    private static ThreadLocal<StopwatchWrapper> stopwatchLocal = new ThreadLocal<>();
+    public static Map<String, String> slowLog = new ConcurrentHashMap<>();
+    public static volatile boolean disableTrace;
 
     @Override
     public FilterReply decide(Marker marker, Logger logger,
                               Level level, String s, Object[] objects, Throwable throwable) {
         String name = logger.getName();
         if (ErrorLogFileLogger.ERROR.equals(name)) {
+            beforeLog(marker, logger, level, s, objects, throwable);
             return FilterReply.NEUTRAL;
         }
 
@@ -55,6 +63,7 @@ public class LogInterceptor extends TurboFilter {
                 }
                 final org.slf4j.event.Level level4j = org.slf4j.event.Level.valueOf(level.levelStr);
                 logger.log(marker, fqcn, level4j.toInt(), message, objects, throwable);
+//                beforeLog(marker, logger, level, s, objects, throwable);
                 return FilterReply.DENY;
             }
             return FilterReply.NEUTRAL;
@@ -62,6 +71,7 @@ public class LogInterceptor extends TurboFilter {
             if (level.levelInt == Level.ERROR_INT) {
                 onError(logger, s, throwable, s, objects);
             }
+            beforeLog(marker, logger, level, s, objects, throwable);
             return FilterReply.NEUTRAL;
         }
     }
@@ -113,5 +123,68 @@ public class LogInterceptor extends TurboFilter {
             postfix = postfix.substring(0, postfix.length() - 1);
         }
         return prefix + " " + originMessage + ", context[" + postfix + "]";
+    }
+
+    private void beforeLog(Marker marker, Logger logger,
+                           Level level, String message, Object[] objects, Throwable throwable) {
+        if (disableTrace == true) {
+            return;
+        }
+        StopwatchWrapper stopwatchWrapper = stopwatchLocal.get();
+        if (stopwatchWrapper == null) {
+            stopwatchWrapper = new StopwatchWrapper(Stopwatch.createStarted());
+            stopwatchWrapper.setLogger(logger.getName());
+            stopwatchLocal.set(stopwatchWrapper);
+            return;
+        }
+        Stopwatch stopwatch = stopwatchWrapper.getStopwatch();
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        if (elapsed >= 30) {
+            String name = Thread.currentThread().getName();
+            String prev = slowLog.get(name);
+            String chainMessage;
+            if (prev == null) {
+                chainMessage = logger.getName() + ":" + message + " \n==> " + stopwatchWrapper.getLogger() + ":" + stopwatchWrapper.getMessage() + " cost " + elapsed + "ms";
+            } else {
+                chainMessage = prev + "\n" + logger.getName() + ":" + message + " \n==> " + stopwatchWrapper.getLogger() + ":" + stopwatchWrapper.getMessage() + " cost " + elapsed + "ms";
+            }
+            slowLog.put(name, chainMessage);
+        }
+
+        stopwatchWrapper = new StopwatchWrapper(Stopwatch.createStarted());
+        stopwatchWrapper.setLogger(logger.getName());
+        stopwatchWrapper.setLogger(logger.getName());
+        stopwatchWrapper.setMessage(message);
+        stopwatchLocal.set(stopwatchWrapper);
+    }
+
+    public static class StopwatchWrapper {
+        private final Stopwatch stopwatch;
+        private String logger;
+        private String message;
+
+        public StopwatchWrapper(Stopwatch stopwatch) {
+            this.stopwatch = stopwatch;
+        }
+
+        public Stopwatch getStopwatch() {
+            return stopwatch;
+        }
+
+        public String getLogger() {
+            return logger;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public void setLogger(String logger) {
+            this.logger = logger;
+        }
     }
 }

@@ -103,6 +103,7 @@ public class DispatcherRegisterProcessor implements BeanDefinitionRegistryPostPr
             value.setPrimary(true);
             registry.registerBeanDefinition(key.getSimpleName(), value);
         }
+        LOGGER.info("Scanned module");
     }
 
     @Override
