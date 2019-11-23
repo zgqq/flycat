@@ -124,7 +124,9 @@ configurations {
 
 
 dependencies {
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    if (isDevEnv) {
+        developmentOnly("org.springframework.boot:spring-boot-devtools")
+    }
 
 //        testCompile "org.springframework:spring-test"
 //        testCompile "org.springframework.boot:spring-boot-test"

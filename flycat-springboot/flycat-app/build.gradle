@@ -24,6 +24,6 @@ dependencies {
     compile group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.6'
 
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
-    developmentOnly("org.springframework.boot:spring-boot-devtools:$springBootVersion")
+//    developmentOnly("org.springframework.boot:spring-boot-devtools:$springBootVersion")
 }
 
