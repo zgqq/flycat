@@ -27,6 +27,9 @@ import org.springframework.context.ApplicationListener;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public abstract class AbstractSmoothWebServerCustomizer implements
@@ -38,6 +41,7 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     private final boolean tryKillProcess;
     protected volatile WebServer webServer;
     protected Object monitor;
+    protected Future<String> getPidTask;
 
     public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
         this.tryKillProcess = tryKillProcess;
@@ -143,6 +147,10 @@ public abstract class AbstractSmoothWebServerCustomizer implements
 
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
+        if (tryKillProcess) {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            getPidTask = executorService.submit(() -> getPid(serverPort));
+        }
     }
 
     @Override
@@ -151,10 +159,10 @@ public abstract class AbstractSmoothWebServerCustomizer implements
             webServer = event.getWebServer();
             monitor = FieldUtils.readDeclaredField(webServer, "monitor", true);
             beforeStart(webServer);
-            if (!tryKillProcess) {
+            if (!tryKillProcess || getPidTask == null) {
                 return;
             }
-            final String pid = getPid(serverPort);
+            final String pid = getPidTask.get();
             LOGGER.info("Changing server port, port:{}, previous pid:{}, needChange:{}", serverPort, pid, tryKillProcess);
             try {
                 stopConnector();
