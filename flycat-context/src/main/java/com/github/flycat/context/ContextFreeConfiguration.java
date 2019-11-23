@@ -36,6 +36,15 @@ public class ContextFreeConfiguration {
         return retryGet(key, Integer.class);
     }
 
+    public int getIntValue(String key, int defaultValue) {
+        Integer value  = getInteger(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+
     public Boolean getBoolean(String key) {
         return retryGet(key, Boolean.class);
     }

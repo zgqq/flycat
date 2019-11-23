@@ -67,6 +67,15 @@ public interface CacheOperation {
         throw new UnsupportedOperationException();
     }
 
+    default long increaseCount(String module, Object key) throws CacheException {
+        return increaseCount(module, key, new Callable<Number>() {
+            @Override
+            public Number call() throws Exception {
+                return 1;
+            }
+        });
+    }
+
 
     default long increaseCount(String module, Object key, Callable<Number> callable) throws CacheException {
         throw new UnsupportedOperationException();

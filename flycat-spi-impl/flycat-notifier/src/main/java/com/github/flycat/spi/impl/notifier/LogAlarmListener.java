@@ -45,12 +45,7 @@ public class LogAlarmListener extends LogErrorListener {
 
     @Override
     protected boolean shouldSendAlarm(Logger logger, String message, Throwable throwable, Object[] objects) {
-        boolean shouldSend = !(throwable instanceof BusinessException
-                ||
-                (throwable != null && throwable.getCause() instanceof BusinessException));
-        if (!shouldSend) {
-            return shouldSend;
-        }
+
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         boolean alarmEnabled = contextFreeConfiguration
                 .getBooleanValue("flycat.alarm.enabled", false);
@@ -62,7 +57,19 @@ public class LogAlarmListener extends LogErrorListener {
             return false;
         }
 
-        if (throwable != null) {
+        boolean isBusinessException = (throwable instanceof BusinessException
+                ||
+                (throwable != null && throwable.getCause() instanceof BusinessException));
+        if (isBusinessException) {
+            String stackTrace = ExceptionUtils.getStackTrace(throwable);
+            String exceptionId = StringUtils.md5(stackTrace);
+            long count = inMemoryCacheService.increaseCount("", exceptionId);
+            int businessExceptionCount = contextFreeConfiguration.getIntValue("flycat.alarm.business-exception",
+                    5);
+            if (businessExceptionCount == 1 || count > businessExceptionCount) {
+                return true;
+            }
+        } else {
             String stackTrace = ExceptionUtils.getStackTrace(throwable);
             String exceptionId = StringUtils.md5(stackTrace);
             return inMemoryCacheService.isValueRefreshed("shouldSendAlarm", exceptionId, 3600 * 24);
