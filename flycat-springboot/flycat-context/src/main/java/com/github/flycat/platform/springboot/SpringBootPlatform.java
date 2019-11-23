@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.concurrent.CompletableFuture;
+
 public class SpringBootPlatform {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootPlatform.class);
@@ -36,7 +38,13 @@ public class SpringBootPlatform {
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
-            AttachAgent.attachAgent();
+            CompletableFuture.runAsync(()->{
+                try {
+                    AttachAgent.attachAgent();
+                } catch (Exception e) {
+                    LOGGER.error("Unable to attach agent", e);
+                }
+            });
             ApplicationContext applicationContext = configurableApplicationContext.getBean(ApplicationContext.class);
             ContextManager.afterRun(applicationContext);
         } catch (Exception e) {

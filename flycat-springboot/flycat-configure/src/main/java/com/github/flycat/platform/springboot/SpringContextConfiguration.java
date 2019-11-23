@@ -30,6 +30,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
+import java.util.concurrent.CompletableFuture;
+
 @Configuration
 @ComponentScan(basePackages = {"com.github.flycat.spi.impl",
         "com.github.flycat.support.spring",
@@ -59,16 +61,17 @@ public class SpringContextConfiguration {
                     if (StringUtils.isBlank(beanClassName)) {
                         continue;
                     }
-//                    LOGGER.info("Check bean class name, {}", beanClassName);
                     final Primary annotation;
-                    try {
-                        annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
-                        if (annotation != null) {
-                            LOGGER.info("Setting primary bean, class:{}", beanClassName);
-                            beanDefinition.setPrimary(true);
+                    if (beanClassName.contains("spi.impl")) {
+                        try {
+                            annotation = Class.forName(beanClassName).getAnnotation(Primary.class);
+                            if (annotation != null) {
+                                LOGGER.info("Setting primary bean, class:{}", beanClassName);
+                                beanDefinition.setPrimary(true);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            throw new RuntimeException(e);
                         }
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
                     }
                 }
             }

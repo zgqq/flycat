@@ -27,8 +27,7 @@ import org.springframework.context.ApplicationListener;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
@@ -42,6 +41,7 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     protected volatile WebServer webServer;
     protected Object monitor;
     protected Future<String> getPidTask;
+    private volatile Future<Void> stopConnectorFuture;
 
     public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
         this.tryKillProcess = tryKillProcess;
@@ -148,8 +148,7 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
         if (tryKillProcess) {
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            getPidTask = executorService.submit(() -> getPid(serverPort));
+            getPidTask = CompletableFuture.supplyAsync(() -> getPid(serverPort));
         }
     }
 
@@ -164,9 +163,8 @@ public abstract class AbstractSmoothWebServerCustomizer implements
             }
             final String pid = getPidTask.get();
             LOGGER.info("Changing server port, port:{}, previous pid:{}, needChange:{}", serverPort, pid, tryKillProcess);
-            try {
-                stopConnector();
-            } catch (Throwable throwable) {
+            if (stopConnectorFuture != null) {
+                stopConnectorFuture.get();
             }
             if (StringUtils.isNotBlank(pid)) {
                 final Stopwatch started = Stopwatch.createStarted();
@@ -196,5 +194,9 @@ public abstract class AbstractSmoothWebServerCustomizer implements
     protected abstract void stopConnector() throws Throwable;
 
     protected void beforeStart(WebServer webServer) throws Throwable {
+    }
+
+    protected void setStopConnectorFuture(Future<Void> stopConnectorFuture) {
+        this.stopConnectorFuture = stopConnectorFuture;
     }
 }

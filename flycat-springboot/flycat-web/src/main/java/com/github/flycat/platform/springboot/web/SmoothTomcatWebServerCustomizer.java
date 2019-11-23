@@ -28,6 +28,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatWebServer;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
@@ -140,6 +141,21 @@ public class SmoothTomcatWebServerCustomizer extends AbstractSmoothWebServerCust
             mainConnector = connector;
             if (isTryKillProcess()) {
                 connector.setPort(0);
+                setStopConnectorFuture(CompletableFuture.runAsync(() -> {
+                    while (true) {
+                        if (connector.getState() == LifecycleState.STARTED) {
+                            try {
+                                connector.stop();
+                            } catch (LifecycleException e) {
+                            }
+                            break;
+                        }
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }));
             }
         });
     }
