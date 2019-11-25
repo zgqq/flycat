@@ -6,3 +6,5 @@ com.github.flycat.platform.springboot.MybatisConfiguration,\
 com.github.flycat.platform.springboot.ServerConfiguration,\
 com.github.flycat.platform.springboot.DataSourceConfiguration,\
 com.github.flycat.platform.springboot.ValidationConfiguration
+
+org.springframework.boot.env.EnvironmentPostProcessor=com.github.flycat.platform.springboot.PropertiesEnvironmentPostProcessor
