@@ -12,15 +12,15 @@ import java.util.Map;
 
 public class PropertiesEnvironmentPostProcessor implements EnvironmentPostProcessor {
 
+    public static final String SERVER_TOMCAT_ACCESSLOG_ENABLED = "server.tomcat.accesslog.enabled";
+    public static final String SERVER_TOMCAT_ACCESSLOG_DIRECTORY = "server.tomcat.accesslog.directory";
+
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        String tomcatEnableLog = "server.tomcat.accesslog.enabled";
-        String tomcatLogDirKey = "server.tomcat.accesslog.directory";
-
         PropertySource<?> propertySource = new MapPropertySource("flycat-default",
                 new DefaultPropertyHandler(environment)
-                        .apply(tomcatEnableLog, true)
-                        .applyOther(tomcatLogDirKey, "logging.file.path")
+                        .apply(SERVER_TOMCAT_ACCESSLOG_ENABLED, true)
+                        .applyOther(SERVER_TOMCAT_ACCESSLOG_DIRECTORY, "logging.file.path")
                         .getProperties()
         );
         environment.getPropertySources().addLast(propertySource);

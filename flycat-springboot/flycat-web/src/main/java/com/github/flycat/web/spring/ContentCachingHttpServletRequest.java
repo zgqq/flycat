@@ -18,8 +18,10 @@ package com.github.flycat.web.spring;
 import com.github.flycat.util.io.IOUtils;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -64,6 +66,51 @@ public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapp
             return URLDecoder.decode(requestURI, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             return requestURI;
+        }
+    }
+
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+        ServletInputStream inputStream = super.getInputStream();
+        return new RepeatContentCachingInputStream(inputStream, getContentAsByteArray());
+    }
+
+    public static class RepeatContentCachingInputStream extends ServletInputStream {
+
+        private final ServletInputStream is;
+        private final ByteArrayInputStream cachedInputStream;
+
+        public RepeatContentCachingInputStream(ServletInputStream is,
+                                               byte[] cachedBytes) {
+            this.is = is;
+            if (cachedBytes.length > 0) {
+                this.cachedInputStream = new ByteArrayInputStream(cachedBytes);
+            } else {
+                this.cachedInputStream = null;
+            }
+        }
+
+        @Override
+        public int read() throws IOException {
+            if (cachedInputStream != null) {
+                return cachedInputStream.read();
+            }
+            return is.read();
+        }
+
+        @Override
+        public boolean isFinished() {
+            return is.isFinished();
+        }
+
+        @Override
+        public boolean isReady() {
+            return is.isReady();
+        }
+
+        @Override
+        public void setReadListener(ReadListener readListener) {
+            is.setReadListener(readListener);
         }
     }
 }
