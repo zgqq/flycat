@@ -20,6 +20,7 @@ import com.github.flycat.module.Module;
 import com.github.flycat.module.ModuleManager;
 import com.github.flycat.util.CollectionUtils;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.io.FormatPrintStream;
 import com.github.flycat.util.properties.ServerEnvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,9 @@ public class ContextManager {
     }
 
     public static void beforeRun(RunContext runContext) {
+        System.setOut(new FormatPrintStream(System.out));
+        System.setErr(new FormatPrintStream(System.err));
+
         for (ContextListener contextListener : contextListeners) {
             contextListener.beforeRun(runContext);
         }
