@@ -10,7 +10,8 @@ public class DateFormatter {
     private ThreadLocal<SimpleDateFormat> formatThreadLocal = new ThreadLocal<SimpleDateFormat>();
     private final String format;
     private static final ConcurrentHashMap<String, DateFormatter> formatterInstanceMap = new ConcurrentHashMap<>();
-    public static final String YYYMMDD_HHMMSS_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
+    public static final DateFormatter YYYY_MM_DD_HH_MM_SS_SSS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
+    public static final DateFormatter YYYY_MM_DD_HH_MM_SS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss");
 
     public DateFormatter() {
         this("yyyy-MM-dd HH:mm:ss");

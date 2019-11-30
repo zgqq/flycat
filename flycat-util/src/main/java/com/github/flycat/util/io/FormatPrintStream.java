@@ -7,8 +7,6 @@ import java.util.Date;
 
 public class FormatPrintStream extends java.io.PrintStream {
 
-    private static DateFormatter dateFormatter = DateFormatter.getInstance(DateFormatter.YYYMMDD_HHMMSS_SSS);
-
     public FormatPrintStream(OutputStream out) {
         super(out);
     }
@@ -16,6 +14,6 @@ public class FormatPrintStream extends java.io.PrintStream {
     @Override
     public void println(String string) {
         Date date = new Date();
-        super.println("[" + dateFormatter.format(date) + "] " + string);
+        super.println("[" + DateFormatter.YYYY_MM_DD_HH_MM_SS_SSS.format(date) + "] " + string);
     }
 }

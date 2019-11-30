@@ -15,10 +15,10 @@
  */
 package com.github.flycat.spi.notifier;
 
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.executor.ExecutorUtils;
 import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;
@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class AbstractNotificationSender implements NotificationSender {
@@ -39,29 +40,35 @@ public abstract class AbstractNotificationSender implements NotificationSender {
     }
 
     @Override
-    public void send(String message) {
-        if (StringUtils.isBlank(message)) {
+    public void send(Message message) {
+        final String content = message.getContent();
+        if (StringUtils.isBlank(content)) {
             return;
         }
+        final Date createTime = message.getCreateTime();
+        if (createTime == null) {
+            message.setCreateTime(new Date());
+        }
+
         threadPoolExecutor.execute(() -> buildMessageAndSend(message));
     }
 
-    private void sendLimitedNotify(String message) {
-        final boolean require = RATE_LIMITER.tryAcquire();
-        if (require) {
-            final Meter meter = REGISTRY.meter("log." + message);
-            meter.mark();
-            if (meter.getOneMinuteRate() < 0.4) {
-                buildMessageAndSend(message);
-            } else {
-                LOGGER.warn("Alarm too frequently, aborted, message:{}", message);
-            }
-        } else {
-            LOGGER.info("Unable to get token, abort alarm, message:{}", message);
-        }
-    }
+//    private void sendLimitedNotify(String message) {
+//        final boolean require = RATE_LIMITER.tryAcquire();
+//        if (require) {
+//            final Meter meter = REGISTRY.meter("log." + message);
+//            meter.mark();
+//            if (meter.getOneMinuteRate() < 0.4) {
+//                buildMessageAndSend(message);
+//            } else {
+//                LOGGER.warn("Alarm too frequently, aborted, message:{}", message);
+//            }
+//        } else {
+//            LOGGER.info("Unable to get token, abort alarm, message:{}", message);
+//        }
+//    }
 
-    private void buildMessageAndSend(String message) {
+    private void buildMessageAndSend(Message message) {
         InetAddress inetAddress = null;
         try {
             inetAddress = InetAddress.getLocalHost();
@@ -73,8 +80,25 @@ public abstract class AbstractNotificationSender implements NotificationSender {
         } catch (Exception e) {
             LOGGER.warn("Unable to get applicationName", e);
         }
-        message = "Server ip:" + inetAddress + ", App name:" + applicationName + "\n notification:" + message;
-        doSend(message);
+
+        StringBuilder messageBuilder = new StringBuilder();
+
+        if (message.hasFormat(MessageFormat.WITH_SERVER_IP)) {
+            messageBuilder.append("ServerIP:" + inetAddress + "\n");
+        }
+
+        if (message.hasFormat(MessageFormat.WITH_APP_NAME)) {
+            messageBuilder.append("ServerName:" + applicationName + "\n");
+        }
+
+        if (message.hasFormat(MessageFormat.WITH_NOTIFICATION_TIME)) {
+            final String createTime = DateFormatter.YYYY_MM_DD_HH_MM_SS.format(message.getCreateTime());
+            messageBuilder.append("CreateTime:" + createTime + "\n");
+        }
+
+        messageBuilder.append("Notification:" + message.getContent());
+
+        doSend(messageBuilder.toString());
     }
 
     public abstract void doSend(String message);

@@ -17,5 +17,14 @@ package com.github.flycat.spi.notifier;
 
 public interface NotificationSender {
 
-    void send(String message);
+    void send(Message message);
+
+    default void send(String message) {
+        final Message newMessage = new Message();
+        newMessage.setContent(message);
+        newMessage.setFormat(MessageFormat.WITH_NOTIFICATION_TIME
+                | MessageFormat.WITH_APP_NAME | MessageFormat.WITH_SERVER_IP
+        );
+        send(newMessage);
+    }
 }
