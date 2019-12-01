@@ -9,6 +9,8 @@ public class Message {
 
     private String decoratedContent;
 
+    private String label;
+
     public String getContent() {
         return content;
     }
@@ -39,6 +41,14 @@ public class Message {
 
     public String getDecoratedContent() {
         return decoratedContent;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setDecoratedContent(String decoratedContent) {
