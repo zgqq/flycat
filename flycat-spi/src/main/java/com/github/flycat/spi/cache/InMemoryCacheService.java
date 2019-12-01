@@ -70,12 +70,14 @@ public interface InMemoryCacheService extends CacheOperation {
         return queryNullableCacheObject(module, key, callable);
     }
 
+    @Override
     default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {
         return queryCacheObject(module, key, callable);
     }
 
+    @Override
     default <T> T queryCacheObject(String module, Object key,
                                    Type type,
                                    Callable<T> callable,
@@ -84,6 +86,7 @@ public interface InMemoryCacheService extends CacheOperation {
     }
 
 
+    @Override
     default <T> T queryAllCacheObjects(String module,
                                        Type type,
                                        Callable<T> callable) throws CacheException {
@@ -91,6 +94,7 @@ public interface InMemoryCacheService extends CacheOperation {
     }
 
 
+    @Override
     default <T> T queryCacheObject(Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {

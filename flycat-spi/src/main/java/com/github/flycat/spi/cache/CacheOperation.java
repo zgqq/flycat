@@ -81,4 +81,31 @@ public interface CacheOperation {
         throw new UnsupportedOperationException();
     }
 
+
+    default <T> T queryCacheObject(String module, Object key,
+                                   Type type,
+                                   Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> T queryCacheObject(String module, Object key,
+                                   Type type,
+                                   Callable<T> callable,
+                                   int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <T> T queryAllCacheObjects(String module,
+                                       Type type,
+                                       Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <T> T queryCacheObject(Object key,
+                                   Type type,
+                                   Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
 }

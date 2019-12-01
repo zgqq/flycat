@@ -36,40 +36,13 @@ public interface DistributedCacheService extends CacheOperation {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheObject(String module, Object key,
-                                   Type type,
-                                   Callable<T> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-    default <T> T queryCacheObject(String module, Object key,
-                                   Type type,
-                                   Callable<T> callable,
-                                   int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-
-    default <T> T queryAllCacheObjects(String module,
-                                       Type type,
-                                       Callable<T> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-    List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds);
-
-
-    default <T> T queryCacheObject(Object key,
-                                   Type type,
-                                   Callable<T> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
 
     default boolean isValueRefreshed(String module, Object key,
                                      int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
+    List<Integer> queryIntegerList(String module, String key, Callable<List<Integer>> callable, int seconds);
 //    default <T extends Number, K> CountMaps getCountMapsByModules(List<String> modules,
 //                                                                  List<K> keys,
 //                                                                  Function<List<K>,

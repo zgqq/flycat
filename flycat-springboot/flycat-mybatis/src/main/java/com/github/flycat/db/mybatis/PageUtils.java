@@ -15,6 +15,8 @@
  */
 package com.github.flycat.db.mybatis;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.flycat.util.ValueUtils;
 import com.github.flycat.util.page.Page;
@@ -36,5 +38,10 @@ public class PageUtils {
     public static IPage newIPage(Integer pageNum) {
         return new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(
                 ValueUtils.integerToInt(pageNum, 1), 10);
+    }
+
+    public static <T> Page<T> selectPage(BaseMapper<T> baseMapper, int finalPageNum) {
+        return PageUtils.toPage(baseMapper.selectPage(PageUtils.newIPage(finalPageNum),
+                new QueryWrapper()));
     }
 }
