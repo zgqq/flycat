@@ -87,8 +87,12 @@ applicationDefaultJvmArgs = appJvmArgs + [
 println 'Run java home:' + System.properties['java.home']
 println 'App jvm args: ' + applicationDefaultJvmArgs.join(",")
 
+if (!hasProperty("tag")) {
+    ext.tag = "default"
+}
 
-version = env
+
+version = env + '-' + tag
 if (isProd(env)) {
     version += '-' + (new Date().format("yyyyMMdd_HHmmss"))
 }
