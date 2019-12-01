@@ -17,6 +17,7 @@ package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
+import com.github.flycat.spi.notifier.Message;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +41,7 @@ public class DefaultNotificationSender extends AbstractNotificationSender {
     }
 
     @Override
-    public void doSend(String message) {
+    public void doSend(Message message) {
         this.mailNotificationSender.doSend(message);
     }
 }

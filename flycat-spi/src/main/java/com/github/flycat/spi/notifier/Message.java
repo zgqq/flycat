@@ -7,6 +7,8 @@ public class Message {
     private int format;
     private Date createTime;
 
+    private String decoratedContent;
+
     public String getContent() {
         return content;
     }
@@ -33,5 +35,13 @@ public class Message {
 
     public boolean hasFormat(int format) {
         return (getFormat() & format) == 1;
+    }
+
+    public String getDecoratedContent() {
+        return decoratedContent;
+    }
+
+    public void setDecoratedContent(String decoratedContent) {
+        this.decoratedContent = decoratedContent;
     }
 }

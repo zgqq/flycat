@@ -17,6 +17,7 @@ package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
+import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.properties.ServerEnvUtils;
 import org.simplejavamail.email.Email;
@@ -75,14 +76,15 @@ public class MailNotificationSender extends AbstractNotificationSender {
     }
 
     @Override
-    public void doSend(String message) {
+    public void doSend(Message message) {
         if (message != null) {
+            final String decoratedContent = message.getDecoratedContent();
             if (mailer != null && receiver != null) {
                 Email email = EmailBuilder.startingBlank()
                         .from(receiver)
                         .to(receiver, receiver)
                         .withSubject("Server notification")
-                        .withPlainText(message)
+                        .withPlainText(decoratedContent)
                         .withReturnReceiptTo()
                         .buildEmail();
                 mailer.sendMail(email);

@@ -98,8 +98,9 @@ public abstract class AbstractNotificationSender implements NotificationSender {
 
         messageBuilder.append("Notification:" + message.getContent());
 
-        doSend(messageBuilder.toString());
+        message.setDecoratedContent(message.toString());
+        doSend(message);
     }
 
-    public abstract void doSend(String message);
+    public abstract void doSend(Message message);
 }
