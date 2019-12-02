@@ -24,15 +24,6 @@ import java.util.function.Function;
 
 public interface InMemoryCacheService extends CacheOperation {
 
-    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
-                                                     Callable<T> callable, int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
-                                                     Callable<T> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
 
     default <T> T queryCacheObject(String module, Object key,
                                    Callable<T> callable) throws CacheException {
@@ -52,23 +43,8 @@ public interface InMemoryCacheService extends CacheOperation {
     }
 
 
-    default boolean isValueRefreshed(String module, Object key,
-                                     int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
 
 
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
-                                                     Type type,
-                                                     Callable<T> callable, int seconds) throws CacheException {
-        return queryNullableCacheObject(module, key, callable, seconds);
-    }
-
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
-                                                     Type type,
-                                                     Callable<T> callable) throws CacheException {
-        return queryNullableCacheObject(module, key, callable);
-    }
 
     @Override
     default <T> T queryCacheObject(String module, Object key,

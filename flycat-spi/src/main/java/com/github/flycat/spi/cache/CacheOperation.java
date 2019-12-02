@@ -20,6 +20,7 @@ import com.github.flycat.util.collection.StreamUtils;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -106,6 +107,33 @@ public interface CacheOperation {
     default <T> T queryCacheObject(Object key,
                                    Type type,
                                    Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
+                                                     Callable<T> callable, int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
+                                                     Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                                     Type type,
+                                                     Callable<T> callable, int seconds) throws CacheException {
+        return queryNullableCacheObject(module, key, callable, seconds);
+    }
+
+    default <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                                     Type type,
+                                                     Callable<T> callable) throws CacheException {
+        return queryNullableCacheObject(module, key, callable);
+    }
+
+    default boolean isValueRefreshed(String module, Object key,
+                                     int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 }
