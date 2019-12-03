@@ -49,4 +49,6 @@ public interface JsonService {
             String bitKey,
             int matchBit
     );
+
+    JsonObject parseJsonObject(String json);
 }

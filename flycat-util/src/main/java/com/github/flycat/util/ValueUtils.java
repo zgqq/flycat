@@ -17,6 +17,13 @@ package com.github.flycat.util;
 
 public class ValueUtils {
 
+    public static <T> T getValue(T value, T defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
+
     public static int integerToInt(Integer integer, int defaultInt) {
         return integer == null ? defaultInt : integer.intValue();
     }

@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.flycat.spi.json.JsonException;
+import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonService;
 
 import javax.inject.Inject;
@@ -175,5 +176,11 @@ public class JacksonJsonService implements JsonService {
         }
         jsonNode.set(arrayName, jsonNodes);
         return jsonNode;
+    }
+
+    @Override
+    public JsonObject parseJsonObject(String json) {
+        JsonNode jsonNode = (JsonNode) parseTree(json);
+        return new JsonObjectImpl(jsonNode);
     }
 }
