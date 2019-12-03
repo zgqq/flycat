@@ -180,7 +180,7 @@ public class GuavaCacheService implements StandaloneCacheService {
                 if (prevAtomicLong != null) {
                     return prevAtomicLong.incrementAndGet();
                 } else {
-                    return call.intValue();
+                    return call.intValue() + 1;
                 }
             } else {
                 return atomicLong.incrementAndGet();

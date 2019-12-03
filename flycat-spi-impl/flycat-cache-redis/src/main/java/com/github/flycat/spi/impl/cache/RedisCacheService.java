@@ -204,7 +204,8 @@ public class RedisCacheService implements DistributedCacheService {
                 final long call = callable.call().longValue();
                 final boolean setnx = redisService.setNx(redisKey, call + "");
                 if (setnx) {
-                    return call;
+//                    return call;
+                    return redisService.incr(redisKey);
                 } else {
                     return redisService.incr(redisKey);
                 }
