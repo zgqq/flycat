@@ -24,7 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
-public class SpringRequestUtils {
+public class SpringWebUtils {
+
+    public static String redirect(String url) {
+        return "redirect:" + StringUtils.encodeURLExceptSlash(url);
+    }
 
     public static ContentCachingHttpServletRequest getContentCachingHttpServletRequest(HttpServletRequestWrapper request) {
         HttpServletRequestWrapper requestWrapper = request;

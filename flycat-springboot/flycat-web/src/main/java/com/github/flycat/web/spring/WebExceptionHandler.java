@@ -60,7 +60,7 @@ public class WebExceptionHandler {
     public Object handleValidationException(ValidationException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = SpringRequestUtils.getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
+        HttpServletRequestWrapper requestWrapper = SpringWebUtils.getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
 
@@ -111,7 +111,7 @@ public class WebExceptionHandler {
     public Object handleBusinessException(BusinessException exception, HttpServletRequest request) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = SpringRequestUtils
+        HttpServletRequestWrapper requestWrapper = SpringWebUtils
                 .getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
@@ -134,7 +134,7 @@ public class WebExceptionHandler {
                                          WebRequest webRequest) {
         REGISTRY.meter(request.getRequestURI()).mark();
 
-        HttpServletRequestWrapper requestWrapper = SpringRequestUtils
+        HttpServletRequestWrapper requestWrapper = SpringWebUtils
                 .getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 

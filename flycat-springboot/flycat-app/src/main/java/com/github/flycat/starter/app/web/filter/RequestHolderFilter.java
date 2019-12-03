@@ -20,7 +20,7 @@ import com.github.flycat.starter.app.web.api.AppRequest;
 import com.github.flycat.web.request.LocalRequestBody;
 import com.github.flycat.web.request.RequestBodyHolder;
 import com.github.flycat.web.spring.ContentCachingHttpServletRequest;
-import com.github.flycat.web.spring.SpringRequestUtils;
+import com.github.flycat.web.spring.SpringWebUtils;
 import com.github.flycat.web.util.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class RequestHolderFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        ContentCachingHttpServletRequest httpRequestWrapper = SpringRequestUtils
+        ContentCachingHttpServletRequest httpRequestWrapper = SpringWebUtils
                 .getContentCachingHttpServletRequest((HttpServletRequestWrapper) httpServletRequest);
         String method = httpServletRequest.getMethod();
 
