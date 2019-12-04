@@ -9,6 +9,7 @@ jib {
         credHelper = 'docker-credential-osxkeychain'
         tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString()]
         auth {
+            println "image  $dockerImage username $dockerUsername"
             username = dockerUsername
             password = dockerPassword
         }
