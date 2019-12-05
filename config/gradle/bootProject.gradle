@@ -76,12 +76,20 @@ if (!isDevEnv) {
                        '-Dspring.devtools.restart.enabled=false']
 }
 
+ext.gcLog = "gc.log"
+ext.errorLog = "hs_err_pid%p.log"
+
+if (isDocker(env)) {
+    ext.gcLog = "/app/data/logs/gc.log"
+    ext.errorLog = "/app/data/logs/hs_err_pid%p.log"
+}
 
 applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
         "-Xmx512m",
         "-Xmn128m",
-        "-Xloggc:gc.log".toString()
+        "-XX:ErrorFile=${errorLog}",
+        "-Xloggc:${gcLog}".toString()
 ]
 
 println 'Run java home:' + System.properties['java.home']
