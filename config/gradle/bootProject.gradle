@@ -88,7 +88,7 @@ applicationDefaultJvmArgs = appJvmArgs + [
         "-Xms512m",
         "-Xmx512m",
         "-Xmn128m",
-        "-XX:ErrorFile=${errorLog}",
+        "-XX:ErrorFile=${errorLog}".toString(),
         "-Xloggc:${gcLog}".toString()
 ]
 
