@@ -205,7 +205,7 @@ public class WebConfiguration {
         @Bean
         public SmoothTomcatWebServerCustomizer tomcatWebServer() {
             final String killAfterStartedConf = ContextUtils.createContextFreeConfiguration().getString("flycat.kill-after-started");
-            boolean killAfterStarted = true;
+            boolean killAfterStarted = ContextUtils.isTestProfile();
             if (StringUtils.isNotBlank(killAfterStartedConf)) {
                 killAfterStarted = "true".equalsIgnoreCase(killAfterStartedConf);
             }

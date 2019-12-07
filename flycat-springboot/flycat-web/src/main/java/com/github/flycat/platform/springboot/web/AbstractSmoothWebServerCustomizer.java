@@ -45,7 +45,9 @@ public abstract class AbstractSmoothWebServerCustomizer implements
 
     public AbstractSmoothWebServerCustomizer(boolean tryKillProcess) {
         this.tryKillProcess = tryKillProcess;
-        addShutdownHook();
+        if (this.tryKillProcess) {
+            addShutdownHook();
+        }
     }
 
     protected void addShutdownHook() {

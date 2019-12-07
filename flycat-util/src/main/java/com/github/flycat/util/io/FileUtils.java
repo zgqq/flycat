@@ -22,6 +22,10 @@ package com.github.flycat.util.io;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class FileUtils {
@@ -152,6 +156,10 @@ public class FileUtils {
         } finally {
             stream.close();
         }
+    }
+
+    public static boolean fileExists(String path) {
+        return Files.exists(FileSystems.getDefault().getPath(path));
     }
 }
 

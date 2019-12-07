@@ -15,12 +15,16 @@
  */
 package com.github.flycat.context;
 
+import com.github.flycat.util.io.FileUtils;
 import com.google.common.collect.Lists;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 public final class ContextUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ContextUtils.class);
@@ -63,7 +67,7 @@ public final class ContextUtils {
         return bean;
     }
 
-    static final List<String> PRODUCT_ENV_WORDS = Lists.newArrayList("production", "product", "prod", "ali");
+    static final List<String> PRODUCT_ENV_WORDS = Lists.newArrayList("production", "product", "prod", "ali", "docker");
 
     public static boolean isTestProfile() {
         final String property = getCurrentProfile();
@@ -97,5 +101,19 @@ public final class ContextUtils {
 
     public static ContextFreeConfiguration createContextFreeConfiguration() {
         return new ContextFreeConfiguration(getApplicationConfiguration());
+    }
+
+    static final List<String> CONTAINER_ENV_WORDS = Lists.newArrayList("docker");
+
+    static Function<List<String>, Boolean> inEnv = strings -> {
+        String currentProfile = getCurrentProfile();
+        return strings.stream().anyMatch(word -> word.equals(currentProfile));
+    };
+
+    public static boolean serverRunning() {
+        if (inEnv.apply(CONTAINER_ENV_WORDS)) {
+            return !FileUtils.fileExists("/app/stop");
+        }
+        return true;
     }
 }
