@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 import time
 
 FETCH_COUNT = 60
-
 start_time = time.time()
 
 green = 'green'
@@ -28,17 +27,26 @@ def execute(cmd):
 def has_down_server():
     resp, server_ok = get_service_info()
     loaded_json = json.loads(resp)
-    server_status = loaded_json['serverStatus']
-    if server_status is not None:
-        for x in server_status:
-            if server_status[x] == 'DOWN':
-                print('Server starting, name %s,ip %s' % (boot_project, ip_address_))
-                return True
+    if 'serverStatus' in loaded_json:
+        server_status = loaded_json['serverStatus']
+        if server_status is not None:
+            for x in server_status:
+                if server_status[x] == 'DOWN':
+                    print('Server starting, name %s,ip %s' % (boot_project, ip_address_))
+                    return True
     return False
 
 
 blue_id = check_output('docker ps -f name=%s -q' % blue, shell=True).decode().strip()
 green_id = check_output('docker ps -f name=%s -q' % green, shell=True).decode().strip()
+
+if '\n' in blue_id:
+    print('%s has multiple containers %s, aborted' % (blue, blue_id))
+    exit()
+
+if '\n' in green_id:
+    print('%s has multiple containers %s, aborted' % (green, green_id))
+    exit()
 
 print('Got blue id %s, green id %s' % (blue_id, green_id))
 
@@ -71,6 +79,28 @@ def get_service_info():
 first_check, service_ok = get_service_info()
 print("Service detail %s" % first_check)
 
+if first_check:
+    loaded_json = json.loads(first_check)
+    if 'serverStatus' in loaded_json:
+        server_status = loaded_json['serverStatus']
+        for x in server_status:
+            if "DOWN" in server_status[x]:
+                parsed_uri = urlparse(x)
+                container_id = ip_id[parsed_uri.hostname]
+                name = id_name[container_id]
+                if name == green:
+                    print('Reset green id %s' % container_id)
+                    green_id = ''
+                if name == blue:
+                    print('Reset blue id %s' % container_id)
+                    blue_id = ''
+                print('Found down server, ip %s, force stop %s' % (x, name))
+                stop_result = check_output('docker stop ' + container_id, shell=True).decode().strip()
+                print('Stop container, %s' % stop_result)
+
+    else:
+        service_ok = False
+
 if not service_ok:
     print('Service is unavailable, need close all containers')
     if blue_id:
@@ -79,25 +109,6 @@ if not service_ok:
     if green_id:
         execute('docker stop ' + green_id)
         green_id = ''
-
-if first_check:
-    loaded_json = json.loads(first_check)
-    server_status = loaded_json['serverStatus']
-
-    for x in server_status:
-        if "DOWN" in server_status[x]:
-            parsed_uri = urlparse(x)
-            container_id = ip_id[parsed_uri.hostname]
-            name = id_name[container_id]
-            if name == green:
-                print('Reset green id %s' % container_id)
-                green_id = ''
-            if name == blue:
-                print('Reset blue id %s' % container_id)
-                blue_id = ''
-            print('Found down server, ip %s, force stop %s' % (x, name))
-            stop_result = check_output('docker stop ' + container_id, shell=True).decode().strip()
-            print('Stop container, %s' % stop_result)
 
 boot_project = ''
 close_container_id = ''
@@ -167,8 +178,12 @@ if need_close:
     print("Removing %s" % close_project)
     execute('docker exec -it ' + close_container_id + ' touch /app/stop')
     stime = time.time()
+    count = 0
     while not has_down_server():
         print('Detecting %s server status' % (close_project))
+        count += 1
+        if count > 10:
+            break
         time.sleep(1)
     etime = time.time()
     print('Removed server, cost %s' % (etime - stime))
