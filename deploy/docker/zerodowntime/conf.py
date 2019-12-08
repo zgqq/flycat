@@ -1,0 +1,5 @@
+APP_DOCKER_REPO = "zgqq/flycat-blog"
+APP_TRAEFIK_NETWORK = "traefik_webgateway"
+APP_TRAEFIK_SERVICE_URL = "http://localhost:8080/api/http/services/rounter0-service@docker"
+APP_BLUE = "blue"
+APP_GREEN = "green"

@@ -20,6 +20,7 @@ jib {
         mainClass = mainClassName
         ports = [containerPort]
         volumes = ['/app/data/logs']
+        creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 }
 

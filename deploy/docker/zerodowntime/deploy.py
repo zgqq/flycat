@@ -1,27 +1,57 @@
-import subprocess
-from subprocess import check_output
-import urllib.request
 import json
-from urllib.parse import urlparse
+import subprocess
 import time
+import urllib.request
+from subprocess import check_output
+from urllib.parse import urlparse
+from .conf import *
 
 FETCH_COUNT = 60
 start_time = time.time()
 
-green = 'green'
-blue = "blue"
-
+green = APP_GREEN
+blue = APP_BLUE
 
 def get_container_ip(blue_id):
     blue_info = check_output('docker inspect ' + blue_id, shell=True).decode().rstrip()
     blue_json_obj = json.loads(blue_info)
     obj_ = blue_json_obj[0]
-    ip_address_ = obj_['NetworkSettings']['Networks']['traefik_webgateway']['IPAddress']
+    ip_address_ = obj_['NetworkSettings']['Networks'][APP_TRAEFIK_NETWORK]['IPAddress']
     return ip_address_, obj_
 
 
 def execute(cmd):
     return check_output(cmd, shell=True).decode().strip()
+
+
+def execute_and_catch(cmd):
+    try:
+        execute(cmd)
+    except subprocess.CalledProcessError as e:
+        print('Failed to execute %s' % str(e))
+
+
+def execute_and_return_json(cmd):
+    out = execute(cmd)
+    json_obj = json.loads(out)
+    return json_obj
+
+
+def get_image_id(id):
+    json = execute_and_return_json('docker inspect ' + id)
+    return json[0]['Image'][7:20]
+
+
+def get_last_img_id():
+    with open('last_deploy_id', 'r') as file:
+        id = file.read().replace('\n', '')
+    return id
+
+
+def get_cur_img_id():
+    with open('current_deploy_id', 'r') as file:
+        id = file.read().replace('\n', '')
+    return id
 
 
 def has_down_server():
@@ -52,16 +82,22 @@ print('Got blue id %s, green id %s' % (blue_id, green_id))
 
 ip_id = {}
 id_name = {}
+name_id = {
+    green: '',
+    blue: ''
+}
 
 if blue_id:
     ip_address_, inspect = get_container_ip(blue_id)
     id_name[blue_id] = blue
+    name_id[blue] = blue_id
     print('Map container, name %s, id %s, ip %s' % (blue, blue_id, ip_address_))
     ip_id[ip_address_] = blue_id
 
 if green_id:
     ip_address_, inspect = get_container_ip(green_id)
     id_name[green_id] = green
+    name_id[green] = green_id
     print('Map container, name %s, id %s, ip %s' % (green, green_id, ip_address_))
     ip_id[ip_address_] = green_id
 
@@ -69,7 +105,7 @@ if green_id:
 def get_service_info():
     try:
         first_check = urllib.request \
-            .urlopen("http://localhost:8080/api/http/services/rounter0-service@docker").read().decode()
+            .urlopen(APP_TRAEFIK_SERVICE_URL).read().decode()
     except urllib.error.HTTPError as e:
         print('Server error, %s' % str(e))
         return "", False
@@ -149,7 +185,7 @@ if need_start:
     ip_address_, inspect = get_container_ip(boot_id)
     if boot_id:
         try:
-            execute('docker exec -it ' + boot_id + ' rm /app/stop')
+            execute('docker exec ' + boot_id + ' rm /app/stop')
         except subprocess.CalledProcessError as e:
             print('Ignored, fail to delete file %s' % str(e))
 
@@ -170,13 +206,23 @@ if boot_id and need_start:
     end = time.time()
     if (check_count < FETCH_COUNT):
         print('Server started, cost %s s' % (end - start))
+        old_id = name_id[close_project]
+        cur_img_id = get_image_id(boot_id)
+        if old_id:
+            last_img_id = get_image_id(old_id)
+            print('last image id %s, boot image id %s' % (last_img_id, cur_img_id))
+            if last_img_id != cur_img_id:
+                print(last_img_id, file=open('last_deploy_id', 'w'))
+            else:
+                print('image id is not changed')
+        print(cur_img_id, file=open('current_deploy_id', 'w'))
     else:
         print('Too many fail tries, dont close container, count %d' % check_count)
         need_close = False
 
 if need_close:
-    print("Removing %s" % close_project)
-    execute('docker exec -it ' + close_container_id + ' touch /app/stop')
+    print("Removing %s, id %s" % (close_project, close_container_id))
+    execute('docker exec ' + close_container_id + ' touch /app/stop')
     stime = time.time()
     count = 0
     while not has_down_server():
@@ -187,7 +233,7 @@ if need_close:
         time.sleep(1)
     etime = time.time()
     print('Removed server, cost %s' % (etime - stime))
-    execute('docker exec -it ' + close_container_id + ' rm /app/stop')
+    execute_and_catch('docker exec ' + close_container_id + ' rm /app/stop')
     execute('docker stop ' + close_container_id)
 
 end_time = time.time()
