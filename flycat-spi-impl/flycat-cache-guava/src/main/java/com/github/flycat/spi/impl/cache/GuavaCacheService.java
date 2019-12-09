@@ -56,7 +56,7 @@ public class GuavaCacheService implements StandaloneCacheService {
                 }
                 return call;
             });
-            return Optional.ofNullable(t);
+            return Optional.ofNullable(t == NULL_OBJECT ? null : t);
         } catch (Exception e) {
             throw new CacheException("Guava cache error", e);
         }

@@ -99,8 +99,8 @@ public class EntityCacheService<E> implements CacheOperation {
         return cacheOperation.isValueRefreshed(module, key, seconds);
     }
 
-    public <T> T queryCacheEntity(String key, Type type, Callable<T> callable) throws ResourceNotFoundException {
-        return  queryNullableCacheObject(entityCache.byIdKey(),
+    public <T> T queryCacheEntityById(String key, Type type, Callable<T> callable) throws ResourceNotFoundException {
+        return queryNullableCacheObject(entityCache.byIdKey(),
                 key,
                 type,
                 callable).orElseThrow(ResourceNotFoundException::new);
@@ -108,10 +108,10 @@ public class EntityCacheService<E> implements CacheOperation {
     }
 
 
-    public E queryCacheEntity(String key,
-                              Callable<E> callable) throws ResourceNotFoundException {
-        return  queryNullableCacheObject(entityCache.byIdKey(),
-                entityCache.getEntityClass(),
+    public E queryCacheEntityById(String key,
+                                  Callable<E> callable) throws ResourceNotFoundException {
+        return queryNullableCacheObject(entityCache.byIdKey(),
+                key,
                 callable).orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -122,7 +122,6 @@ public class EntityCacheService<E> implements CacheOperation {
     public void removeQueryByIdCache(String id) {
         entityCache.removeQueryByIdCache(cacheOperation, id);
     }
-
 
     public Page<E> queryListPage(Callable<Page<E>> listQuery, Function<String, List<Map<String, Integer>>> countQuery, Integer pageNum, String... countColumns) {
         return entityCache.queryListPage(cacheOperation, listQuery, countQuery, pageNum, countColumns);
