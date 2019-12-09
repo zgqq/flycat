@@ -26,8 +26,14 @@ import javax.servlet.http.HttpSession;
 
 public class SpringWebUtils {
 
+    public static final String REDIRECT = "redirect:";
+
+    public static boolean isRedirect(String viewName) {
+        return viewName.startsWith(REDIRECT);
+    }
+
     public static String redirect(String url) {
-        return "redirect:" + StringUtils.encodeURLExceptSlash(url);
+        return REDIRECT + StringUtils.encodeURLExceptSlash(url);
     }
 
     public static ContentCachingHttpServletRequest getContentCachingHttpServletRequest(HttpServletRequestWrapper request) {
@@ -51,7 +57,14 @@ public class SpringWebUtils {
         // /elements/**
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         // CATEGORY1/CATEGORY1_1/ID
-        return new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, path);
+        String matched = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, path);
+        String decodeOrReturnURL = StringUtils.decodeOrReturnURL(matched);
+        String[] split = decodeOrReturnURL.split("#");
+        if (split.length > 0) {
+            return split[0];
+        } else {
+            return decodeOrReturnURL;
+        }
     }
 
     public static void attributeToModelIfNotNull(HttpSession session, Model model, String name) {

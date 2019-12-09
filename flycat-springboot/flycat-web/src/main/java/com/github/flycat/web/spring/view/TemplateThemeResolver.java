@@ -26,6 +26,6 @@ public class TemplateThemeResolver extends TemplateThemeHandler {
 
     @Override
     protected void doChangeTheme() {
-        this.dynamicViewNameTranslator.setPrefix("/" + theme);
+        this.dynamicViewNameTranslator.setPrefix(theme);
     }
 }

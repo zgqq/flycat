@@ -6,9 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public class ServerStatus {
 
-    interface StatusChecker {
-        void run() throws Exception;
-    }
 
     public static ResponseEntity response() {
         return response(null);

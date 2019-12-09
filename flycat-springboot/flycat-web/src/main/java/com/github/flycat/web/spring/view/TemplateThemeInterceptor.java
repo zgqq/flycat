@@ -27,7 +27,7 @@ public class TemplateThemeInterceptor extends TemplateThemeHandler implements Ha
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         if (!(handler instanceof ResourceHttpRequestHandler)) {
             if (modelAndView != null) {
-                modelAndView.setViewName(theme + modelAndView.getViewName());
+                modelAndView.setViewName(TemplateThemePrefixResolver.resolve(theme, modelAndView.getViewName()));
             }
         }
     }
