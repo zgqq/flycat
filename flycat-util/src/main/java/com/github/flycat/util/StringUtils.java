@@ -21,6 +21,7 @@ import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +133,17 @@ public class StringUtils {
         }
         return str;
     }
+
+    public static String decodeOrReturnURL(String url) {
+        final String decode;
+        try {
+            decode = URLDecoder.decode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return url;
+        }
+        return decode;
+    }
+
 
     public static String encodeURLExceptSlash(String url) {
         return encodeURL(url).replace("%2F", "/");

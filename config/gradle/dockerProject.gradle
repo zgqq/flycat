@@ -22,6 +22,7 @@ jib {
         volumes = ['/app/data/logs']
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
+//    allowInsecureRegistries = true
 }
 
 tasks.jib.dependsOn tasks.build

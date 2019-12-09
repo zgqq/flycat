@@ -40,8 +40,11 @@ public class PageUtils {
                 ValueUtils.integerToInt(pageNum, 1), 10);
     }
 
+    public static <T> Page<T> selectPage(BaseMapper<T> baseMapper, int finalPageNum, QueryWrapper queryWrapper) {
+        return PageUtils.toPage(baseMapper.selectPage(PageUtils.newIPage(finalPageNum), queryWrapper));
+    }
+
     public static <T> Page<T> selectPage(BaseMapper<T> baseMapper, int finalPageNum) {
-        return PageUtils.toPage(baseMapper.selectPage(PageUtils.newIPage(finalPageNum),
-                new QueryWrapper()));
+        return selectPage(baseMapper, finalPageNum, new QueryWrapper());
     }
 }

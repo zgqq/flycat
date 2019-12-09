@@ -115,9 +115,11 @@ bootJar.enabled = false
 
 
 distZip.enabled = false
-distTar.enabled = true
 bootDistTar.enabled = false
 bootDistZip.enabled = false
+
+if (!isDocker(env))
+    distTar.enabled = true
 
 //    processResources.dependsOn copyConfiguration
 

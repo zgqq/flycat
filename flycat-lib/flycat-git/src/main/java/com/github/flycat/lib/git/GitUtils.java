@@ -23,17 +23,57 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathSuffixFilter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public class GitUtils {
+
+    public static List<String> getAllFilePaths(Repository repository, AbstractTreeIterator commit) {
+        AbstractTreeIterator latestCommit = null;
+        TreeWalk treeWalk = new TreeWalk(repository);
+        treeWalk.addTree(commit);
+        treeWalk.setRecursive(false);
+        List<String> arrayList = new ArrayList();
+        try {
+            while (treeWalk.next()) {
+                if (treeWalk.isSubtree()) {
+                    treeWalk.enterSubtree();
+                } else {
+                    arrayList.add(treeWalk.getPathString());
+                }
+            }
+        } catch (IOException e) {
+            throw new JGitInternalException("Unable to get all file paths", e);
+        }
+        return arrayList;
+    }
+
+    public static Optional<AbstractTreeIterator> getLatestCommit(Git git) {
+        final Iterable<RevCommit> allRevCommit;
+        try {
+            allRevCommit = git.log().call();
+            final Iterator<RevCommit> iterator = allRevCommit.iterator();
+            if (iterator.hasNext()) {
+                final RevCommit revCommit = iterator.next();
+                return Optional.ofNullable(GitUtils.prepareTreeParser(git.getRepository(), revCommit));
+            }
+        } catch (GitAPIException | IOException e) {
+            throw new JGitInternalException("Unable to get latest commit", e);
+        }
+        return Optional.empty();
+    }
 
     public static AbstractTreeIterator prepareTreeParser(Repository repository,
                                                          RevCommit revCommit) throws IOException {
