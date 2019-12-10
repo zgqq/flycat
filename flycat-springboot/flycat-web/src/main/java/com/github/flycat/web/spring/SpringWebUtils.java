@@ -33,7 +33,7 @@ public class SpringWebUtils {
     }
 
     public static String redirect(String url) {
-        return REDIRECT + StringUtils.encodeURLExceptSlash(url);
+        return REDIRECT + StringUtils.encodeURLExceptPathChars(url);
     }
 
     public static ContentCachingHttpServletRequest getContentCachingHttpServletRequest(HttpServletRequestWrapper request) {

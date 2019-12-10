@@ -145,8 +145,10 @@ public class StringUtils {
     }
 
 
-    public static String encodeURLExceptSlash(String url) {
-        return encodeURL(url).replace("%2F", "/");
+    public static String encodeURLExceptPathChars(String url) {
+        return encodeURL(url)
+                .replace("%2F", "/")
+                .replace("%23", "#");
     }
 
     public static String encodeURL(String url) {
