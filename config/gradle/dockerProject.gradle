@@ -25,4 +25,40 @@ jib {
 //    allowInsecureRegistries = true
 }
 
+def updateServer(serverRole) {
+    if (remotes.role(serverRole)) {
+        ssh.run {
+            session(remotes.role(serverRole)) {
+                def gitRepo = "/home/${remote.user}/git-repo/${project.name}/"
+                def dockerDir = gitRepo + "deploy/docker/"
+                def updateScript = "./update_production.sh"
+                executeScript """
+                        cd ${gitRepo}
+                        git pull 
+                        cd ${dockerDir}
+                        sh ${updateScript}
+                """
+                println "Deployed to ${remote.user}@${remote.host}:${gitRepo}"
+            }
+        }
+    }
+}
+
+task dockerRestartProd() {
+    doLast {
+        def serverRole = 'production'
+        updateServer(serverRole)
+        println "Restarted prod server"
+    }
+}
+
+task dockerUpdateProd() {
+    dependsOn 'jib'
+    doLast {
+        def serverRole = 'production'
+        updateServer(serverRole)
+        println "Updated prod server"
+    }
+}
+
 tasks.jib.dependsOn tasks.build

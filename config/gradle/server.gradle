@@ -1,0 +1,31 @@
+def addServer(serverIp,
+              serverUser,
+              serverRole) {
+    println "Adding server, ip:${serverIp}, user:${serverUser}, role:${serverRole}"
+    remotes {
+        "${serverIp}" {
+            role("${serverRole}")
+            role("all")
+            host = "${serverIp}"
+            user = "${serverUser}"
+            identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+        }
+    }
+}
+
+def addTestServer(serverIp,
+                  serverUser) {
+    addServer(serverIp, serverUser, 'test')
+}
+
+def addProductionServer(serverIp,
+                        serverUser) {
+    addServer(serverIp, serverUser, 'production')
+}
+
+ext {
+    addTestServer = this.&addTestServer
+    addProductionServer = this.&addProductionServer
+    addServer = this.&addServer
+}
+
