@@ -1,0 +1,44 @@
+defaultEntryPoints = ["http", "https"]
+
+[log]
+  level = "DEBUG"
+   filePath = "/var/log/traefik/log-file.log"
+   format = "json"
+
+[accessLog]
+  filePath = "/var/log/traefik/access.log"
+  format = "json"
+
+[entryPoints]
+    [entryPoints.http]
+    address = ":80"
+    [entryPoints.https]
+    address = ":443"
+
+[api]
+  dashboard = true
+  debug = true
+  insecure = true
+
+[retry]
+attempts = 3
+maxMem = 3
+
+[providers.docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
+exposedByDefault = false
+network = "traefik_webgateway"
+
+[providers]
+   # Enable the file provider to define routers / middlewares / services in a file
+   [providers.file]
+     filename = "/etc/traefik/traefik.config.toml"
+     watch = true
+
+[certificatesResolvers.certer.acme]
+  email = "zgqq@zhenvip.wang"
+  storage = "/letsencrypt/acme.json"
+  [certificatesResolvers.certer.acme.httpChallenge]
+    # used during the challenge
+    entryPoint = "http"

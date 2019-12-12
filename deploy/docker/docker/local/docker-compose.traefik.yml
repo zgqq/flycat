@@ -14,7 +14,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/traefik.toml
       - ./traefik.config.toml:/etc/traefik/traefik.config.toml # Traefik dynamic config
-      - ~/Develop/common/mkcert:/etc/certs
+      - "./letsencrypt:/letsencrypt"
+      - /Users/zhanguiqi/Develop/common/mkcert:/etc/certs
     labels:
       - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
       - "traefik.http.routers.api.service=api@internal"

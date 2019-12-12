@@ -2,3 +2,5 @@
 [[tls.certificates]]
     certFile = "/etc/certs/zgqflycat.com+5.pem"
     keyFile = "/etc/certs/zgqflycat.com+5-key.pem"
+  #    certFile = "/cert/server.crt"
+  #    keyFile = "/cert/server.key"

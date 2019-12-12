@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik
+    container_name: "traefik"
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./traefik.config.toml:/etc/traefik/traefik.config.toml # Traefik dynamic config
+      - ./letsencrypt:/letsencrypt
+      - ./data/log:/var/log/traefik
+    labels:
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
+
+networks:
+  webgateway:
+    driver: bridge

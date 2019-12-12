@@ -4,13 +4,14 @@ import time
 import urllib.request
 from subprocess import check_output
 from urllib.parse import urlparse
-from .conf import *
+from conf import *
 
-FETCH_COUNT = 60
+FETCH_COUNT = 20
 start_time = time.time()
 
 green = APP_GREEN
 blue = APP_BLUE
+
 
 def get_container_ip(blue_id):
     blue_info = check_output('docker inspect ' + blue_id, shell=True).decode().rstrip()
@@ -43,13 +44,13 @@ def get_image_id(id):
 
 
 def get_last_img_id():
-    with open('last_deploy_id', 'r') as file:
+    with open(LAST_DEPLOY_ID, 'r') as file:
         id = file.read().replace('\n', '')
     return id
 
 
 def get_cur_img_id():
-    with open('current_deploy_id', 'r') as file:
+    with open(CURRENT_DEPLOY_ID, 'r') as file:
         id = file.read().replace('\n', '')
     return id
 
@@ -112,30 +113,41 @@ def get_service_info():
     return first_check, True
 
 
-first_check, service_ok = get_service_info()
-print("Service detail %s" % first_check)
+def stop_down_servers():
+    first_check, service_ok = get_service_info()
+    print("Service detail %s" % first_check)
 
-if first_check:
-    loaded_json = json.loads(first_check)
-    if 'serverStatus' in loaded_json:
-        server_status = loaded_json['serverStatus']
-        for x in server_status:
-            if "DOWN" in server_status[x]:
-                parsed_uri = urlparse(x)
-                container_id = ip_id[parsed_uri.hostname]
-                name = id_name[container_id]
-                if name == green:
-                    print('Reset green id %s' % container_id)
-                    green_id = ''
-                if name == blue:
-                    print('Reset blue id %s' % container_id)
-                    blue_id = ''
-                print('Found down server, ip %s, force stop %s' % (x, name))
-                stop_result = check_output('docker stop ' + container_id, shell=True).decode().strip()
-                print('Stop container, %s' % stop_result)
+    closed_servers = {}
+    if first_check:
+        loaded_json = json.loads(first_check)
+        if 'serverStatus' in loaded_json:
+            server_status = loaded_json['serverStatus']
+            for x in server_status:
+                if "DOWN" in server_status[x]:
+                    parsed_uri = urlparse(x)
+                    container_id = ip_id[parsed_uri.hostname]
+                    name = id_name[container_id]
+                    closed_servers[name] = container_id
+                    print('Found down server, ip %s, force stop %s' % (x, name))
+                    stop_result = check_output('docker stop ' + container_id, shell=True).decode().strip()
+                    print('Stop container, %s' % stop_result)
 
-    else:
-        service_ok = False
+        else:
+            service_ok = False
+    return closed_servers, service_ok
+
+
+closed_servers, service_ok = stop_down_servers()
+
+for x in closed_servers:
+    name = x
+    container_id = closed_servers[x]
+    if name == green:
+        print('Reset green id %s' % container_id)
+        green_id = ''
+    if name == blue:
+        print('Reset blue id %s' % container_id)
+        blue_id = ''
 
 if not service_ok:
     print('Service is unavailable, need close all containers')
@@ -180,10 +192,17 @@ boot_id = ''
 ip_address_ = ''
 if need_start:
     print('Starting %s container' % boot_project)
-    execute('docker-compose -f docker-compose.app.yml --project-name=%s up -d' % boot_project)
+    yml = DOCKER_COMPOSE_APP_YML
+    execute('cd %s && docker-compose -f %s --project-name=%s up -d' % (
+        env,
+        yml,
+        boot_project))
     boot_id = check_output('docker ps -f name=%s -q' % boot_project, shell=True).decode().strip()
     ip_address_, inspect = get_container_ip(boot_id)
     if boot_id:
+        ip_id[ip_address_]  = boot_id
+        id_name[boot_id] = boot_project
+        name_id[boot_project] = boot_id
         try:
             execute('docker exec ' + boot_id + ' rm /app/stop')
         except subprocess.CalledProcessError as e:
@@ -206,17 +225,19 @@ if boot_id and need_start:
     end = time.time()
     if (check_count < FETCH_COUNT):
         print('Server started, cost %s s' % (end - start))
-        old_id = name_id[close_project]
         cur_img_id = get_image_id(boot_id)
-        if old_id:
-            last_img_id = get_image_id(old_id)
-            print('last image id %s, boot image id %s' % (last_img_id, cur_img_id))
-            if last_img_id != cur_img_id:
-                print(last_img_id, file=open('last_deploy_id', 'w'))
-            else:
-                print('image id is not changed')
-        print(cur_img_id, file=open('current_deploy_id', 'w'))
+        if close_project:
+            old_id = name_id[close_project]
+            if old_id:
+                last_img_id = get_image_id(old_id)
+                print('last image id %s, boot image id %s' % (last_img_id, cur_img_id))
+                if last_img_id != cur_img_id:
+                    print(last_img_id, file=open(LAST_DEPLOY_ID, 'w'))
+                else:
+                    print('image id is not changed')
+        print(cur_img_id, file=open(CURRENT_DEPLOY_ID, 'w'))
     else:
+        stop_down_servers()
         print('Too many fail tries, dont close container, count %d' % check_count)
         need_close = False
 

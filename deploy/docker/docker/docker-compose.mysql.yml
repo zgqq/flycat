@@ -4,15 +4,16 @@ services:
     image: hub-mirror.c.163.com/library/mysql:5.6
     restart: always
     volumes:
-      - ~/data/mysql:/var/lib/mysql
+      - ~/data/flycat-blog/mysql:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mysql
     environment:
       MYSQL_USER: 'root'
-      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'roow'
     ports:
       - '3306:3306'
+
 
 networks:
   mysql:
