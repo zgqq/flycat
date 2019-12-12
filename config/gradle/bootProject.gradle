@@ -82,6 +82,7 @@ ext.errorLog = "hs_err_pid%p.log"
 if (isDocker(env)) {
     ext.gcLog = "/app/data/logs/gc.log"
     ext.errorLog = "/app/data/logs/hs_err_pid%p.log"
+    ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib"]
 }
 
 applicationDefaultJvmArgs = appJvmArgs + [
