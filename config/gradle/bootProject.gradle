@@ -102,17 +102,30 @@ ext.errorLog = "hs_err_pid%p.log"
 if (isDocker(env)) {
     ext.gcLog = "/app/data/logs/gc.log"
     ext.errorLog = "/app/data/logs/hs_err_pid%p.log"
-    ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib"]
+    ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib",
+                       "-Duser.timezone=Asia/Shanghai"
+    ]
 }
 
-applicationDefaultJvmArgs = appJvmArgs + [
-        "-Xms512m",
-        "-Xmx512m",
-        "-Xmn128m",
+if (!hasProperty('heapJvmArgs')) {
+    ext.heapJvmArgs = ["-Xms512m",
+                       "-Xmx512m",
+                       "-Xmn128m"]
+}
+appJvmArgs += heapJvmArgs
+
+appJvmArgs += [
         "-XX:ErrorFile=${errorLog}".toString(),
         "-Xloggc:${gcLog}".toString(),
         "-Dapp.version=" + version
 ]
+
+if (hasProperty('customJvmArgs')) {
+    appJvmArgs += customJvmArgs
+}
+
+applicationDefaultJvmArgs = appJvmArgs
+
 
 println 'Run java home:' + System.properties['java.home']
 println 'App jvm args: ' + applicationDefaultJvmArgs.join(",")
