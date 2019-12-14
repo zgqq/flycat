@@ -68,6 +68,23 @@ def has_down_server():
     return False
 
 
+def is_down(id_address):
+    resp, server_ok = get_service_info()
+    loaded_json = json.loads(resp)
+    if 'serverStatus' in loaded_json:
+        server_status = loaded_json['serverStatus']
+        if server_status is not None:
+            for x in server_status:
+                parsed_uri = urlparse(x)
+                if parsed_uri.hostname == id_address:
+                    if server_status[x] == 'DOWN':
+                        print('Server starting, name %s,ip %s' % (boot_project, ip_address_))
+                        return True
+                    else:
+                        return False
+    return True
+
+
 blue_id = check_output('docker ps -f name=%s -q' % blue, shell=True).decode().strip()
 green_id = check_output('docker ps -f name=%s -q' % green, shell=True).decode().strip()
 
@@ -200,7 +217,7 @@ if need_start:
     boot_id = check_output('docker ps -f name=%s -q' % boot_project, shell=True).decode().strip()
     ip_address_, inspect = get_container_ip(boot_id)
     if boot_id:
-        ip_id[ip_address_]  = boot_id
+        ip_id[ip_address_] = boot_id
         id_name[boot_id] = boot_project
         name_id[boot_project] = boot_id
         try:
@@ -218,7 +235,7 @@ if boot_id and need_start:
         check_count += 1
         if (check_count > FETCH_COUNT):
             break
-        next = has_down_server()
+        next = is_down(ip_address_)
         if not next:
             break
         time.sleep(1)
