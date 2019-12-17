@@ -99,11 +99,15 @@ if (!isDevEnv) {
 ext.gcLog = "gc.log"
 ext.errorLog = "hs_err_pid%p.log"
 
+ext.appJvmArgs += ["-XX:+HeapDumpOnOutOfMemoryError"]
+
 if (isDocker(env)) {
-    ext.gcLog = "/app/data/logs/gc.log"
-    ext.errorLog = "/app/data/logs/hs_err_pid%p.log"
+    ext.logPath = "/app/data/logs"
+    ext.gcLog = "${logPath}/gc.log".toString()
+    ext.errorLog = "${logPath}/hs_err_pid%p.log".toString()
     ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib",
-                       "-Duser.timezone=Asia/Shanghai"
+                       "-Duser.timezone=Asia/Shanghai",
+                       "-XX:HeapDumpPath=${logPath}/dump.hprof".toString()
     ]
 }
 
