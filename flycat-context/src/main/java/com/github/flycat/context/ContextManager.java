@@ -44,16 +44,16 @@ public class ContextManager {
     }
 
     public static void beforeRun(RunContext runContext) {
-        System.setOut(new FormatPrintStream(System.out));
-        System.setErr(new FormatPrintStream(System.err));
-
         for (ContextListener contextListener : contextListeners) {
             contextListener.beforeRun(runContext);
         }
         if (!ContextUtils.isLocalProfile()) {
-            final String logDir = ServerEnvUtils.getProperty("logging.path");
+            final String logDir = ServerEnvUtils.getProperty("logging.file.path");
             if (StringUtils.isNotBlank(logDir)) {
                 try {
+                    System.setErr(new PrintStream(new BufferedOutputStream(
+                            new FileOutputStream(logDir + "console.out.log")),
+                            true));
                     System.setOut(new PrintStream(new BufferedOutputStream(
                             new FileOutputStream(logDir + "console.out.log")),
                             true));
@@ -62,6 +62,8 @@ public class ContextManager {
                 }
             }
         }
+        System.setOut(new FormatPrintStream(System.out));
+        System.setErr(new FormatPrintStream(System.err));
         Class<? extends Module>[] modules = runContext.getModules();
         ModuleManager.load(modules);
     }
