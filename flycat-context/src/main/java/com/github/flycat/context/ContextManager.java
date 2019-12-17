@@ -19,7 +19,9 @@ import com.github.flycat.log.logback.LogInterceptor;
 import com.github.flycat.module.Module;
 import com.github.flycat.module.ModuleManager;
 import com.github.flycat.util.CollectionUtils;
+import com.github.flycat.util.DateTimeUtils;
 import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.io.FormatPrintStream;
 import com.github.flycat.util.properties.ServerEnvUtils;
 import org.slf4j.Logger;
@@ -29,6 +31,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -51,11 +54,13 @@ public class ContextManager {
             final String logDir = ServerEnvUtils.getProperty("logging.file.path");
             if (StringUtils.isNotBlank(logDir)) {
                 try {
+                    String format = DateFormatter.YYYYMMDD_HHMMSS.format(new Date());
+                    String logPath = logDir + "console.out." + format + ".log";
                     System.setErr(new PrintStream(new BufferedOutputStream(
-                            new FileOutputStream(logDir + "console.out.log")),
+                            new FileOutputStream(logPath)),
                             true));
                     System.setOut(new PrintStream(new BufferedOutputStream(
-                            new FileOutputStream(logDir + "console.out.log")),
+                            new FileOutputStream(logPath)),
                             true));
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException("Unable to console file ", e);

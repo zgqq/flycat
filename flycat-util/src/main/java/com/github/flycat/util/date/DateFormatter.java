@@ -12,6 +12,7 @@ public class DateFormatter {
     private static final ConcurrentHashMap<String, DateFormatter> formatterInstanceMap = new ConcurrentHashMap<>();
     public static final DateFormatter YYYY_MM_DD_HH_MM_SS_SSS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     public static final DateFormatter YYYY_MM_DD_HH_MM_SS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss");
+    public static final DateFormatter YYYYMMDD_HHMMSS = DateFormatter.getInstance("yyyyMMdd_HHmmss");
 
     public DateFormatter() {
         this("yyyy-MM-dd HH:mm:ss");
