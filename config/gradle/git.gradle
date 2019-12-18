@@ -10,6 +10,16 @@ def execCmd = { command ->
 }
 
 
+def execCmdWithRawOut = { command ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine command
+        standardOutput = stdout
+    }
+    return stdout.toString()
+}
+
+
 def getGitHash = { ->
     return execCmd(['git', 'rev-parse', '--short', 'HEAD'])
 }
@@ -27,8 +37,29 @@ def getGitDate = { ->
     return formatter.format(date);
 }
 
+def createRepoChangeFile = { ->
+    def diff = execCmdWithRawOut(['git', 'diff', 'HEAD', '--color'])
+    if (diff == null || diff.trim().isEmpty()) {
+        diff = execCmdWithRawOut(['git', 'diff', 'HEAD^', 'HEAD', '--color'])
+    }
+
+    def directoryName = "build/generated"
+    File directory = new File(directoryName);
+    if (! directory.exists()){
+        directory.mkdirs();
+    }
+
+    new File("${directoryName}/git-diff").withWriter { out ->
+        out.write(diff)
+    }
+}
+
 ext.latestGitHash = getGitHash()
 ext.latestGitDate = getGitDate()
 ext.currentBranch = getBranchName()
+createRepoChangeFile()
 
+//ext {
+//    createRepoChangeFile = this.&createRepoChangeFile
+//}
 
