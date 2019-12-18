@@ -138,7 +138,7 @@ public class WebExceptionHandler {
                 .getContentCachingHttpServletRequest((HttpServletRequestWrapper) request);
         String requestBody = getRequestBody(requestWrapper);
 
-        LOGGER.error("Uncaught exception! uri:{}, body:{}, ", request.getRequestURI(), requestBody, ex);
+        LOGGER.error("Uncaught exception! uri:{}, body:{}", request.getRequestURI(), requestBody, ex);
         final boolean responseBody = handlerMappingContext.isResponseBody(requestWrapper);
         final Object unknownExceptionResult = ResponseBodyUtils.getUnknownExceptionResult(
                 new ExceptionContext(ex, responseBody)

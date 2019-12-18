@@ -52,6 +52,13 @@ public class LogInterceptor extends TurboFilter {
             return FilterReply.NEUTRAL;
         }
 
+        if (throwable == null && objects != null && objects.length > 0 ) {
+            Object lastArg = objects[objects.length - 1];
+            if (lastArg instanceof Throwable) {
+                throwable = (Throwable) lastArg;
+            }
+        }
+
         final Map<String, String> contextMap = MDC.getCopyOfContextMap();
         if (contextMap != null && !contextMap.isEmpty()
                 && s != null) {
