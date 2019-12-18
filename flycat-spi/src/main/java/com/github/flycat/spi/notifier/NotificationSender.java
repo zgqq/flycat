@@ -22,8 +22,7 @@ public interface NotificationSender {
     default void send(String message) {
         final Message newMessage = new Message();
         newMessage.setContent(message);
-        newMessage.setFormat(MessageFormat.WITH_NOTIFICATION_TIME
-                | MessageFormat.WITH_APP_NAME | MessageFormat.WITH_SERVER_IP
+        newMessage.setFormat(MessageFormat.WITH_NOTIFICATION_TIME | MessageFormat.WITH_APP_NAME | MessageFormat.WITH_SERVER_IP
         );
         send(newMessage);
     }

@@ -36,7 +36,7 @@ public class Message {
     }
 
     public boolean hasFormat(int format) {
-        return (getFormat() & format) == 1;
+        return (getFormat() & format) == format;
     }
 
     public String getDecoratedContent() {

@@ -83,22 +83,23 @@ public abstract class AbstractNotificationSender implements NotificationSender {
 
         StringBuilder messageBuilder = new StringBuilder();
 
+        messageBuilder.append("Notification:" + message.getContent() + "\n");
+
         if (message.hasFormat(MessageFormat.WITH_SERVER_IP)) {
-            messageBuilder.append("ServerIP:" + inetAddress + "\n");
+            messageBuilder.append("ServerIP: " + inetAddress + "\n");
         }
 
         if (message.hasFormat(MessageFormat.WITH_APP_NAME)) {
-            messageBuilder.append("ServerName:" + applicationName + "\n");
+            messageBuilder.append("ServerName: " + applicationName + "\n");
         }
 
         if (message.hasFormat(MessageFormat.WITH_NOTIFICATION_TIME)) {
             final String createTime = DateFormatter.YYYY_MM_DD_HH_MM_SS.format(message.getCreateTime());
-            messageBuilder.append("CreateTime:" + createTime + "\n");
+            messageBuilder.append("CreateTime: " + createTime + "\n");
         }
 
-        messageBuilder.append("Notification:" + message.getContent());
 
-        message.setDecoratedContent(message.toString());
+        message.setDecoratedContent(messageBuilder.toString());
         doSend(message);
     }
 
