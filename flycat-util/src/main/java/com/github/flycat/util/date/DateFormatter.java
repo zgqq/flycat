@@ -34,7 +34,7 @@ public class DateFormatter {
     private SimpleDateFormat getDateFormat() {
         SimpleDateFormat dateFormat = formatThreadLocal.get();
         if (dateFormat == null) {
-            dateFormat = new SimpleDateFormat();
+            dateFormat = new SimpleDateFormat(format);
             formatThreadLocal.set(dateFormat);
         }
         return dateFormat;
