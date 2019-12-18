@@ -19,7 +19,6 @@ import com.github.flycat.log.logback.LogInterceptor;
 import com.github.flycat.module.Module;
 import com.github.flycat.module.ModuleManager;
 import com.github.flycat.util.CollectionUtils;
-import com.github.flycat.util.DateTimeUtils;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.io.FormatPrintStream;
@@ -50,16 +49,21 @@ public class ContextManager {
         for (ContextListener contextListener : contextListeners) {
             contextListener.beforeRun(runContext);
         }
+        Class<? extends Module>[] modules = runContext.getModules();
+        ModuleManager.load(modules);
+    }
+
+    private static void redirectOutputStream() {
         if (!ContextUtils.isLocalProfile()) {
             final String logDir = ServerEnvUtils.getProperty("logging.file.path");
             if (StringUtils.isNotBlank(logDir)) {
                 try {
                     String format = DateFormatter.YYYYMMDD_HHMMSS.format(new Date());
                     String logPath = logDir + "console.out." + format + ".log";
-                    System.setErr(new PrintStream(new BufferedOutputStream(
+                    System.setOut(new PrintStream(new BufferedOutputStream(
                             new FileOutputStream(logPath)),
                             true));
-                    System.setOut(new PrintStream(new BufferedOutputStream(
+                    System.setErr(new PrintStream(new BufferedOutputStream(
                             new FileOutputStream(logPath)),
                             true));
                 } catch (FileNotFoundException e) {
@@ -69,8 +73,6 @@ public class ContextManager {
         }
         System.setOut(new FormatPrintStream(System.out));
         System.setErr(new FormatPrintStream(System.err));
-        Class<? extends Module>[] modules = runContext.getModules();
-        ModuleManager.load(modules);
     }
 
     public static void afterRun(ApplicationContext applicationContext) {
@@ -79,5 +81,6 @@ public class ContextManager {
         }
         LogInterceptor.disableTrace = true;
         LOGGER.info("Slow log, content:{}", LogInterceptor.slowLog.get("main"));
+        redirectOutputStream();
     }
 }

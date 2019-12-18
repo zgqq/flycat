@@ -21,6 +21,7 @@ import com.github.flycat.context.ContextManager;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
+import com.github.flycat.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -38,16 +39,19 @@ public class SpringBootPlatform {
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
-            CompletableFuture.runAsync(()->{
+            CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
                 try {
                     AttachAgent.attachAgent();
-                } catch (Exception e) {
-                    LOGGER.error("Unable to attach agent", e);
+                } catch (Throwable e) {
+                    LOGGER.warn("Unable to attach agent", e);
+//                    throw new RuntimeException("Unable to attach agent", e);
                 }
             });
             ApplicationContext applicationContext = configurableApplicationContext.getBean(ApplicationContext.class);
+            attachAgent.get();
             ContextManager.afterRun(applicationContext);
         } catch (Exception e) {
+            System.err.println("Server startup failed: " + ExceptionUtils.getStackTrace(e));
             LOGGER.warn("Startup exception", e);
             if (!ContextUtils.isLocalProfile()) {
                 LOGGER.info("Unable to startup server, system exit");

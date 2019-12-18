@@ -11,7 +11,7 @@ import java.security.CodeSource;
 public class AttachAgent {
     private static final Logger LOGGER = LoggerFactory.getLogger(AttachAgent.class);
 
-    public static void attachAgent() throws Exception {
+    public static void attachAgent() throws Throwable {
 
         String currentPid = PidUtils.currentPid();
 
