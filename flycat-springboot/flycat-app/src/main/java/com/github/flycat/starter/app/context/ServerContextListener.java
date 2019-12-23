@@ -25,7 +25,9 @@ public class ServerContextListener implements ContextListener {
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
         if (booleanValue) {
-            NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting");
+            String appVersion = System.getProperty("app.version");
+            NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting," +
+                    " version:" + appVersion);
         }
     }
 
@@ -34,8 +36,9 @@ public class ServerContextListener implements ContextListener {
         ApplicationConfiguration applicationConfiguration = applicationContext.getApplicationConfiguration();
         boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", false);
         if (booleanValue) {
+            String appVersion = System.getProperty("app.version");
             String applicationName = applicationConfiguration.getApplicationName();
-            NotifierUtils.sendNotification("Server[" + applicationName + "] started");
+            NotifierUtils.sendNotification("Server[" + applicationName + "] started, version:" + appVersion);
         }
     }
 }

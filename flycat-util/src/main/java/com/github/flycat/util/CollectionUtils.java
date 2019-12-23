@@ -15,11 +15,17 @@
  */
 package com.github.flycat.util;
 
+import org.apache.commons.collections.IteratorUtils;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class CollectionUtils {
+
+    public static Enumeration asEnumeration(Iterator iterator) {
+        return IteratorUtils.asEnumeration(iterator);
+    }
 
     public static <T> boolean greater(Collection<T>
                                               collection, int size

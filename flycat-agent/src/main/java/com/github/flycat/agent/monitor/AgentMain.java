@@ -5,6 +5,8 @@ import com.github.flycat.agent.monitor.command.CommandProcessImpl;
 import com.github.flycat.agent.monitor.command.EnhancerCommand;
 import com.github.flycat.agent.monitor.session.Session;
 import com.github.flycat.agent.monitor.session.SessionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -12,6 +14,7 @@ import java.lang.reflect.Method;
 import static com.github.flycat.agent.monitor.session.Session.INSTRUMENTATION;
 
 public class AgentMain {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AgentMain.class);
 
     public static void premain(String args, Instrumentation inst) {
         main(args, inst);
@@ -64,7 +67,9 @@ public class AgentMain {
     public static void sendCommand(EnhancerCommand command) {
         synchronized (lock) {
             if (session == null) {
-                throw new RuntimeException("Not initiated yet");
+                LOGGER.warn("Unable to handle command, attach agent failed?");
+                return;
+//                throw new RuntimeException("Not initiated yet");
             }
             CommandProcess commandProcess = new CommandProcessImpl(session);
             command.process(commandProcess);
