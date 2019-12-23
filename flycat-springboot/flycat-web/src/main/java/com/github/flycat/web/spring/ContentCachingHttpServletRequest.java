@@ -15,7 +15,10 @@
  */
 package com.github.flycat.web.spring;
 
+import com.github.flycat.util.ArrayUtils;
+import com.github.flycat.util.CollectionUtils;
 import com.github.flycat.util.io.IOUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.ReadListener;
@@ -26,11 +29,81 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapper {
 
+    private static final String FORM_CONTENT_TYPE = "application/x-www-form-urlencoded";
+    private Map<String, String[]> valueMap;
+
     public ContentCachingHttpServletRequest(HttpServletRequest request) {
         super(request);
+    }
+
+    private boolean tryParsePostBody() {
+        boolean formPost = isFormPost();
+        if (formPost && valueMap == null) {
+            String str = getRequestBody();
+            valueMap = new HashMap();
+            String[] valueKey = str.split("&");
+            for (String temp : valueKey) {
+                if (temp != null) {
+                    int idx = temp.indexOf('=');
+                    int len = temp.length();
+                    if (idx != -1) {
+                        String key = temp.substring(0, idx);
+                        String value = idx + 1 < len ? temp.substring(idx + 1) : "";
+                        String[] prevValue = valueMap.get(key);
+                        if (prevValue == null) {
+                            valueMap.put(key, new String[]{value});
+                        } else {
+                            valueMap.put(key, ArrayUtils.add(prevValue, value));
+                        }
+                    }
+                }
+            }
+        }
+        return formPost;
+    }
+
+
+    @Override
+    public String getParameter(String name) {
+        if (tryParsePostBody()) {
+            return valueMap.get(name)[0];
+        }
+        return super.getParameter(name);
+    }
+
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        if (tryParsePostBody()) {
+            return valueMap;
+        }
+        return super.getParameterMap();
+    }
+
+    @Override
+    public Enumeration<String> getParameterNames() {
+        if (tryParsePostBody()) {
+            return CollectionUtils.asEnumeration(valueMap.keySet().iterator());
+        }
+        return super.getParameterNames();
+    }
+
+    @Override
+    public String[] getParameterValues(String name) {
+        if (tryParsePostBody()) {
+            return valueMap.get(name);
+        }
+        return super.getParameterValues(name);
+    }
+
+    private boolean isFormPost() {
+        String contentType = getContentType();
+        return (contentType != null && contentType.contains(FORM_CONTENT_TYPE) &&
+                HttpMethod.POST.matches(getMethod()));
     }
 
     public String getRequestBody() {
@@ -39,11 +112,8 @@ public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapp
             if (contentAsByteArray.length > 0) {
                 return new String(contentAsByteArray);
             } else {
-                final Enumeration<String> parameterNames = super.getParameterNames();
-                if (!parameterNames.hasMoreElements()) {
-                    final ServletInputStream inputStream = super.getInputStream();
-                    IOUtils.read(inputStream, new byte[102400]);
-                }
+                final ServletInputStream inputStream = super.getInputStream();
+                IOUtils.read(inputStream, new byte[102400]);
                 return new String(getContentAsByteArray());
             }
         } catch (IOException e) {

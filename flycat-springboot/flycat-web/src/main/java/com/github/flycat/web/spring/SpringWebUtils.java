@@ -58,7 +58,7 @@ public class SpringWebUtils {
         String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         // CATEGORY1/CATEGORY1_1/ID
         String matched = new AntPathMatcher().extractPathWithinPattern(bestMatchPattern, path);
-        String decodeOrReturnURL = StringUtils.decodeOrReturnURL(matched);
+        String decodeOrReturnURL = StringUtils.decodeOrReturn(matched);
         String[] split = decodeOrReturnURL.split("#");
         if (split.length > 0) {
             return split[0];

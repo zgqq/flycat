@@ -17,6 +17,7 @@ package com.github.flycat.util;
 
 import com.google.common.base.Splitter;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -134,12 +135,12 @@ public class StringUtils {
         return str;
     }
 
-    public static String decodeOrReturnURL(String url) {
+    public static String decodeOrReturn(String content) {
         final String decode;
         try {
-            decode = URLDecoder.decode(url, "UTF-8");
+            decode = URLDecoder.decode(content, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            return url;
+            return content;
         }
         return decode;
     }
