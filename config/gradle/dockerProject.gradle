@@ -2,7 +2,11 @@ ext.jvmArgs = applicationDefaultJvmArgs
 jib {
     from {
 //        image = 'amazoncorretto:8u232'
-        image = 'tomcat:9.0-jdk8-corretto'
+        image = 'zgqq/flycat:latest'
+    }
+
+    extraDirectories {
+        paths = [file('build/jib')]
     }
 
     to {
@@ -25,6 +29,7 @@ jib {
     }
 //    allowInsecureRegistries = true
 }
+
 
 def updateServer(serverRole, execPath) {
     if (remotes.role(serverRole)) {
@@ -74,5 +79,24 @@ task dockerRollbackProd() {
     }
 }
 
+task setupExtraDir {
+    doLast {
+        copy {
+            from file('build/generated/git-diff')
+            into file('build/jib/project/generated/')
+        }
+        copy {
+            from file('src')
+            into file('build/jib/project/src/')
+        }
+        copy {
+            from file('build.gradle'), file('settings.gradle'), file('deploy')
+            into file('build/jib/project/')
+        }
+    }
+}
 
-tasks.jib.dependsOn tasks.build
+
+tasks.jib.dependsOn tasks.build, tasks.setupExtraDir
+
+tasks.jibDockerBuild.dependsOn tasks.build, tasks.setupExtraDir
