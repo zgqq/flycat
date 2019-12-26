@@ -16,8 +16,8 @@
 package com.github.flycat.util;
 
 
-import org.apache.commons.collections.MapUtils;
-
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Map;
 
 public class MapWrapper {
@@ -28,19 +28,66 @@ public class MapWrapper {
     }
 
     public String getString(String key) {
-        return MapUtils.getString(map, key);
+        if (map != null) {
+            Object answer = map.get(key);
+            if (answer != null) {
+                if (answer instanceof Object[]) {
+                    return ((Object[]) answer)[0].toString();
+                }
+                return answer.toString();
+            }
+        }
+        return null;
     }
 
-    public String getString(Object key, String defaultValue) {
-        return MapUtils.getString(map, key, defaultValue);
+    public String getString(String key, String defaultValue) {
+        String value = getString(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
+
+
+    public static Number getNumber(Map map, Object key) {
+        if (map != null) {
+            Object answer = map.get(key);
+            if (answer != null) {
+                if (answer instanceof Object[]) {
+                    answer = ((Object[]) answer)[0];
+                }
+
+                if (answer instanceof Number) {
+                    return (Number)answer;
+                }
+                if (answer instanceof String) {
+                    try {
+                        String text = (String)answer;
+                        return NumberFormat.getInstance().parse(text);
+                    } catch (ParseException var4) {
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public Integer getInteger(String key) {
-        return MapUtils.getInteger(map, key);
+        Number answer = getNumber(map, key);
+        if (answer == null) {
+            return null;
+        } else {
+            return answer instanceof Integer ? (Integer)answer : new Integer(answer.intValue());
+        }
     }
 
-    public Integer getInteger(Object key, Integer defaultValue) {
-        return MapUtils.getInteger(map, key, defaultValue);
+    public Integer getInteger(String key, Integer defaultValue) {
+        Integer value = getInteger(key, defaultValue);
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
     }
 
     public Map getMap() {
