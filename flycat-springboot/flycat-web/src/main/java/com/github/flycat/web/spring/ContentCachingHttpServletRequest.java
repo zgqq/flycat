@@ -17,6 +17,7 @@ package com.github.flycat.web.spring;
 
 import com.github.flycat.util.ArrayUtils;
 import com.github.flycat.util.CollectionUtils;
+import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.io.IOUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -54,6 +55,7 @@ public class ContentCachingHttpServletRequest extends ContentCachingRequestWrapp
                     if (idx != -1) {
                         String key = temp.substring(0, idx);
                         String value = idx + 1 < len ? temp.substring(idx + 1) : "";
+                        value = StringUtils.decodeOrReturn(value);
                         String[] prevValue = valueMap.get(key);
                         if (prevValue == null) {
                             valueMap.put(key, new String[]{value});
