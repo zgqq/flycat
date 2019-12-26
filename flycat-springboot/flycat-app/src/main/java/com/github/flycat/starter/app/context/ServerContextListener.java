@@ -26,8 +26,9 @@ public class ServerContextListener implements ContextListener {
         boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
         if (booleanValue) {
             String appVersion = System.getProperty("app.version");
+            String gitDiff = System.getProperty("app.git.diff");
             NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting," +
-                    " version:" + appVersion);
+                    " version:" + appVersion + "\n" + gitDiff);
         }
     }
 
@@ -37,8 +38,9 @@ public class ServerContextListener implements ContextListener {
         boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", false);
         if (booleanValue) {
             String appVersion = System.getProperty("app.version");
+            String gitDiff = System.getProperty("app.git.diff");
             String applicationName = applicationConfiguration.getApplicationName();
-            NotifierUtils.sendNotification("Server[" + applicationName + "] started, version:" + appVersion);
+            NotifierUtils.sendNotification("Server[" + applicationName + "] started, version:" + appVersion + "\n" + gitDiff);
         }
     }
 }

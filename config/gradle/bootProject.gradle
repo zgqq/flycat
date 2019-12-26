@@ -118,10 +118,12 @@ if (!hasProperty('heapJvmArgs')) {
 }
 appJvmArgs += heapJvmArgs
 
+
 appJvmArgs += [
         "-XX:ErrorFile=${errorLog}".toString(),
         "-Xloggc:${gcLog}".toString(),
-        "-Dapp.version=" + version
+        "-Dapp.version=" + version,
+        "-Dapp.git.diff=${gitDiffNameStatus}".toString()
 ]
 
 if (hasProperty('customJvmArgs')) {

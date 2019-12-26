@@ -37,13 +37,18 @@ def getGitDate = { ->
     return formatter.format(date);
 }
 
+def diffFile = execCmdWithRawOut(['git', 'diff', 'HEAD', '--name-status'])
+if (diffFile == null || diffFile.trim().isEmpty()) {
+    diffFile = execCmdWithRawOut(['git', 'diff', 'HEAD^', 'HEAD', '--name-status'])
+}
+
 def createRepoChangeFile = { ->
     def diff = execCmdWithRawOut(['git', 'diff', 'HEAD', '--color'])
     if (diff == null || diff.trim().isEmpty()) {
         diff = execCmdWithRawOut(['git', 'diff', 'HEAD^', 'HEAD', '--color'])
     }
 
-    def directoryName = "build/generated"
+    def directoryName = "build/generated/git"
     File directory = new File(directoryName);
     if (! directory.exists()){
         directory.mkdirs();
@@ -52,12 +57,18 @@ def createRepoChangeFile = { ->
     new File("${directoryName}/git-diff").withWriter { out ->
         out.write(diff)
     }
+
+    new File("${directoryName}/git-diff-files").withWriter { out ->
+        out.write(diffFile)
+    }
 }
 
 ext.latestGitHash = getGitHash()
 ext.latestGitDate = getGitDate()
 ext.currentBranch = getBranchName()
 createRepoChangeFile()
+
+ext.gitDiffNameStatus = diffFile
 
 //ext {
 //    createRepoChangeFile = this.&createRepoChangeFile

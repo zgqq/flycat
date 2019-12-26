@@ -2,7 +2,7 @@ ext.jvmArgs = applicationDefaultJvmArgs
 jib {
     from {
 //        image = 'amazoncorretto:8u232'
-        image = 'zgqq/flycat:latest'
+        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
     }
 
     extraDirectories {
@@ -12,7 +12,7 @@ jib {
     to {
         image = dockerImage
         credHelper = 'docker-credential-osxkeychain'
-        tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString()]
+        tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), 'latest']
         auth {
             println "image  $dockerImage username $dockerUsername"
             username = dockerUsername
@@ -82,8 +82,8 @@ task dockerRollbackProd() {
 task setupExtraDir {
     doLast {
         copy {
-            from file('build/generated/git-diff')
-            into file('build/jib/project/generated/')
+            from file('build/generated/git/')
+            into file('build/jib/project/generated/git/')
         }
         copy {
             from file('src')

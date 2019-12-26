@@ -56,7 +56,6 @@ public class LogAlarmListener extends LogErrorListener {
         if (ContextUtils.isTestProfile()) {
             return false;
         }
-
         boolean isBusinessException = (throwable instanceof BusinessException
                 ||
                 (throwable != null && throwable.getCause() instanceof BusinessException));
