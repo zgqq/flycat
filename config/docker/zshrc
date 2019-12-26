@@ -120,9 +120,13 @@ export EDITOR='vim'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 #
-export CLASSPATH="$JAVA_HOME/libs"
+
+export CLASSPATH="$JAVA_HOME/lib/tools.jar"
 alias bat="/usr/local/bat/bat"
 alias vi="vim"
-alias arthas="java -jar /opt/arthas-boot.jar 1"
+alias arthas="java -jar /opt/arthas/arthas-boot.jar 1"
+alias gitdiff="bat /project/generated/git/git-diff"
+alias applog="less /app/data/logs/common.log"
+alias applogdir="cd /app/data/logs"
 
-export TERM=screen-256color
+export TERM=xterm-256color

@@ -10,6 +10,8 @@ FROM amazoncorretto:8 AS build
 #RUN install python-pip  && \
 # pip install ansi2html
 
+ENV TERM xterm-256color
+
 
 RUN yum update -y && \
 yum -y install \
@@ -63,9 +65,9 @@ COPY --from=build /usr/local/bat /usr/local/bat
 #rm -rf goaccess-1.3
 COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 
-ENV TERM screen-256color
 
 COPY zshrc /opt/zshrc_
+COPY zsh_history /opt/zsh_history_
 RUN yum -y install \
  curl \
  zsh \
@@ -76,6 +78,7 @@ yum -y clean all && \
 wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true && \
 curl -L git.io/antigen > $HOME/antigen.zsh && \
 cp -f /opt/zshrc_ $HOME/.zshrc && \
+cp -f /opt/zsh_history_ $HOME/.zsh_history && \
 /bin/zsh $HOME/.zshrc
 
 #RUN git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && \
