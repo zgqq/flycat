@@ -88,7 +88,7 @@ antigen bundle chrissicool/zsh-256color
 
 
 # Load the theme.
-antigen theme darkblood
+antigen theme alanpeabody
 
 # Tell Antigen that you're done.
 antigen apply
@@ -123,7 +123,7 @@ export EDITOR='vim'
 
 export CLASSPATH="$JAVA_HOME/lib/tools.jar"
 alias bat="/usr/local/bat/bat"
-alias vi="vim"
+# alias vi="vim"
 alias arthas="java -jar /opt/arthas/arthas-boot.jar 1"
 alias gitdiff="bat /project/generated/git/git-diff"
 alias applog="less /app/data/logs/common.log"

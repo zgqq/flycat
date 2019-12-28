@@ -65,17 +65,18 @@ COPY --from=build /usr/local/bat /usr/local/bat
 #rm -rf goaccess-1.3
 COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 
-
-COPY zshrc /opt/zshrc_
-COPY zsh_history /opt/zsh_history_
 RUN yum -y install \
  curl \
  zsh \
  wget \
  git \
  && \
-yum -y clean all && \
-wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true && \
+yum -y clean all
+
+COPY zshrc /opt/zshrc_
+COPY zsh_history /opt/zsh_history_
+
+RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true && \
 curl -L git.io/antigen > $HOME/antigen.zsh && \
 cp -f /opt/zshrc_ $HOME/.zshrc && \
 cp -f /opt/zsh_history_ $HOME/.zsh_history && \
