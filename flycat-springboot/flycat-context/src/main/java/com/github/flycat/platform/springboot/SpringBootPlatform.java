@@ -22,10 +22,12 @@ import com.github.flycat.context.ContextUtils;
 import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
 import com.github.flycat.util.ExceptionUtils;
+import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StopWatch;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -36,6 +38,7 @@ public class SpringBootPlatform {
 
     public static void run(Class<?> primarySource, String[] args, Class<? extends Module>... modules) {
         try {
+            Stopwatch started = Stopwatch.createStarted();
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
@@ -51,12 +54,20 @@ public class SpringBootPlatform {
             ApplicationContext applicationContext = configurableApplicationContext.getBean(ApplicationContext.class);
             attachAgent.get();
             ContextManager.afterRun(applicationContext);
+            started.stop();
+            LOGGER.info("Started spring boot application, cost {}", started);
         } catch (Exception e) {
-            System.err.println("Server startup failed: " + ExceptionUtils.getStackTrace(e));
-            LOGGER.warn("Startup exception", e);
-            if (!ContextUtils.isLocalProfile()) {
-                LOGGER.info("Unable to startup server, system exit");
-                System.exit(0);
+            boolean equals = e.getClass().getName().equals("org.springframework.boot.devtools." +
+                    "restart.SilentExitExceptionHandler$SilentExitException");
+            if (!equals) {
+                System.err.println("Server startup failed: " + ExceptionUtils.getStackTrace(e));
+                LOGGER.warn("Startup exception", e);
+                if (!ContextUtils.isLocalProfile()) {
+                    LOGGER.info("Unable to startup server, system exit");
+                    System.exit(0);
+                }
+            } else {
+                LOGGER.info("Dev tool restart exception, ignored");
             }
         }
     }
