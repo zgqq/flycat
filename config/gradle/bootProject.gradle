@@ -32,6 +32,7 @@ if (hasProperty("appClassName")) {
 
 ext.springJvmArgs = ["-Dspring.profiles.active=${ext.env}".toString()]
 
+
 if (vJavaLang == '1.11') {
     ext.appJvmArgs = ext.springJvmArgs + [
             '-Dfile.encoding=UTF-8',
@@ -44,6 +45,16 @@ if (vJavaLang == '1.11') {
             "-XX:+PrintGCTimeStamps",
             "-XX:-OmitStackTraceInFastThrow"]
 }
+
+if (isProd(env)) {
+    ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions",
+                       '-Dspring.devtools.restart.enabled=false']
+} else if (isTestServer(env)) {
+    ext.appJvmArgs += [
+            "-XX:+IgnoreUnrecognizedVMOptions",
+            '-Dspring.devtools.restart.enabled=true']
+}
+
 
 if (!isProd(env)) {
     ext.appJvmArgs += ['-noverify'
@@ -59,10 +70,8 @@ if (hasProperty("debugPort")) {
 }
 
 if (isTestServer(env)) {
-    ext.appJvmArgs += ["-Xdebug",
-                       "-Xnoagent",
-                       '-Djava.compiler=NONE',
-                       "-Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString()]
+    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString(),
+                       '-Djava.compiler=NONE']
 
 }
 
@@ -91,10 +100,6 @@ if (!isProd(env) && !useDcevm) {
     ext.appJvmArgs += ext.frJvmArgs
 }
 
-if (!isDevEnv) {
-    ext.appJvmArgs += ["-XX:-IgnoreUnrecognizedVMOptions",
-                       '-Dspring.devtools.restart.enabled=false']
-}
 
 ext.gcLog = "gc.log"
 ext.errorLog = "hs_err_pid%p.log"
