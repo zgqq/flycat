@@ -17,6 +17,8 @@ package com.github.flycat.context;
 
 public interface ApplicationContext {
 
+    boolean isActive();
+
     <T> T getBean(Class<T> clazz);
 
     Object getBean(String name);

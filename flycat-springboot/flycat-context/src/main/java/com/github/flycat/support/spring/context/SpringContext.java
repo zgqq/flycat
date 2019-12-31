@@ -18,6 +18,7 @@ package com.github.flycat.support.spring.context;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.ContextUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -29,6 +30,11 @@ public class SpringContext implements ApplicationContext, InitializingBean  {
     @Inject
     public SpringContext(org.springframework.context.ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public boolean isActive() {
+        return ((AbstractApplicationContext) applicationContext).isActive();
     }
 
     @Override

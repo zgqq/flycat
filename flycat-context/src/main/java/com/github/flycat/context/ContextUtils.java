@@ -63,6 +63,9 @@ public final class ContextUtils {
         if (contextHolder == null) {
             return null;
         }
+        if (!contextHolder.isActive()) {
+            return null;
+        }
         final ApplicationConfiguration bean = contextHolder.getBean(ApplicationConfiguration.class);
         return bean;
     }

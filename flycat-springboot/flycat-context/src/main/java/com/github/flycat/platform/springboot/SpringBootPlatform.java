@@ -41,6 +41,7 @@ public class SpringBootPlatform {
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
             CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
                 try {
+
                     AttachAgent.attachAgent();
                 } catch (Throwable e) {
                     LOGGER.warn("Unable to attach agent", e);
