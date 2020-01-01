@@ -82,8 +82,10 @@ cp -f /opt/zshrc_ $HOME/.zshrc && \
 cp -f /opt/zsh_history_ $HOME/.zsh_history && \
 /bin/zsh $HOME/.zshrc
 
-#RUN git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && \
-#yes | sh $HOME/.fzf/install
+RUN yum -y install \
+ tar  && \
+git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && \
+yes | sh $HOME/.fzf/install
 
 
 
