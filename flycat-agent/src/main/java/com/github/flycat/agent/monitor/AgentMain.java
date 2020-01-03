@@ -1,5 +1,6 @@
 package com.github.flycat.agent.monitor;
 
+import com.github.flycat.agent.monitor.command.AnnotatedCommand;
 import com.github.flycat.agent.monitor.command.CommandProcess;
 import com.github.flycat.agent.monitor.command.CommandProcessImpl;
 import com.github.flycat.agent.monitor.command.EnhancerCommand;
@@ -64,7 +65,7 @@ public class AgentMain {
     }
 
 
-    public static void sendCommand(EnhancerCommand command) {
+    public static void sendCommand(AnnotatedCommand command) {
         synchronized (lock) {
             if (session == null) {
                 LOGGER.warn("Unable to handle command, attach agent failed?");
