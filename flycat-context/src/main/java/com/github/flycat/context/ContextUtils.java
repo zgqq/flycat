@@ -115,7 +115,7 @@ public final class ContextUtils {
 
     public static boolean serverRunning() {
         if (inEnv.apply(CONTAINER_ENV_WORDS)) {
-            return !FileUtils.fileExists("/app/stop");
+            return !FileUtils.fileExists("/tmp/app_stop");
         }
         return true;
     }

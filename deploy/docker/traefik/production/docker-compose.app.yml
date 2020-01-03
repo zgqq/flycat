@@ -4,7 +4,7 @@ services:
     image: ${APP_DOCKER_IMAGE}
     restart: always # prevent other service unavailable yet
     volumes:
-      - ~/deploy/logs/flycat-blog:/app/data/logs
+      - ~/deploy/logs/flycat-blog:/userapp/data/logs
     environment:
       MYSQL_DB_USERNAME: ${DB_USERNAME}
       MYSQL_DB_PASSWORD: ${DB_PASSWORD}

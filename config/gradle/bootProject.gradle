@@ -107,7 +107,7 @@ ext.errorLog = "hs_err_pid%p.log"
 ext.appJvmArgs += ["-XX:+HeapDumpOnOutOfMemoryError"]
 
 if (isDocker(env)) {
-    ext.logPath = "/app/data/logs"
+    ext.logPath = "/userapp/data/logs"
     ext.gcLog = "${logPath}/gc.log".toString()
     ext.errorLog = "${logPath}/hs_err_pid%p.log".toString()
     ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib",
@@ -156,6 +156,9 @@ bootDistZip.enabled = false
 
 if (!isDocker(env))
     distTar.enabled = true
+else
+    distTar.enabled = false
+
 
 //    processResources.dependsOn copyConfiguration
 
@@ -174,7 +177,7 @@ configurations {
 
 
 dependencies {
-    if (isDevEnv) {
+    if (!isProd(env)) {
         developmentOnly("org.springframework.boot:spring-boot-devtools")
     }
 
@@ -210,6 +213,8 @@ if (hasProperty("mainClassName") && mainClassName != null) {
     }
 }
 
-println 'distTar path:' + distTar.archiveFile.get()
+if (distTar.enabled) {
+    println 'distTar path:' + distTar.archiveFile.get()
+}
 
 

@@ -17,8 +17,12 @@ package com.github.flycat.starter.app.context;
 
 import com.github.flycat.context.*;
 import com.github.flycat.spi.notifier.NotifierUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerContextListener implements ContextListener {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerContextListener.class);
+
 
     @Override
     public void beforeRun(RunContext runContext) {
@@ -27,8 +31,10 @@ public class ServerContextListener implements ContextListener {
         if (booleanValue) {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
-            NotifierUtils.sendNotification("Server[" + contextFreeConfiguration.getApplicationName() + "] starting," +
-                    " version:" + appVersion + "\n" + gitDiff);
+            String message = "Server[" + contextFreeConfiguration.getApplicationName() + "] starting," +
+                    " version:" + appVersion + "\n" + gitDiff;
+            LOGGER.info(message);
+            NotifierUtils.sendNotification(message);
         }
     }
 
@@ -40,7 +46,9 @@ public class ServerContextListener implements ContextListener {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
             String applicationName = applicationConfiguration.getApplicationName();
-            NotifierUtils.sendNotification("Server[" + applicationName + "] started, version:" + appVersion + "\n" + gitDiff);
+            String message = "Server[" + applicationName + "] started, version:" + appVersion + "\n" + gitDiff;
+            LOGGER.info(message);
+            NotifierUtils.sendNotification(message);
         }
     }
 }

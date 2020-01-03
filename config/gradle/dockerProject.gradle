@@ -24,7 +24,8 @@ jib {
         jvmFlags = jvmArgs
         mainClass = mainClassName
         ports = [containerPort]
-        volumes = ['/app/data/logs']
+        volumes = ['/app', '/userapp']
+
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 //    allowInsecureRegistries = true

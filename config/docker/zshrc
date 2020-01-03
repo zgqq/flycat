@@ -126,7 +126,7 @@ alias bat="/usr/local/bat/bat"
 # alias vi="vim"
 alias arthas="java -jar /opt/arthas/arthas-boot.jar 1"
 alias gitdiff="bat /project/generated/git/git-diff"
-alias applog="less /app/data/logs/common.log"
-alias applogdir="cd /app/data/logs"
+alias applog="less /userapp/data/logs/common.log"
+alias applogdir="cd /userapp/data/logs"
 
 export TERM=xterm-256color

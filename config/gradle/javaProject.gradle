@@ -1,6 +1,5 @@
 apply plugin: "java"
 apply plugin: "java-library"
-apply plugin: 'idea'
 
 dependencies {
 //    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
@@ -24,16 +23,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-idea {
-//    pathVariables GRADLE_HOME: file("$buildDir")
-    println("build dir $buildDir")
-    module {
-        inheritOutputDirs = false
-        outputDir = file("$buildDir/classes/java/main")
-        downloadJavadoc = false
-        downloadSources = true
-    }
-}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -48,5 +37,9 @@ repositories {
 }
 
 javadoc.enabled = false
+
+def findJar(prefix) {
+    configurations.runtime.filter { it.name.startsWith(prefix) }
+}
 
 
