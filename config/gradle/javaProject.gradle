@@ -42,4 +42,55 @@ def findJar(prefix) {
     configurations.runtime.filter { it.name.startsWith(prefix) }
 }
 
+def execCmd = { command ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine command
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+task updateClassesFiles() {
+    dependsOn tasks.build
+    doLast {
+        def branches = execCmd(['git', 'branch', '--list'])
+
+        if (branches.contains('develop')) {
+            if (isTestServer(env)) {
+                execCmd(['git', 'checkout', 'develop'])
+            }
+        }
+
+        if (branches.contains('release')) {
+            if (isProd(env)) {
+                execCmd(['git', 'checkout', 'release'])
+            }
+        }
+
+        def classesDir = "/tmp/java-app-classes/${project.name}/"
+
+        File directory = new File(classesDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        } else {
+            delete file(classesDir)
+        }
+
+        copy {
+            from configurations.runtimeClasspath.collect { it }
+            into file("$classesDir/libs")
+        }
+
+        copy {
+            from file(project.buildDir.toPath().toString() + '/classes/java/main')
+            into file("$classesDir/classes")
+        }
+        copy {
+            from file(project.buildDir.toPath().toString() + '/resources/main')
+            into file("$classesDir/resources")
+        }
+    }
+}
+
 

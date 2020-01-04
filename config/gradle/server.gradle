@@ -1,3 +1,5 @@
+def serverConfig = {};
+
 def addServer(serverIp,
               serverUser,
               serverRole) {
@@ -22,6 +24,25 @@ def addProductionServer(serverIp,
                         serverUser) {
     addServer(serverIp, serverUser, 'production')
 }
+
+def execCmd = { command ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine command
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+task updateServerClasses() {
+    dependsOn 'updateClassesFiles'
+    doLast {
+        execCmd(['rsync', '--delete', '-ru', "/tmp/java-app-classes/${project.name}/.".toString(),
+                 "${server}:~/deploy/docker-container/${project.name}/app".toString()
+        ])
+    }
+}
+
 
 ext {
     addTestServer = this.&addTestServer
