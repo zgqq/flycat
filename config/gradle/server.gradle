@@ -37,9 +37,14 @@ def execCmd = { command ->
 task updateServerClasses() {
     dependsOn 'updateClassesFiles'
     doLast {
-        execCmd(['rsync', '--delete', '-ru', "/tmp/java-app-classes/${project.name}/.".toString(),
-                 "${server}:~/deploy/docker-container/${project.name}/app".toString()
+
+        def output = execCmd(['rsync', '--progress', '--itemize-changes',
+                              '--human-readable', '--checksum',
+                              '--size-only', '--delete', '-ru',
+                              "/tmp/java-app-classes/${project.name}/.".toString(),
+                              "${server}:~/deploy/docker-container/${project.name}/app".toString()
         ])
+        println output
     }
 }
 
