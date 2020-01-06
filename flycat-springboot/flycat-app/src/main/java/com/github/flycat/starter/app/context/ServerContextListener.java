@@ -17,22 +17,25 @@ package com.github.flycat.starter.app.context;
 
 import com.github.flycat.context.*;
 import com.github.flycat.spi.notifier.NotifierUtils;
+import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ServerContextListener implements ContextListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerContextListener.class);
+    private volatile Stopwatch stopwatch;
 
 
     @Override
     public void beforeRun(RunContext runContext) {
+        stopwatch = Stopwatch.createStarted();
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
         if (booleanValue) {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
-            String message = "Server[" + contextFreeConfiguration.getApplicationName() + "] starting," +
-                    " version:" + appVersion + "\n" + gitDiff;
+            String message = "Server[" + contextFreeConfiguration.getApplicationName() + "] starting\n" +
+                    "Version: " + appVersion + "\n" + gitDiff;
             LOGGER.info(message);
             NotifierUtils.sendNotification(message);
         }
@@ -46,7 +49,15 @@ public class ServerContextListener implements ContextListener {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
             String applicationName = applicationConfiguration.getApplicationName();
-            String message = "Server[" + applicationName + "] started, version:" + appVersion + "\n" + gitDiff;
+            String message = "Server[" + applicationName + "] started";
+
+            if (stopwatch != null) {
+                stopwatch.stop();
+                message = message + "\nStartup cost: " + stopwatch;
+            }
+
+            message = message + "\nVersion: " + appVersion + "\n" + gitDiff;
+
             LOGGER.info(message);
             NotifierUtils.sendNotification(message);
         }
