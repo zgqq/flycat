@@ -63,13 +63,14 @@ if (!isProd(env)) {
             , '-XX:+AlwaysPreTouch'
             , "-XX:+IgnoreUnrecognizedVMOptions"
             // openj9
-            , '-XX:SharedCacheHardLimit=200m'
-            , '-Xscmx60m'
+            // SharedCacheHardLimit > Xscmx >Xscmaxaot
+            , '-XX:SharedCacheHardLimit=250M'
+            , '-Xscmx200M'
+            , '-Xscmaxaot60M'
             , '-Xshareclasses'
             , '-Xtune:virtualized'
             , '-Xquickstart'
     ]
-
 }
 
 
