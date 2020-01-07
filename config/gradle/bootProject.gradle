@@ -57,9 +57,18 @@ if (isProd(env)) {
 
 
 if (!isProd(env)) {
-    ext.appJvmArgs += ['-noverify'
-                       , '-XX:TieredStopAtLevel=1'
-                       , '-XX:+AlwaysPreTouch']
+    ext.appJvmArgs += [
+            '-noverify'
+            , '-XX:TieredStopAtLevel=1'
+            , '-XX:+AlwaysPreTouch'
+            , "-XX:+IgnoreUnrecognizedVMOptions"
+            // openj9
+            , '-XX:SharedCacheHardLimit=200m'
+            , '-Xscmx60m'
+            , '-Xshareclasses'
+            , '-Xtune:virtualized'
+            , '-Xquickstart'
+    ]
 
 }
 
@@ -117,9 +126,14 @@ if (isDocker(env)) {
 }
 
 if (!hasProperty('heapJvmArgs')) {
-    ext.heapJvmArgs = ["-Xms512m",
-                       "-Xmx512m",
-                       "-Xmn128m"]
+    ext.heapJvmArgs = []
+//    if (isTestServer(env)) {
+    heapJvmArgs += [
+            "-Xms256m",
+            "-Xmx256m",
+            "-Xmn128m"
+    ]
+//    }
 }
 appJvmArgs += heapJvmArgs
 
