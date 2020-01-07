@@ -1,8 +1,15 @@
 dependencies {
-    api (project(':flycat-web')) {
+    api(project(':flycat-web')) {
         exclude group: 'javax.validation', module: 'validation-api'
     }
-    api "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+
+
+    api("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    compileOnly "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+
+    api "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
 //    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
 
 
