@@ -129,6 +129,8 @@ configure(javaProjects) { it ->
         }
     }
 
+
+
 }
 
 //ext.bootProjects = javaProjects.findAll {
@@ -141,18 +143,6 @@ configure(javaProjects) { it ->
 
 ext.jarProjects = javaProjects.findAll {
     !it.name.endsWith("-sba")
-}
-
-apply plugin: 'idea'
-idea {
-//    pathVariables GRADLE_HOME: file("$buildDir")
-    println("build dir $buildDir")
-    module {
-        inheritOutputDirs = false
-        outputDir = file("$buildDir/classes/java/main")
-        downloadJavadoc = false
-        downloadSources = true
-    }
 }
 
 

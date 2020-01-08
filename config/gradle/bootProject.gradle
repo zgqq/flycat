@@ -13,6 +13,8 @@ configurations {
     }
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
 
 dependencies {
     if (!isProd(env)) {
@@ -31,8 +33,6 @@ if (ignoredEnv) {
     return
 }
 
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'org.springframework.boot'
 apply plugin: "java"
 apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
