@@ -53,7 +53,7 @@ ext.javaProjects = subprojects.findAll {
     !it.name.endsWith("template")
 }
 
-configure(javaProjects) { project ->
+configure(javaProjects) { it ->
 
     ext.needCheckCompile = !project.name.endsWith("agent")
 
@@ -91,9 +91,14 @@ configure(javaProjects) { project ->
     targetCompatibility = vJavaLang
     sourceCompatibility = vJavaLang
 
+
+    def projectName = it.name
     configurations {
 
-//        all*.exclude group: 'org.hibernate.validator'
+        if (!projectName.equals("flycat-springboot-configure")) {
+            all*.exclude group: 'org.hibernate.validator'
+        }
+
 
         // use fastjson
 //        all*.exclude group: 'com.fasterxml.jackson.core'

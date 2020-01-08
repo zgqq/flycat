@@ -1,5 +1,6 @@
 package com.github.flycat.platform.springboot;
 
+import com.github.flycat.context.ContextUtils;
 import com.github.flycat.util.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -14,6 +15,8 @@ public class PropertiesEnvironmentPostProcessor implements EnvironmentPostProces
 
     public static final String SERVER_TOMCAT_ACCESSLOG_ENABLED = "server.tomcat.accesslog.enabled";
     public static final String SERVER_TOMCAT_ACCESSLOG_DIRECTORY = "server.tomcat.accesslog.directory";
+    public static final String SPRING_MAIN_LAZY_INITIALIZATION = "spring.main.lazy-initialization";
+
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
@@ -21,6 +24,7 @@ public class PropertiesEnvironmentPostProcessor implements EnvironmentPostProces
                 new DefaultPropertyHandler(environment)
                         .apply(SERVER_TOMCAT_ACCESSLOG_ENABLED, true)
                         .applyOther(SERVER_TOMCAT_ACCESSLOG_DIRECTORY, "logging.file.path")
+                        .apply(SPRING_MAIN_LAZY_INITIALIZATION, !ContextUtils.isProd())
                         .getProperties()
         );
         environment.getPropertySources().addLast(propertySource);

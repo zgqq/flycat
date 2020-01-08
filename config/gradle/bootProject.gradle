@@ -46,13 +46,28 @@ if (vJavaLang == '1.11') {
             "-XX:-OmitStackTraceInFastThrow"]
 }
 
+ext.useDcevm = false
+ext.isDevEnv = (!isProd(env) && !isTestServer(env))
+
+if (!isProd(env) && !isTestServer(env) && hasProperty("hotswapAgentPath")) {
+    ext.appJvmArgs += ['-XXaltjvm=dcevm',
+                       "-javaagent:${hotswapAgentPath}=autoHotswap=true".toString()]
+    ext.useDcevm = true
+}
+
+
+ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions"]
+
 if (isProd(env)) {
-    ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions",
-                       '-Dspring.devtools.restart.enabled=false']
+    ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
 } else if (isTestServer(env)) {
     ext.appJvmArgs += [
-            "-XX:+IgnoreUnrecognizedVMOptions",
             '-Dspring.devtools.restart.enabled=true']
+} else {
+    if (useDcevm) {
+        ext.appJvmArgs += [
+                '-Dspring.devtools.restart.enabled=false']
+    }
 }
 
 
@@ -82,21 +97,10 @@ if (hasProperty("debugPort")) {
 if (isTestServer(env)) {
     ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString(),
                        '-Djava.compiler=NONE']
-
-}
-
-ext.useDcevm = false
-
-ext.isDevEnv = (!isProd(env) && !isTestServer(env))
-
-if (!isProd(env) && !isTestServer(env) && hasProperty("hotswapAgentPath")) {
-    ext.appJvmArgs += ['-XXaltjvm=dcevm',
-                       "-javaagent:${hotswapAgentPath}=autoHotswap=true".toString()]
-    ext.useDcevm = true
 }
 
 
-if (!isProd(env) && !useDcevm) {
+if (isTestServer(env) && !useDcevm) {
     ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
                      "-Dcom.sun.management.jmxremote.port=7091",
                      "-Dcom.sun.management.jmxremote.rmi.port=7091",
@@ -174,6 +178,9 @@ if (!isDocker(env))
 else
     distTar.enabled = false
 
+if (isDev) {
+    distTar.enabled = false
+}
 
 //    processResources.dependsOn copyConfiguration
 

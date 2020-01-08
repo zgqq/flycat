@@ -6,7 +6,8 @@ jib {
 
     from {
 //        image = 'amazoncorretto:8u232'
-        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
+//        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
+        image = 'https://reg.qiniu.com/open-flycat/flycat-openj9:latest'
     }
 
     extraDirectories {

@@ -119,4 +119,8 @@ public final class ContextUtils {
         }
         return true;
     }
+
+    public static boolean isProd() {
+        return inEnv.apply(PRODUCT_ENV_WORDS);
+    }
 }

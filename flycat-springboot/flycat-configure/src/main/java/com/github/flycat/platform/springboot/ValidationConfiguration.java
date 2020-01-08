@@ -18,6 +18,7 @@ package com.github.flycat.platform.springboot;
 import org.aopalliance.aop.Advice;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,7 @@ import javax.validation.ValidatorFactory;
 
 @Configuration
 @AutoConfigureBefore(ValidationAutoConfiguration.class)
+@ConditionalOnClass(HibernateValidator.class)
 public class ValidationConfiguration {
 
     @Bean
