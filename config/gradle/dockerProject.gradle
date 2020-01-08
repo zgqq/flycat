@@ -1,3 +1,7 @@
+if (ignoredEnv) {
+    return
+}
+
 ext.jvmArgs = applicationDefaultJvmArgs
 
 System.setProperty("jib.httpTimeout", '0')
