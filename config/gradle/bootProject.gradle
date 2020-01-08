@@ -1,5 +1,32 @@
 import java.text.SimpleDateFormat
 
+
+configurations {
+    // replaced with jcl-over-slf4j
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
+    // replaced with log4j-over-slf4j
+    all*.exclude group: 'log4j', module: 'log4j'
+//    compile.exclude module: "spring-boot-starter-tomcat"
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+
+dependencies {
+    if (!isProd(env)) {
+        developmentOnly("org.springframework.boot:spring-boot-devtools")
+    }
+
+//        testCompile "org.springframework:spring-test"
+//        testCompile "org.springframework.boot:spring-boot-test"
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
+}
+
+
+
 if (ignoredEnv) {
     return
 }
@@ -187,31 +214,6 @@ if (isDev) {
 }
 
 //    processResources.dependsOn copyConfiguration
-
-
-configurations {
-    // replaced with jcl-over-slf4j
-    all*.exclude group: 'commons-logging', module: 'commons-logging'
-    // replaced with log4j-over-slf4j
-    all*.exclude group: 'log4j', module: 'log4j'
-//    compile.exclude module: "spring-boot-starter-tomcat"
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
-}
-
-
-dependencies {
-    if (!isProd(env)) {
-        developmentOnly("org.springframework.boot:spring-boot-devtools")
-    }
-
-//        testCompile "org.springframework:spring-test"
-//        testCompile "org.springframework.boot:spring-boot-test"
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
-}
 
 
 bootJar {

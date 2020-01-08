@@ -23,6 +23,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+targetCompatibility = vJavaLang
+sourceCompatibility = vJavaLang
+
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

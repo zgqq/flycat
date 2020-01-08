@@ -88,10 +88,6 @@ configure(javaProjects) { it ->
     version "$flycatVersion"
 
 
-    targetCompatibility = vJavaLang
-    sourceCompatibility = vJavaLang
-
-
     def projectName = it.name
     configurations {
 
