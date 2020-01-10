@@ -28,7 +28,6 @@ dependencies {
 }
 
 
-
 if (ignoredEnv) {
     return
 }
@@ -107,16 +106,22 @@ if (!isProd(env)) {
             '-noverify'
             , '-XX:TieredStopAtLevel=1'
             , '-XX:+AlwaysPreTouch'
-            , "-XX:+IgnoreUnrecognizedVMOptions"
+    ]
+
+    ext.appJvmArgs += [
             // openj9
             // SharedCacheHardLimit > Xscmx >Xscmaxaot
-            , '-XX:SharedCacheHardLimit=250M'
-            , '-Xscmx200M'
-            , '-Xscmaxaot60M'
+            '-XX:SharedCacheHardLimit=250m'
+            , '-Xscmx200m'
+            , '-Xscmaxaot60m'
             , '-Xshareclasses'
             , '-Xtune:virtualized'
             , '-Xquickstart'
+//            '-Djava.compiler=NONE'
+//            , '-Xnoaot'
+//            , '-Xnojit'
     ]
+
 }
 
 
@@ -126,12 +131,11 @@ if (hasProperty("debugPort")) {
 }
 
 if (isTestServer(env)) {
-    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString(),
-                       '-Djava.compiler=NONE']
+    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString()]
 }
 
-
 if (isTestServer(env) && !useDcevm) {
+
     ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
                      "-Dcom.sun.management.jmxremote.port=7091",
                      "-Dcom.sun.management.jmxremote.rmi.port=7091",
@@ -142,7 +146,9 @@ if (isTestServer(env) && !useDcevm) {
                      "-XX:+UnlockDiagnosticVMOptions",
                      "-XX:+DebugNonSafepoints"
     ]
+
     ext.appJvmArgs += ext.frJvmArgs
+
 }
 
 
