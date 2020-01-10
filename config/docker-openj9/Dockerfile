@@ -1,4 +1,5 @@
-FROM adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u232-b09_openj9-0.17.0-slim AS build
+#FROM adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u232-b09_openj9-0.17.0-slim AS build
+FROM adoptopenjdk/openjdk8-openj9:latest AS build
 #RUN yum -y install \
 # locales \
 # glibc-locale-source \
@@ -45,8 +46,8 @@ tar -xvzf bat.zip -C /usr/local && \
 rm -f bat.zip && \
 cd /usr/local && mv bat-v0.12.1-x86_64-unknown-linux-musl bat
 
-
-FROM adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u232-b09_openj9-0.17.0-slim
+FROM adoptopenjdk/openjdk8-openj9:latest
+#FROM adoptopenjdk/openjdk8-openj9:x86_64-ubuntu-jdk8u232-b09_openj9-0.17.0-slim
 LABEL maintainer="zgqq <zgqjava@gmail.com>"
 #COPY --from=build /usr/local/tomcat/lib/native-jni-lib /usr/local/tomcat/lib/native-jni-lib
 COPY --from=build /usr/local/bat /usr/local/bat
