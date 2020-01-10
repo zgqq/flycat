@@ -42,7 +42,7 @@ task updateServerClasses() {
                               '--human-readable', '--checksum',
                               '--size-only', '--delete', '-ru',
                               "/tmp/java-app-classes/${project.name}/.".toString(),
-                              "${server}:~/deploy/docker-container/${project.name}/app".toString()
+                              "${server}:~/deploy/docker-container/${project.name}/current/app".toString()
         ])
         println output
     }
