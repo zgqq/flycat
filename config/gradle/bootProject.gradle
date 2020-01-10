@@ -101,6 +101,15 @@ if (isProd(env)) {
 }
 
 
+ext.appJvmArgs += [
+        // openj9
+        // SharedCacheHardLimit > Xscmx >Xscmaxaot
+        '-XX:SharedCacheHardLimit=250m'
+        , '-Xscmx200m'
+        , '-Xscmaxaot60m'
+        , '-Xshareclasses'
+]
+
 if (!isProd(env)) {
     ext.appJvmArgs += [
             '-noverify'
@@ -111,12 +120,8 @@ if (!isProd(env)) {
     ext.appJvmArgs += [
             // openj9
             // SharedCacheHardLimit > Xscmx >Xscmaxaot
-            '-XX:SharedCacheHardLimit=250m'
-            , '-Xscmx200m'
-            , '-Xscmaxaot60m'
-            , '-Xshareclasses'
-            , '-Xtune:virtualized'
-            , '-Xquickstart'
+            '-Xquickstart'
+
 //            '-Djava.compiler=NONE'
 //            , '-Xnoaot'
 //            , '-Xnojit'
@@ -156,6 +161,12 @@ ext.gcLog = "gc.log"
 ext.errorLog = "hs_err_pid%p.log"
 
 ext.appJvmArgs += ["-XX:+HeapDumpOnOutOfMemoryError"]
+
+
+if (isTestServer(env)) {
+    // small loss in throughput, less cpu and less memory footprint
+    ext.appJvmArgs += ['-Xtune:virtualized']
+}
 
 if (isDocker(env)) {
     ext.logPath = "/userapp/data/logs"
