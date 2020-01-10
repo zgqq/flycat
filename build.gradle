@@ -91,9 +91,9 @@ configure(javaProjects) { it ->
     def projectName = it.name
     configurations {
 
-        if (!projectName.equals("flycat-springboot-configure")) {
-            all*.exclude group: 'org.hibernate.validator'
-        }
+//        if (!projectName.equals("flycat-springboot-configure")) {
+//            all*.exclude group: 'org.hibernate.validator'
+//        }
 
 
         // use fastjson
