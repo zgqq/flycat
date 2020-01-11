@@ -36,7 +36,7 @@ apply plugin: "java"
 apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
 
-processResources.dependsOn copyConfiguration
+//processResources.dependsOn copyConfiguration
 
 
 if (hasProperty("tag")) {
@@ -130,13 +130,19 @@ if (!isProd(env)) {
 }
 
 
-ext.debugServerPort = 5005
+ext.debugServerPort = '5005'
 if (hasProperty("debugPort")) {
     ext.debugServerPort = "$debugPort"
 }
 
 if (isTestServer(env)) {
-    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=${ext.debugServerPort}, server=y,suspend=n".toString()]
+//    before java v5 not work on openj9
+//    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:${ext.debugServerPort}, server=y,suspend=n".toString()]
+
+//    after java8 allow remote and local
+//    ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005']
+
+    ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005']
 }
 
 if (isTestServer(env) && !useDcevm) {

@@ -3,6 +3,9 @@ def serverConfig = {};
 def addServer(serverIp,
               serverUser,
               serverRole) {
+    if (ignoredEnv) {
+        return
+    }
     println "Adding server, ip:${serverIp}, user:${serverUser}, role:${serverRole}"
     remotes {
         "${serverIp}" {

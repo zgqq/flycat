@@ -6,6 +6,7 @@ ext.jvmArgs = applicationDefaultJvmArgs
 
 System.setProperty("jib.httpTimeout", '0')
 
+
 jib {
 
     from {
@@ -32,7 +33,7 @@ jib {
     container {
         jvmFlags = jvmArgs
         mainClass = mainClassName
-        ports = [containerPort]
+        ports = [containerPort, debugServerPort + '']
         volumes = ['/app', '/userapp']
 
         creationTime = 'USE_CURRENT_TIMESTAMP'
@@ -86,6 +87,17 @@ task dockerRollbackProd() {
         def serverRole = 'production'
         updateServer(serverRole, rollbackSh)
         println "Updated prod server"
+    }
+}
+
+
+def updateTestSh = "./update_test.sh"
+task dockerUpdateTest() {
+    dependsOn 'jib'
+    doLast {
+        def serverRole = 'test'
+        updateServer(serverRole, updateTestSh)
+        println "Updated test server"
     }
 }
 
