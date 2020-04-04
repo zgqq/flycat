@@ -101,6 +101,22 @@ task dockerUpdateTest() {
     }
 }
 
+
+def execCmd = { command ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine command
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+task dockerUpdateLocal() {
+    dependsOn 'jibDockerBuild'
+    println(execCmd(['cd', 'deploy/docker', '&&', 'python3','./deploy.py','local']))
+}
+
+
 task setupExtraDir {
     doLast {
         copy {
