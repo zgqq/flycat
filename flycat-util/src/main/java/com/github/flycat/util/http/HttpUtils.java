@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -26,17 +27,33 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,11 +72,71 @@ public final class HttpUtils {
                 .setSocketTimeout(500)
                 .setConnectTimeout(500)
                 .build();
-        httpclient = HttpClients.custom()
+        httpclient = createClient();
+    }
+
+
+    public static CloseableHttpClient createClient() {
+        int timeout = 10000;
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(timeout)
+                .setSocketTimeout(timeout)
+                .setConnectTimeout(timeout)
+                .build();
+
+        return HttpClients.custom()
+                .setConnectionManager(createHttpClientConnectionManager(new ClientConfiguration()))
                 .setMaxConnPerRoute(50)
                 .setMaxConnTotal(500)
+                .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy() {
+                    @Override
+                    public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+                        long keepAliveDuration = super.getKeepAliveDuration(response, context);
+                        if (keepAliveDuration > 0) {
+                            return keepAliveDuration;
+                        }
+                        return 10 * 1000;
+                    }
+                })
                 .setDefaultRequestConfig(requestConfig).build();
     }
+
+
+    public static HttpClientConnectionManager createHttpClientConnectionManager(ClientConfiguration config) {
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType)
+                        throws CertificateException {
+                    return true;
+                }
+            }).build();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register(Protocol.HTTP.toString(), PlainConnectionSocketFactory.getSocketFactory())
+                .register(Protocol.HTTPS.toString(), sslSocketFactory)
+                .build();
+
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+        connectionManager.setDefaultMaxPerRoute(config.getMaxConnections());
+        connectionManager.setMaxTotal(config.getMaxConnections());
+        connectionManager.setValidateAfterInactivity(config.getValidateAfterInactivity());
+        connectionManager.setDefaultSocketConfig(SocketConfig.custom().
+                setSoTimeout(config.getSocketTimeout()).setTcpNoDelay(true).build());
+        if (config.isUseReaper()) {
+            IdleConnectionReaper.setIdleConnectionTime(config.getIdleConnectionTime());
+            IdleConnectionReaper.registerConnectionManager(connectionManager);
+        }
+        return connectionManager;
+    }
+
+
 
     public static String getOrFail(String url, String encoding)
             throws IOException, URISyntaxException {
@@ -321,5 +398,4 @@ public final class HttpUtils {
             response.close();
         }
     }
-
 }
