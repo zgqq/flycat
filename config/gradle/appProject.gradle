@@ -1,11 +1,11 @@
 
-if (ignoredEnv) {
-    return
-}
+// if (ignoredEnv) {
+//     return
+// }
 
-apply plugin: "io.freefair.lombok"
-generateLombokConfig.enabled = false
+// apply plugin: "io.freefair.lombok"
+// generateLombokConfig.enabled = false
 
-lombok {
-    version = "1.18.10"
-}
+// lombok {
+//     version = "1.18.10"
+// }

@@ -38,7 +38,7 @@ apply plugin: "java"
 apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
 
-//processResources.dependsOn copyConfiguration
+processResources.dependsOn copyConfiguration
 
 
 if (hasProperty("tag")) {
@@ -238,7 +238,6 @@ if (isDev) {
     distTar.enabled = false
 }
 
-//    processResources.dependsOn copyConfiguration
 
 
 bootJar {
