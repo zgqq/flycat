@@ -17,7 +17,7 @@ dependencies {
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
-//    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+//    api group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     compileOnly 'org.hibernate.validator:hibernate-validator:6.0.18.Final'
 }
 

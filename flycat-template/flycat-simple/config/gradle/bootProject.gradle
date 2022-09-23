@@ -81,10 +81,10 @@ configurations {
 dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-//        testCompile "org.springframework:spring-test"
-//        testCompile "org.springframework.boot:spring-boot-test"
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
+//        testImplementation "org.springframework:spring-test"
+//        testImplementation "org.springframework.boot:spring-boot-test"
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
 }
 
 bootJar {

@@ -6,8 +6,8 @@ dependencies {
     implementation project(':flycat-context')
     implementation project(':flycat-spi')
 
-    compile group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
-    compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-//    compile "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
-    compile("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    api group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
+    api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+//    api"org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+    api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 }

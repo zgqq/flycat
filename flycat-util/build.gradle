@@ -1,25 +1,25 @@
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
     // Cache
 
-//    compile project(':flycat-alarm')
+//    apiproject(':flycat-alarm')
 
     // util
-//    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
+//    api group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.6'
 
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.12'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.8'
-    compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-    compile group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
-    compile 'org.modelmapper:modelmapper:2.3.0'
+    api group: 'commons-codec', name: 'commons-codec', version: '1.12'
+    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8'
+    api group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.8'
+    api group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+    api group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
+    api'org.modelmapper:modelmapper:2.3.0'
 
 // https://mvnrepository.com/artifact/commons-collections/commons-collections
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+    api group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
 
-    compile 'commons-io:commons-io:2.6'
+    api'commons-io:commons-io:2.6'
 
 }

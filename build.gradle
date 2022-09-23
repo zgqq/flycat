@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.2.2.RELEASE'
-        springRepo = 'http://repo.spring.io/libs-release'
+        springRepo = 'https://repo.spring.io/libs-release'
         dubboVersion = '2.7.1'
     }
 
@@ -41,9 +41,8 @@ ext.flycatGroup = 'com.github.zgqq'
 ext.configDir = "${project.rootDir}/config"
 ext.checkstyleDir = "${configDir}/checkstyle"
 ext.gradleConfigDir = "${configDir}/gradle"
-ext.vJavaLang = '1.8'
-
-wrapper.gradleVersion = '5.4.1'
+ext.vJavaLang = '17'
+// wrapper.gradleVersion = '5.4.1'
 
 
 apply from: "${gradleConfigDir}/env.gradle"

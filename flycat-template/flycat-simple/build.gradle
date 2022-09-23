@@ -34,9 +34,9 @@ repositories {
 }
 
 dependencies {
-	compile 'org.webjars:bootstrap:4.2.1'
-	compile "com.github.zgqq:flycat-springboot-app:0.1.2"
-	compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+	api'org.webjars:bootstrap:4.2.1'
+	api"com.github.zgqq:flycat-springboot-app:0.1.2"
+	api"org.springframework.boot:spring-boot-starter-thymeleaf"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
