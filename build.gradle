@@ -32,7 +32,7 @@ plugins {
     id "net.ltgt.errorprone" version "1.1.1" apply false
 }
 
-ext.flycatVersion = '0.2.0-SNAPSHOT'
+ext.flycatVersion = '0.27.0-SNAPSHOT'
 ext.flycatGroup = 'com.github.zgqq'
 
 ext.configDir = "${project.rootDir}/config"
