@@ -19,8 +19,13 @@ dependencies {
     api project(':flycat-util')
 
 //    if (isProd(ext)) {
-    api("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
-    api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    // api("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    // api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+
+
+    api("org.springframework.boot:spring-boot-starter-actuator")
+    api("org.springframework.boot:spring-boot-starter-security")
+
     api group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.1.6'
 //    }
 

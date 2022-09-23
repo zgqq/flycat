@@ -2,6 +2,7 @@
 dependencies {
     implementation project(':flycat-util')
     api project(':flycat-web')
-    api ("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    // api ("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    api ("org.springframework.boot:spring-boot-starter-security")
     compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }

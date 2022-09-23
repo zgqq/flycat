@@ -3,19 +3,18 @@ dependencies {
         exclude group: 'javax.validation', module: 'validation-api'
     }
 
-
-    api("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
-
-//    api "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
-
-    compileOnly "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
-    api "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
+    api("org.springframework.boot:spring-boot-starter-web") 
+    // api("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+    //     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    // }
+    // compileOnly "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
+    // api "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
 
 //    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
 
 
+    api group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    api 'javax.servlet:javax.servlet-api:3.1.0'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
     implementation group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'

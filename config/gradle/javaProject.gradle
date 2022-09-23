@@ -32,11 +32,10 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-    maven { url 'https://maven.aliyun.com/repository/jcenter' }
     mavenCentral()
-    maven {
-        url springRepo
-    }
+    maven { url 'https://repo.spring.io/release' }
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 javadoc.enabled = false

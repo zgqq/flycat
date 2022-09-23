@@ -1,3 +1,4 @@
+apply from: "${gradleConfigDir}/bootProject.gradle"
 
 dependencies {
     api project(':flycat-ds')

@@ -7,7 +7,10 @@ dependencies {
     implementation project(':flycat-spi')
 
     api group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
-    api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-//    api"org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
-    api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+    // api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+
+    api"org.springframework.boot:spring-boot-starter-web"
+    api("org.springframework.boot:spring-boot-starter-security")
+
 }

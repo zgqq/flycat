@@ -1,21 +1,16 @@
 buildscript {
     ext {
-        springBootVersion = '2.2.2.RELEASE'
-        springRepo = 'https://repo.spring.io/libs-release'
         dubboVersion = '2.7.1'
     }
 
-////        springBootVersion = '2.2.0.M4'
-//        springRepo = 'http://repo.spring.io/milestone'
-//
-//    }
+    //https://spring.io/blog/2020/10/29/notice-of-permissions-changes-to-repo-spring-io-fall-and-winter-2020
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url springRepo }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
+		mavenCentral()
+		gradlePluginPortal()
+		maven { url 'https://repo.spring.io/plugins-release-local' }
+		maven { url 'https://repo.spring.io/milestone' }
+		maven { url 'https://repo.spring.io/snapshot' }
+	}
 
     dependencies {
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
@@ -24,7 +19,9 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    id 'org.springframework.boot' version '2.7.4' apply false
+    id "io.spring.dependency-management" version "1.0.14.RELEASE"
+
     id "com.github.hierynomus.license" version "0.15.0" apply false
     id "io.freefair.lombok" version "4.1.0" apply false
     id 'idea'
@@ -44,7 +41,7 @@ ext.gradleConfigDir = "${configDir}/gradle"
 ext.vJavaLang = '17'
 // wrapper.gradleVersion = '5.4.1'
 
-
+apply plugin: 'io.spring.dependency-management'
 apply from: "${gradleConfigDir}/env.gradle"
 
 
@@ -54,6 +51,7 @@ ext.javaProjects = subprojects.findAll {
 
 configure(javaProjects) { it ->
 
+    
     ext.needCheckCompile = !project.name.endsWith("agent")
 
     apply from: "${gradleConfigDir}/javaProject.gradle"
@@ -129,6 +127,10 @@ configure(javaProjects) { it ->
     }
 
 
+    if (buildDir.toString().contains("springboot")) {
+        println("Configuring spring boot module, $buildDir")
+        apply from: "${gradleConfigDir}/bootProject.gradle"
+    }
 
 }
 

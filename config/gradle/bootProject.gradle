@@ -23,8 +23,10 @@ dependencies {
 
 //        testImplementation "org.springframework:spring-test"
 //        testImplementation "org.springframework.boot:spring-boot-test"
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-    testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
+    // testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    // testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
+    // testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 
