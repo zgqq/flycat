@@ -96,7 +96,7 @@ ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions"]
 
 if (isProd(env)) {
     ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
-} else if (isTestServer(env)) {
+} else if (isTestServer(env) || isDev(env)) {
     ext.appJvmArgs += [
             '-Dspring.devtools.restart.enabled=true']
 } else {
@@ -206,12 +206,21 @@ if (!hasProperty('heapJvmArgs')) {
 appJvmArgs += heapJvmArgs
 
 
-appJvmArgs += [
-        "-XX:ErrorFile=${errorLog}".toString(),
-        "-Xloggc:${gcLog}".toString(),
-        "-Dapp.version=" + version,
-        "-Dapp.git.diff=${gitDiffNameStatus}".toString()
-]
+if (vJavaVersion >= 17) {
+    appJvmArgs += [
+            "-XX:ErrorFile=${errorLog}".toString(),
+            "-Xlog:gc:${gcLog}".toString(),
+            "-Dapp.version=" + version,
+            "-Dapp.git.diff=${gitDiffNameStatus}".toString()
+    ]
+} else {
+    appJvmArgs += [
+            "-XX:ErrorFile=${errorLog}".toString(),
+            "-Xloggc:${gcLog}".toString(),
+            "-Dapp.version=" + version,
+            "-Dapp.git.diff=${gitDiffNameStatus}".toString()
+    ]
+}
 
 if (hasProperty('customJvmArgs')) {
     appJvmArgs += customJvmArgs
