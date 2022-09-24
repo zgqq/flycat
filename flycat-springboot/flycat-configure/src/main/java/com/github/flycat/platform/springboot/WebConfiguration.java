@@ -35,6 +35,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.system.SystemProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -200,6 +201,7 @@ public class WebConfiguration {
 
     @Configuration
     @ConditionalOnClass({Servlet.class, Tomcat.class, UpgradeProtocol.class})
+    @ConditionalOnProperty(value = "flycat.kill-after-started")
     public static class TomcatConfiguration {
         @Bean
         public SmoothTomcatWebServerCustomizer tomcatWebServer() {

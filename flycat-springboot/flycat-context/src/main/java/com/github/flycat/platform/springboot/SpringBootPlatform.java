@@ -66,7 +66,8 @@ public class SpringBootPlatform {
                     System.exit(0);
                 }
             } else {
-                LOGGER.info("Dev tool restart exception, ignored");
+                // https://github.com/spring-projects/spring-boot/issues/3100
+                LOGGER.info("Dev tool restart exception, ignored ");
             }
         }
     }
