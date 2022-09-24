@@ -65,7 +65,11 @@ if (hasProperty("appClassName")) {
 ext.springJvmArgs = ["-Dspring.profiles.active=${ext.env}".toString()]
 
 
-if (vJavaLang == '1.11') {
+def vJavaVersion = vJavaLang as double
+if (vJavaLang.contains(".")) {
+    vJavaVersion = vJavaLang.split(".")
+}
+if (vJavaVersion > 8) {
     ext.appJvmArgs = ext.springJvmArgs + [
             '-Dfile.encoding=UTF-8',
             "-Xlog:gc*",
@@ -169,6 +173,9 @@ ext.gcLog = "gc.log"
 ext.errorLog = "hs_err_pid%p.log"
 
 ext.appJvmArgs += ["-XX:+HeapDumpOnOutOfMemoryError"]
+ext.appJvmArgs += [
+        '-Djdk.attach.allowAttachSelf=true'
+]
 
 
 if (isTestServer(env)) {
