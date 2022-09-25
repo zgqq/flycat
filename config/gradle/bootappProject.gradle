@@ -184,7 +184,8 @@ if (isTestServer(env)) {
 }
 
 if (isDocker(env)) {
-    ext.logPath = "/userapp/data/logs"
+//    ext.logPath = "/userapp/data/logs"
+    ext.logPath = "."
     ext.gcLog = "${logPath}/gc.log".toString()
     ext.errorLog = "${logPath}/hs_err_pid%p.log".toString()
     ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib",

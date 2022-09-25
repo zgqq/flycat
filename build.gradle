@@ -41,7 +41,7 @@ ext.vJavaLang = '17'
 // wrapper.gradleVersion = '5.4.1'
 
 apply plugin: 'io.spring.dependency-management'
-apply from: "${gradleConfigDir}/env.gradle"
+//apply from: "${gradleConfigDir}/env.gradle"
 
 ext.javaProjects = subprojects.findAll {
     !it.name.endsWith("template")

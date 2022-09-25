@@ -6,9 +6,20 @@ ext.jvmArgs = applicationDefaultJvmArgs
 
 System.setProperty("jib.httpTimeout", '0')
 
+def executeDockerBuild = false
+def executingTasks = project.gradle.startParameter.taskNames
+if (executingTasks == null || executingTasks.isEmpty()
+        || 'jib' in executingTasks) {
+    executeDockerBuild = true
+}
+
+if (executeDockerBuild) {
+    if (!isDocker(env)) {
+        throw new RuntimeException("Executing jib task need to docker env, current:"+env)
+    }
+}
 
 jib {
-
     from {
 //        image = 'amazoncorretto:8u232'
 //        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
@@ -115,7 +126,7 @@ def execCmd = { command ->
 
 task dockerUpdateLocal() {
     dependsOn 'jibDockerBuild'
-    println(execCmd(['cd', 'deploy/docker', '&&', 'python3','./deploy.py','local']))
+    println(execCmd(['cd', 'deploy/docker', '&&', 'python3', './deploy.py', 'local']))
 }
 
 
