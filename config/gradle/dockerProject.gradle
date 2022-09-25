@@ -12,7 +12,8 @@ jib {
     from {
 //        image = 'amazoncorretto:8u232'
 //        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
-        image = 'https://reg.qiniu.com/open-flycat/flycat-openj9:latest'
+//        image = 'https://reg.qiniu.com/open-flycat/flycat-openj9:latest'
+        image = 'zgqq/flycat-jdk17:latest'
     }
 
     extraDirectories {
@@ -21,6 +22,7 @@ jib {
 
     to {
         image = dockerImage
+        // https://github.com/GoogleContainerTools/jib/issues/2182
         credHelper = 'docker-credential-osxkeychain'
         tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), 'latest']
         auth {

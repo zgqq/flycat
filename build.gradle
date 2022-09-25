@@ -20,15 +20,14 @@ buildscript {
 
 plugins {
     id 'org.springframework.boot' version '2.7.4' apply false
-    id "io.spring.dependency-management" version "1.0.14.RELEASE"
+    id "io.spring.dependency-management" version "1.0.14.RELEASE" apply false
 
     id "com.github.hierynomus.license" version "0.15.0" apply false
     id "io.freefair.lombok" version "4.1.0" apply false
-    id 'idea'
-    id 'maven-publish'
-    id 'signing'
-    id 'java-library'
-
+//    id 'idea'
+//    id 'maven-publish'
+//    id 'signing'
+//    id 'java-library'
     id "net.ltgt.errorprone" version "1.1.1" apply false
 }
 
@@ -44,14 +43,12 @@ ext.vJavaLang = '17'
 apply plugin: 'io.spring.dependency-management'
 apply from: "${gradleConfigDir}/env.gradle"
 
-
 ext.javaProjects = subprojects.findAll {
     !it.name.endsWith("template")
 }
 
 configure(javaProjects) { it ->
 
-    
     ext.needCheckCompile = !project.name.endsWith("agent")
 
     apply from: "${gradleConfigDir}/javaProject.gradle"
@@ -65,20 +62,20 @@ configure(javaProjects) { it ->
     }
 
 
-    if (needCheck) {
-        apply plugin: 'checkstyle'
-        checkstyle {
-            toolVersion "8.21"
-            configFile file("${checkstyleDir}/checkstyle.xml")
-            configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
-        }
-        checkstyleMain {
-            source = 'src/main/java'
-        }
-        checkstyleTest {
-            source = 'src/test/java'
-        }
-    }
+//    if (needCheck) {
+//        apply plugin: 'checkstyle'
+//        checkstyle {
+//            toolVersion "8.21"
+//            configFile file("${checkstyleDir}/checkstyle.xml")
+//            configProperties.checkstyleSuppressionsPath = file("${checkstyleDir}/suppressions.xml").absolutePath
+//        }
+//        checkstyleMain {
+//            source = 'src/main/java'
+//        }
+//        checkstyleTest {
+//            source = 'src/test/java'
+//        }
+//    }
 
 
     group "$flycatGroup"
@@ -110,26 +107,26 @@ configure(javaProjects) { it ->
     }
 
 
-    if (needCheck) {
-        apply plugin: 'com.github.hierynomus.license'
-        license {
-            header rootProject.file("LICENSE")
-        }
-        license {
-            header = rootProject.file('LICENSE')
-            ext.year = Calendar.getInstance().get(Calendar.YEAR)
-            ext.name = 'zgqq'
-            ext.email = 'zgqjava@gmail.com'
-            exclude "**/*Test.java"
-            include "**/*.groovy"
-            includes(["**/*.java", "**/*.properties"])
-        }
-    }
+//    if (needCheck) {
+//        apply plugin: 'com.github.hierynomus.license'
+//        license {
+//            header rootProject.file("LICENSE")
+//        }
+//        license {
+//            header = rootProject.file('LICENSE')
+//            ext.year = Calendar.getInstance().get(Calendar.YEAR)
+//            ext.name = 'zgqq'
+//            ext.email = 'zgqjava@gmail.com'
+//            exclude "**/*Test.java"
+//            include "**/*.groovy"
+//            includes(["**/*.java", "**/*.properties"])
+//        }
+//    }
 
 
     if (buildDir.toString().contains("springboot")) {
         println("Configuring spring boot module, $buildDir")
-        apply from: "${gradleConfigDir}/bootProject.gradle"
+        apply from: "${gradleConfigDir}/springbootProject.gradle"
     }
 
 }
@@ -139,13 +136,14 @@ configure(javaProjects) { it ->
 //}
 
 //configure(bootProjects) { project ->
-//    apply from: "${gradleConfigDir}/bootProject.gradle"
+//    apply from: "${gradleConfigDir}/bootappProject.gradle"
 //}
 
 ext.jarProjects = javaProjects.findAll {
     !it.name.endsWith("-sba")
 }
 
+ext.jarProjects = []
 
 configure(jarProjects) { project ->
 

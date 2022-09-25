@@ -1,6 +1,6 @@
 ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
 ext.env = env
-apply from: "${gradleConfigDir}/bootProject.gradle"
+apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
     implementation project(':flycat-context')
