@@ -7,10 +7,12 @@ ext.jvmArgs = applicationDefaultJvmArgs
 System.setProperty("jib.httpTimeout", '0')
 
 def executeDockerBuild = false
+def executeDockerBuildLocal = false
 def executingTasks = project.gradle.startParameter.taskNames
-if (executingTasks == null || executingTasks.isEmpty()
-        || 'jib' in executingTasks) {
-    executeDockerBuild = true
+if (executingTasks != null  && !executingTasks.isEmpty()) {
+    executeDockerBuild = 'jib' in executingTasks
+            || 'jibDockerBuild' in executingTasks
+    executeDockerBuildLocal = 'jibDockerBuild' in executingTasks
 }
 
 if (executeDockerBuild) {
@@ -36,10 +38,12 @@ jib {
         // https://github.com/GoogleContainerTools/jib/issues/2182
         credHelper = 'docker-credential-osxkeychain'
         tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), 'latest']
-        auth {
-            println "image  $dockerImage username $dockerUsername"
-            username = dockerUsername
-            password = dockerPassword
+        if (!executeDockerBuildLocal) {
+            auth {
+                println "image  $dockerImage username $dockerUsername"
+                username = dockerUsername
+                password = dockerPassword
+            }
         }
     }
 
@@ -124,10 +128,10 @@ def execCmd = { command ->
     return stdout.toString().trim()
 }
 
-task dockerUpdateLocal() {
-    dependsOn 'jibDockerBuild'
-    println(execCmd(['cd', 'deploy/docker', '&&', 'python3', './deploy.py', 'local']))
-}
+//task dockerUpdateLocal() {
+//    dependsOn 'jibDockerBuild'
+//    println(execCmd(['cd', 'deploy/docker', '&&', 'python3', './deploy.py', 'local']))
+//}
 
 
 task setupExtraDir {
