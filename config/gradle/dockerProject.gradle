@@ -9,7 +9,7 @@ System.setProperty("jib.httpTimeout", '0')
 def executeDockerBuild = false
 def executeDockerBuildLocal = false
 def executingTasks = project.gradle.startParameter.taskNames
-if (executingTasks != null  && !executingTasks.isEmpty()) {
+if (executingTasks != null && !executingTasks.isEmpty()) {
     executeDockerBuild = 'jib' in executingTasks
             || 'jibDockerBuild' in executingTasks
     executeDockerBuildLocal = 'jibDockerBuild' in executingTasks
@@ -17,8 +17,14 @@ if (executingTasks != null  && !executingTasks.isEmpty()) {
 
 if (executeDockerBuild) {
     if (!isDocker(env)) {
-        throw new RuntimeException("Executing jib task need to docker env, current:"+env)
+        throw new RuntimeException("Executing jib task need to docker env, current:" + env)
     }
+}
+
+ext.jibPlatform = "linux/arm64"
+if (hasProperty("platform")) {
+    println("Using specific docker platform, $platform")
+    ext.jibPlatform = "$platform"
 }
 
 jib {
@@ -27,6 +33,21 @@ jib {
 //        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
 //        image = 'https://reg.qiniu.com/open-flycat/flycat-openj9:latest'
         image = 'zgqq/flycat-jdk17:latest'
+        platforms {
+            if (jibPlatform == "linux/amd64") {
+                println("Using docker platform, linux/amd64, specific platform: $jibPlatform")
+                platform {
+                    architecture = 'amd64'
+                    os = 'linux'
+                }
+            } else {
+                println("Using docker platform, linux/arm64, specific platform: $jibPlatform")
+                platform {
+                    architecture = 'arm64'
+                    os = 'linux'
+                }
+            }
+        }
     }
 
     extraDirectories {
@@ -39,10 +60,12 @@ jib {
         credHelper = 'docker-credential-osxkeychain'
         tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), 'latest']
         if (!executeDockerBuildLocal) {
-            auth {
-                println "image  $dockerImage username $dockerUsername"
-                username = dockerUsername
-                password = dockerPassword
+            if (project.hasProperty('dockerUsername')) {
+                auth {
+                    println "image  $dockerImage username $dockerUsername"
+                    username = dockerUsername
+                    password = dockerPassword
+                }
             }
         }
     }
