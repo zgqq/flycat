@@ -28,19 +28,28 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 
 public class SpringBootPlatform {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBootPlatform.class);
     private static Class<?> primarySource;
-
+// get a RuntimeMXBean reference
     public static void run(Class<?> primarySource, String[] args, Class<? extends Module>... modules) {
         try {
+            RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+            List<String> arguments = runtimeMxBean.getInputArguments();
+            Map<String, String> env = System.getenv();
             Stopwatch started = Stopwatch.createStarted();
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
+            LOGGER.info("Run env, primarySource:{}, args:{}, jvmArgs:{}, env:{}", primarySource.getName(), args, arguments, env);
             CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
                 try {
 
