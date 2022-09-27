@@ -58,7 +58,7 @@ jib {
         image = dockerImage
         // https://github.com/GoogleContainerTools/jib/issues/2182
         credHelper = 'docker-credential-osxkeychain'
-        tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), 'latest']
+        tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), env.toString()]
         if (!executeDockerBuildLocal) {
             if (project.hasProperty('dockerUsername')) {
                 auth {
