@@ -21,6 +21,7 @@ import com.github.flycat.context.ContextManager;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
+import com.github.flycat.util.DateTimeUtils;
 import com.github.flycat.util.ExceptionUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -48,6 +50,7 @@ public class SpringBootPlatform {
             Stopwatch started = Stopwatch.createStarted();
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
+            System.out.println("Preparing spring application run "+ DateTimeUtils.toISO8601DateTimeFormat(new Date()));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
             LOGGER.info("Run env, primarySource:{}, args:{}, jvmArgs:{}, env:{}", primarySource.getName(), args, arguments, env);
             CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {

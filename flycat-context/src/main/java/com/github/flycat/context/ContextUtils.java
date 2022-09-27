@@ -22,7 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -77,7 +80,7 @@ public final class ContextUtils {
         return PRODUCT_ENV_WORDS.stream().noneMatch(word -> word.equals(property));
     }
 
-    private static String getCurrentProfile() {
+    public static String getCurrentProfile() {
         return System.getProperty("spring.profiles.active");
     }
 
@@ -122,5 +125,22 @@ public final class ContextUtils {
 
     public static boolean isProd() {
         return inEnv.apply(PRODUCT_ENV_WORDS);
+    }
+
+
+    public static boolean currentEnvIn(List<String> env) {
+        return inEnv.apply(env);
+    }
+
+
+    public static String getDefaultProductionEnvString() {
+        StringJoiner stringJoiner = new StringJoiner(",");
+        PRODUCT_ENV_WORDS.forEach(ele -> stringJoiner.add(ele));
+        return stringJoiner.toString();
+    }
+
+    public static List<String> parseEnvString(String env) {
+        String[] split = env.split(",");
+        return Arrays.asList(split);
     }
 }

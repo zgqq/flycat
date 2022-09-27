@@ -28,6 +28,10 @@ public class ContextFreeConfiguration {
         this.applicationConfiguration = applicationConfiguration;
     }
 
+    public String getStringValue(String key, String defaultValue) {
+        return retryGet(key, String.class, defaultValue);
+    }
+
     public String getString(String key) {
         return retryGet(key, String.class);
     }

@@ -17,6 +17,7 @@ package com.github.flycat.starter.app.context;
 
 import com.github.flycat.context.*;
 import com.github.flycat.spi.notifier.NotifierUtils;
+import com.github.flycat.util.properties.ServerEnvUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,13 @@ public class ServerContextListener implements ContextListener {
         stopwatch = Stopwatch.createStarted();
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
-        if (booleanValue) {
+        String defaultProductionEnvString = ContextUtils.getDefaultProductionEnvString();
+        String context = contextFreeConfiguration.getStringValue("flycat.notify.startup.env", defaultProductionEnvString);
+        boolean inEnv = ContextUtils.currentEnvIn(ContextUtils.parseEnvString(context));
+        String currentProfile = ContextUtils.getCurrentProfile();
+        LOGGER.info("Trying to notify starting, notifyEnabled:{}, inEnv:{}, currentProfile:{}, defaultProductions:{}," +
+                " configs:{}", booleanValue, inEnv, currentProfile, defaultProductionEnvString, context);
+        if (booleanValue && inEnv) {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
             String message = "Server[" + contextFreeConfiguration.getApplicationName() + "] starting\n" +
@@ -45,7 +52,14 @@ public class ServerContextListener implements ContextListener {
     public void afterRun(ApplicationContext applicationContext) {
         ApplicationConfiguration applicationConfiguration = applicationContext.getApplicationConfiguration();
         boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", false);
-        if (booleanValue) {
+        ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
+        String defaultProductionEnvString = ContextUtils.getDefaultProductionEnvString();
+        String context = contextFreeConfiguration.getStringValue("flycat.notify.startup.env", defaultProductionEnvString);
+        String currentProfile = ContextUtils.getCurrentProfile();
+        boolean inEnv = ContextUtils.currentEnvIn(ContextUtils.parseEnvString(context));
+        LOGGER.info("Trying to notify started, notifyEnabled:{}, inEnv:{}, currentProfile:{}, defaultProductions:{}," +
+                " configs:{}", booleanValue, inEnv, currentProfile, defaultProductionEnvString, context);
+        if (booleanValue && inEnv) {
             String appVersion = System.getProperty("app.version");
             String gitDiff = System.getProperty("app.git.diff");
             String applicationName = applicationConfiguration.getApplicationName();

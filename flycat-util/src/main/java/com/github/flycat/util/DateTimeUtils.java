@@ -48,6 +48,10 @@ public class DateTimeUtils {
         return DateFormatUtils.ISO_8601_EXTENDED_DATE_FORMAT.format(date);
     }
 
+    public static String toISO8601DateTimeFormat(Date date) {
+        return DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(date);
+    }
+
     public static long currentTimeMillisPlusDays(int days) {
         return System.currentTimeMillis() + TimeUnit.DAYS.toMillis(days);
     }
