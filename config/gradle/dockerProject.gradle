@@ -1,6 +1,7 @@
 if (ignoredEnv) {
     return
 }
+apply plugin: "com.google.cloud.tools.jib"
 
 ext.jvmArgs = applicationDefaultJvmArgs
 

@@ -59,7 +59,7 @@ task updateClassesFiles() {
         def branches = execCmd(['git', 'branch', '--list'])
 
         if (branches.contains('develop')) {
-            if (isTestServer(env)) {
+            if (isTest(env)) {
                 execCmd(['git', 'checkout', 'develop'])
             }
         }

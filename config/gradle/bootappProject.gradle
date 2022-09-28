@@ -83,9 +83,9 @@ if (vJavaVersion > 8) {
 }
 
 ext.useDcevm = false
-ext.isDevEnv = (!isProd(env) && !isTestServer(env))
+ext.isDevEnv = (!isProd(env) && !isTest(env))
 
-if (!isProd(env) && !isTestServer(env) && hasProperty("hotswapAgentPath")) {
+if (!isProd(env) && !isTest(env) && hasProperty("hotswapAgentPath")) {
     ext.appJvmArgs += ['-XXaltjvm=dcevm',
                        "-javaagent:${hotswapAgentPath}=autoHotswap=true".toString()]
     ext.useDcevm = true
@@ -96,7 +96,7 @@ ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions"]
 
 if (isProd(env)) {
     ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
-} else if (isTestServer(env) || isDev(env)) {
+} else if (isTest(env) || isDev(env)) {
     ext.appJvmArgs += [
             '-Dspring.devtools.restart.enabled=true']
 } else {
@@ -141,7 +141,7 @@ if (hasProperty("debugPort")) {
     ext.debugServerPort = "$debugPort"
 }
 
-if (isTestServer(env)) {
+if (isTest(env)) {
 //    before java v5 not work on openj9
 //    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:${ext.debugServerPort}, server=y,suspend=n".toString()]
 
@@ -151,7 +151,7 @@ if (isTestServer(env)) {
     ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005']
 }
 
-if (isTestServer(env) && !useDcevm) {
+if (isTest(env) && !useDcevm) {
 
     ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
                      "-Dcom.sun.management.jmxremote.port=7091",
@@ -178,7 +178,7 @@ ext.appJvmArgs += [
 ]
 
 
-if (isTestServer(env)) {
+if (isTest(env)) {
     // small loss in throughput, less cpu and less memory footprint
     ext.appJvmArgs += ['-Xtune:virtualized']
 }
@@ -196,7 +196,7 @@ if (isDocker(env)) {
 
 if (!hasProperty('heapJvmArgs')) {
     ext.heapJvmArgs = []
-//    if (isTestServer(env)) {
+//    if (isTest(env)) {
     heapJvmArgs += [
             "-Xms256m",
             "-Xmx256m",

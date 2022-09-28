@@ -14,7 +14,7 @@ buildscript {
 
     dependencies {
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'org.springframework:springloaded:1.2.0.RELEASE'
+//        classpath 'org.springframework:springloaded:1.2.0.RELEASE'
     }
 }
 
@@ -23,7 +23,7 @@ plugins {
     id "io.spring.dependency-management" version "1.0.14.RELEASE" apply false
 
     id "com.github.hierynomus.license" version "0.15.0" apply false
-    id "io.freefair.lombok" version "4.1.0" apply false
+//    id "io.freefair.lombok" version "4.1.0" apply false
 //    id 'idea'
 //    id 'maven-publish'
 //    id 'signing'
@@ -40,7 +40,7 @@ ext.gradleConfigDir = "${configDir}/gradle"
 ext.vJavaLang = '17'
 // wrapper.gradleVersion = '5.4.1'
 
-apply plugin: 'io.spring.dependency-management'
+//apply plugin: 'io.spring.dependency-management'
 //apply from: "${gradleConfigDir}/env.gradle"
 
 ext.javaProjects = subprojects.findAll {
