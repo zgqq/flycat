@@ -73,11 +73,12 @@ public final class ContextUtils {
         return bean;
     }
 
-    static final List<String> PRODUCT_ENV_WORDS = Lists.newArrayList("production", "product", "prod", "ali", "docker");
+    static final List<String> PRODUCT_ENV_WORDS = Lists.newArrayList("production", "product", "prod",
+            "ali");
 
     public static boolean isTestProfile() {
         final String property = getCurrentProfile();
-        return PRODUCT_ENV_WORDS.stream().noneMatch(word -> word.equals(property));
+        return PRODUCT_ENV_WORDS.stream().noneMatch(word -> envEquals(property, word));
     }
 
     public static String getCurrentProfile() {
@@ -111,9 +112,14 @@ public final class ContextUtils {
 
     static final List<String> CONTAINER_ENV_WORDS = Lists.newArrayList("docker");
 
+
+    static boolean envEquals(String currentEnv, String keyword) {
+        return currentEnv.contains(keyword);
+    }
+
     static Function<List<String>, Boolean> inEnv = strings -> {
         String currentProfile = getCurrentProfile();
-        return strings.stream().anyMatch(word -> word.equals(currentProfile));
+        return strings.stream().anyMatch(word -> envEquals(currentProfile, word));
     };
 
     public static boolean serverRunning() {
