@@ -52,11 +52,14 @@ import javax.net.ssl.SSLContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class HttpUtils {
 
@@ -77,7 +80,7 @@ public final class HttpUtils {
 
 
     public static CloseableHttpClient createClient() {
-        int timeout = 10000;
+        int timeout = 30000;
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(timeout)
                 .setSocketTimeout(timeout)
@@ -196,6 +199,20 @@ public final class HttpUtils {
 
             entity.writeTo(baos);
 
+            Header firstHeader = response.getFirstHeader("Content-Type");
+            if (firstHeader != null) {
+                String head = firstHeader.toString();
+                if (head.contains("charset")) {
+                    Pattern pattern = Pattern.compile("charset.*=(.*)");
+                    Matcher matcher = pattern.matcher(head);
+                    if (matcher.find()) {
+//                        charset=gb2312
+                        String charset = matcher.group(1);
+                        System.out.println("Using " + charset + ", instead of " + encoding+", head "+head);
+                        encoding  = charset;
+                    }
+                }
+            }
             String responseBody = new String(baos.toByteArray(), encoding);
 
             EntityUtils.consume(entity);
@@ -396,6 +413,16 @@ public final class HttpUtils {
             return responseBody;
         } finally {
             response.close();
+        }
+    }
+
+    public static String get(String url) {
+        try {
+            return getOrFail(url, Charset.defaultCharset().name());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }
