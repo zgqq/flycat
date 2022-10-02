@@ -119,7 +119,11 @@ public final class ContextUtils {
 
     static Function<List<String>, Boolean> inEnv = strings -> {
         String currentProfile = getCurrentProfile();
-        return strings.stream().anyMatch(word -> envEquals(currentProfile, word));
+        if (currentProfile == null) {
+            currentProfile = "dev";
+        }
+        String finalCurrentProfile = currentProfile;
+        return strings.stream().anyMatch(word -> envEquals(finalCurrentProfile, word));
     };
 
     public static boolean serverRunning() {
