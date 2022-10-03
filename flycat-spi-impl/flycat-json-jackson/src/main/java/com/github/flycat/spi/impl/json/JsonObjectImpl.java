@@ -23,4 +23,13 @@ public class JsonObjectImpl implements JsonObject {
         }
         return jsonNode.asInt();
     }
+
+    @Override
+    public String getString(String key) {
+        JsonNode jsonNode = this.jsonNode.get(key);
+        if (jsonNode == null) {
+            return null;
+        }
+        return jsonNode.asText();
+    }
 }

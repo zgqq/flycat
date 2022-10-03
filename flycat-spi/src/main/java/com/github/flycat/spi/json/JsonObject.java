@@ -4,9 +4,12 @@ import com.github.flycat.util.ValueUtils;
 
 public interface JsonObject {
 
+
     JsonObject getJsonObject(String key);
 
     Integer getInteger(String key);
+
+    String getString(String key);
 
     default Integer getInteger(String key, Integer defaultValue) {
         Integer value = getInteger(key);
