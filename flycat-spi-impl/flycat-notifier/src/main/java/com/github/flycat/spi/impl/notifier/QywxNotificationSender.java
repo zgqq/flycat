@@ -2,6 +2,7 @@ package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.util.ConfigurationUtils;
+import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
@@ -20,7 +21,8 @@ public class QywxNotificationSender extends AbstractNotificationSender {
     private final String secret;
 
     @Inject
-    public QywxNotificationSender(ApplicationConfiguration applicationConfiguration) {
+    public QywxNotificationSender(ApplicationConfiguration applicationConfiguration, StandaloneCacheService standaloneCacheService) {
+        super(standaloneCacheService);
         this.applicationConfiguration = applicationConfiguration;
         corpid = ConfigurationUtils.getString(applicationConfiguration, "flycat.qywx.sender.corpid");
         secret = ConfigurationUtils.getString(applicationConfiguration, "flycat.qywx.sender.secret");

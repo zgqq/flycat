@@ -11,6 +11,8 @@ public class Message {
 
     private String label;
 
+    private boolean preventRepeat;
+    private int repeatIntervalSeconds = 3600 * 24;
     public String getContent() {
         return content;
     }
@@ -53,5 +55,29 @@ public class Message {
 
     public void setDecoratedContent(String decoratedContent) {
         this.decoratedContent = decoratedContent;
+    }
+
+    public boolean isPreventRepeat() {
+        return preventRepeat;
+    }
+
+    public void setPreventRepeat(boolean preventRepeat) {
+        this.preventRepeat = preventRepeat;
+    }
+
+    public static Message createDecoratedMessage(String content) {
+        final Message newMessage = new Message();
+        newMessage.setContent(content);
+        newMessage.setFormat(MessageFormat.WITH_NOTIFICATION_TIME | MessageFormat.WITH_APP_NAME | MessageFormat.WITH_SERVER_IP
+        );
+        return newMessage;
+    }
+
+    public int getRepeatIntervalSeconds() {
+        return repeatIntervalSeconds;
+    }
+
+    public void setRepeatIntervalSeconds(int repeatIntervalSeconds) {
+        this.repeatIntervalSeconds = repeatIntervalSeconds;
     }
 }

@@ -279,7 +279,7 @@ public class GuavaCacheService implements StandaloneCacheService {
                     T call = callable.call();
                     newValue.set(true);
                     return call;
-                }, 3600 * 24
+                }, seconds
         );
         ExecuteResult<T> result = new ExecuteResult<>(newValue.get(), returnValue);
         return result;

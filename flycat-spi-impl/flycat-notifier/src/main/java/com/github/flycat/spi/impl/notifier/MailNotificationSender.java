@@ -16,6 +16,7 @@
 package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
 import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.StringUtils;
@@ -35,11 +36,13 @@ public class MailNotificationSender extends AbstractNotificationSender {
     private String receiver;
 
     public MailNotificationSender() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public MailNotificationSender(ApplicationConfiguration applicationConfiguration) {
+    public MailNotificationSender(ApplicationConfiguration applicationConfiguration,
+                                  StandaloneCacheService standaloneCacheService) {
+        super(standaloneCacheService);
         this.applicationConfiguration = applicationConfiguration;
         this.createSender();
     }
