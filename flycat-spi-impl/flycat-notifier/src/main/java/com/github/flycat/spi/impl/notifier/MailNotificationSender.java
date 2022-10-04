@@ -19,7 +19,7 @@ import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
 import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.StringUtils;
-import com.github.flycat.util.properties.ServerEnvUtils;
+import com.github.flycat.context.util.ServerEnvUtils;
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.Mailer;

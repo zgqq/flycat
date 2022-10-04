@@ -28,6 +28,11 @@ public class JsonUtils {
         return jsonService.toJsonString(object);
     }
 
+    public static JsonObject parseObject(String json) {
+        final JsonService jsonService = getJsonService();
+        return jsonService.parseJsonObject(json);
+    }
+
     public static <T> T parseObject(String json, Class<T> clazz) {
         final JsonService jsonService = getJsonService();
         return jsonService.parseObject(json, clazz);

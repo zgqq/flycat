@@ -15,4 +15,5 @@ public interface JsonObject {
         Integer value = getInteger(key);
         return ValueUtils.getValue(value, defaultValue);
     }
+    Double getDouble(String key);
 }

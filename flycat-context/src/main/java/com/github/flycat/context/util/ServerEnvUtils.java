@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.flycat.util.properties;
+package com.github.flycat.context.util;
 
-import org.apache.commons.lang3.StringUtils;
+import com.github.flycat.util.StringUtils;
+import com.github.flycat.util.properties.PropertiesUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;

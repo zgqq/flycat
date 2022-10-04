@@ -22,7 +22,7 @@ import com.github.flycat.util.CollectionUtils;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.io.FormatPrintStream;
-import com.github.flycat.util.properties.ServerEnvUtils;
+import com.github.flycat.context.util.ServerEnvUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,7 +17,6 @@ package com.github.flycat.starter.app.context;
 
 import com.github.flycat.context.*;
 import com.github.flycat.spi.notifier.NotifierUtils;
-import com.github.flycat.util.properties.ServerEnvUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ public class ServerContextListener implements ContextListener {
     public void beforeRun(RunContext runContext) {
         stopwatch = Stopwatch.createStarted();
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
-        boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", false);
+        boolean booleanValue = contextFreeConfiguration.getBooleanValue("flycat.notify.enabled", true);
         String defaultProductionEnvString = ContextUtils.getDefaultProductionEnvString();
         String context = contextFreeConfiguration.getStringValue("flycat.notify.startup.env", defaultProductionEnvString);
         boolean inEnv = ContextUtils.currentEnvIn(ContextUtils.parseEnvString(context));
@@ -69,7 +68,7 @@ public class ServerContextListener implements ContextListener {
     @Override
     public void afterRun(ApplicationContext applicationContext) {
         ApplicationConfiguration applicationConfiguration = applicationContext.getApplicationConfiguration();
-        boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", false);
+        boolean booleanValue = applicationConfiguration.getBooleanValue("flycat.notify.enabled", true);
         ContextFreeConfiguration contextFreeConfiguration = ContextUtils.createContextFreeConfiguration();
         String defaultProductionEnvString = ContextUtils.getDefaultProductionEnvString();
         String context = contextFreeConfiguration.getStringValue("flycat.notify.startup.env", defaultProductionEnvString);

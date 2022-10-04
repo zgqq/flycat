@@ -15,7 +15,7 @@
  */
 package com.github.flycat.context;
 
-import com.github.flycat.util.properties.ServerEnvUtils;
+import com.github.flycat.context.util.ServerEnvUtils;
 import com.google.common.base.CaseFormat;
 
 import java.beans.PropertyEditor;

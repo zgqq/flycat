@@ -11,8 +11,8 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.6'
 
     api group: 'commons-codec', name: 'commons-codec', version: '1.12'
-    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8'
-    api group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.8'
+    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    api group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
     api group: 'com.google.guava', name: 'guava', version: '25.1-jre'
     api group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
     api'org.modelmapper:modelmapper:2.3.0'

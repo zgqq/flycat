@@ -190,10 +190,10 @@ public final class HttpUtils {
 
             HttpEntity entity = response.getEntity();
 
-            Header cookieHeader = response.getFirstHeader("Set-Cookie");
-            if (headers != null && cookieHeader != null) {
-                headers.put(cookieHeader.getName(), cookieHeader.getValue());
-            }
+//            Header cookieHeader = response.getFirstHeader("Set-Cookie");
+//            if (headers != null && cookieHeader != null) {
+//                headers.put(cookieHeader.getName(), cookieHeader.getValue());
+//            }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -424,5 +424,21 @@ public final class HttpUtils {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public static String get(String url, Map<String, String> headers) {
+        try {
+            return get(url, null, Charset.defaultCharset().name(), headers).getR();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static String postJson(String url, String json) throws IOException {
+        return postJson(url, json, Charset.defaultCharset().name());
     }
 }

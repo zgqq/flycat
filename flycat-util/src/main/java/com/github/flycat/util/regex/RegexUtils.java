@@ -10,4 +10,13 @@ public class RegexUtils {
         Matcher matcher = pattern.matcher(value);
         return matcher;
     }
+
+
+    public static String group(String value, String regex, int group) {
+        Matcher matcher = matcher(value, regex);
+        if (matcher.find()) {
+            return matcher.group(group);
+        }
+        return null;
+    }
 }
