@@ -64,10 +64,19 @@ public class ContextFreeConfiguration {
     <T> T retryGet(String key, Class<T> clazz, T defaultValue) {
         if (applicationConfiguration != null) {
             T t = applicationConfiguration.retryGet(key, clazz);
-            if (t == null) {
-                return defaultValue;
+            if (t != null) {
+                return t;
             }
         }
+
+        // jvm arg
+        String property = System.getProperty(key);
+        if (property != null) {
+            PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
+            editor.setAsText(property);
+            return (T) editor.getValue();
+        }
+
         final String toKey = toHyphenKey(key);
         final T value = getObject(toKey, clazz);
         if (value != null) {
@@ -96,9 +105,9 @@ public class ContextFreeConfiguration {
     }
 
     public String getApplicationName() {
-        if (applicationConfiguration != null) {
-            return applicationConfiguration.getApplicationName();
-        }
+//        if (applicationConfiguration != null) {
+//            return applicationConfiguration.getApplicationName();
+//        }
         return getString("spring.application.name");
     }
 }
