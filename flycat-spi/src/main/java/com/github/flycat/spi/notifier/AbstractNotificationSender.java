@@ -67,12 +67,12 @@ public abstract class AbstractNotificationSender implements NotificationSender {
             if (standaloneCacheService == null) {
                 throw new RuntimeException("Not found standaloneCacheService impl");
             }
-            String messageMd5 = StringUtils.md5(message.getDecoratedContent());
-            ExecuteResult<Object> objectExecuteResult = standaloneCacheService
+            String messageMd5 = StringUtils.md5(message.getContent());
+            ExecuteResult<Long> objectExecuteResult = standaloneCacheService
                     .executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
                             messageMd5, () -> {
                                 threadPoolExecutor.execute(() -> buildMessageAndSend(message));
-                                return null;
+                                return System.currentTimeMillis();
                             }, message.getRepeatIntervalSeconds(
                             ));
             if (!objectExecuteResult.isExecuted()) {
