@@ -1,0 +1,27 @@
+import groovy.json.JsonSlurper
+def jsonSlurper = new JsonSlurper()
+def data = jsonSlurper.parse(new File("./config.json"))
+println("Read config: ${data}")
+//rootProject.name = data['app_name']
+
+def appPort= data['app_port'].toString()
+def appName= data['app_name'].toString()
+def dockerRepo= data['docker_repo'].toString()
+def mainClass= data['main_class'].toString()
+
+
+ext.containerPort = appPort
+ext.dockerImage = dockerRepo
+ext.appClassName = mainClass
+
+if (hasProperty('customJvmArgs')) {
+    ext.customJvmArgs += ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
+} else {
+    ext.customJvmArgs = ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
+}
+
+
+if (data.containsKey('app_debug_port')) {
+    ext.debugPort=data['app_debug_port'].toString()
+}
+

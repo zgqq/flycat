@@ -74,7 +74,7 @@ jib {
     container {
         jvmFlags = jvmArgs
         mainClass = mainClassName
-        ports = [containerPort, debugServerPort + '']
+        ports = [containerPort, debugServerPort.toString()]
         volumes = ['/app', '/userapp']
 
         creationTime = 'USE_CURRENT_TIMESTAMP'
