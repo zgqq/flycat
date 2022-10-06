@@ -140,12 +140,15 @@ public final class HttpUtils {
     }
 
 
-
     public static String getOrFail(String url, String encoding)
             throws IOException, URISyntaxException {
         Pair<Integer, String> p = get(url, null, encoding);
+        return checkAndGetResponse(url, encoding, p);
+    }
+
+    private static String checkAndGetResponse(String url, Object context, Pair<Integer, String> p) throws IOException {
         if (p.getL() != 200) {
-            throw new IOException("response code not 200:" + p.getL()
+            throw new IOException("Request url:" + url + ", context:" + context + ", response code not 200:" + p.getL()
                     + ", body:" + p.getR());
         }
         return p.getR();
@@ -208,8 +211,8 @@ public final class HttpUtils {
                     if (matcher.find()) {
 //                        charset=gb2312
                         String charset = matcher.group(1);
-                        System.out.println("Using " + charset + ", instead of " + encoding+", head "+head);
-                        encoding  = charset;
+                        System.out.println("Using " + charset + ", instead of " + encoding + ", head " + head);
+                        encoding = charset;
                     }
                 }
             }
@@ -429,7 +432,8 @@ public final class HttpUtils {
 
     public static String get(String url, Map<String, String> headers) {
         try {
-            return get(url, null, Charset.defaultCharset().name(), headers).getR();
+            Pair<Integer, String> pair = get(url, null, Charset.defaultCharset().name(), headers);
+            return checkAndGetResponse(url, headers, pair);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (URISyntaxException e) {
