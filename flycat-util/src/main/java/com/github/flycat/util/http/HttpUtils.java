@@ -422,10 +422,8 @@ public final class HttpUtils {
     public static String get(String url) {
         try {
             return getOrFail(url, Charset.defaultCharset().name());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("Request url:" + url, e);
         }
     }
 
@@ -434,10 +432,8 @@ public final class HttpUtils {
         try {
             Pair<Integer, String> pair = get(url, null, Charset.defaultCharset().name(), headers);
             return checkAndGetResponse(url, headers, pair);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("Request url:" + url + ", context:" + headers, e);
         }
     }
 
