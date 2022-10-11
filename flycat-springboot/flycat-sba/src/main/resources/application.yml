@@ -16,3 +16,4 @@
 
 spring.security.user.name: zgqq
 spring.security.user.password: zgqq
+server.port: 8081

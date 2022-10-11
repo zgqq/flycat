@@ -1,12 +1,44 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url 'https://repo.spring.io/plugins-release-local' }
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+}
+
+plugins {
+//    id 'org.springframework.boot' version "2.7.4" apply false
+//    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply false
+    id 'org.springframework.boot' version "2.7.4" apply true
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply true
+    id 'java'
+    id 'idea'
+    // id "io.freefair.lombok" version "4.1.0"
+    id "net.ltgt.errorprone" version "1.1.1" apply false
+
+    id 'org.hidetake.ssh' version '2.10.1'
+    id "net.rdrei.android.buildtimetracker" version "0.11.0"
+
+    id 'com.google.cloud.tools.jib' version '3.1.1' apply false
+//    id 'com.google.cloud.tools.jib' version '3.2.0' apply false
+}
+
+ext.configDir = "../../config"
+ext.gradleConfigDir = "${configDir}/gradle"
 ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
 //ext.env = env
-apply from: "${gradleConfigDir}/springbootProject.gradle"
+ext.vJavaLang = '17'
+apply from: "${gradleConfigDir}/env.gradle"
+apply from: "${gradleConfigDir}/javaProject.gradle"
+apply from: "${gradleConfigDir}/bootappProject.gradle"
 
 dependencies {
-    implementation project(':flycat-context')
-    implementation project(':flycat-spi')
+//    implementation project(':flycat-context')
+//    implementation project(':flycat-spi')
 
-    api group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.1.6'
+    api group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.7.5'
     // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     // api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 
