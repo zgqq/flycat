@@ -1,6 +1,30 @@
 import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
-def data = jsonSlurper.parse(new File("./config.json"))
+
+def configFile = "./config.json"
+if (hasProperty("config")) {
+    configFile = config
+}
+
+def fileObj = new File(configFile)
+if (!fileObj.isFile()) {
+    println("Not found config file " + configFile)
+    return
+}
+
+def data = jsonSlurper.parse(fileObj)
+
+if (hasProperty("configKey")) {
+    data = data[configKey]
+}
+
+//get_data_value(key, env) {
+//    if 'env_overwrite' in data.keys() and env in data['env_overwrite']:
+//    if key in data['env_overwrite'][env].keys():
+//    return data['env_overwrite'][env][key]
+//    return data[key]
+//}
+
 println("Read config: ${data}")
 //rootProject.name = data['app_name']
 
@@ -20,8 +44,17 @@ if (hasProperty('customJvmArgs')) {
     ext.customJvmArgs = ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
 }
 
-
 if (data.containsKey('app_debug_port')) {
     ext.debugPort=data['app_debug_port'].toString()
+}
+
+
+ext.getConfigValue = { key, env ->
+    // Method body here
+    if ('env_overwrite' in data.keys() && env in data['env_overwrite']) {
+        if (key in data['env_overwrite'][env].keys())
+            return data['env_overwrite'][env][key]
+    }
+    return data[key]
 }
 
