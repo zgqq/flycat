@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    container_name: "db-redis"
+    image: redis:6.2.7-alpine
+    restart: always
+    volumes:
+      - ~/deploy/data/redis:/data
+    command: redis-server --save 180 1 --appendonly yes --loglevel warning
+    networks:
+      - redis
+    ports:
+      - '6379:6379'
+networks:
+  redis:
+    external:
+      name: db_redis

@@ -32,12 +32,19 @@ print('Executing operation, op:%s, env:%s' %(op, env))
 def execute(cmd):
     return check_output(cmd, shell=True).decode().strip()
 
+def log_execute(command):
+   print("Executing system command: %s" % (command))
+   os.system(command)
+
 all_networks = execute("docker network ls")
 if "webgateway_traefik" not in all_networks:
    os.system("docker network create -d bridge webgateway_traefik")
 
 if "db_mysql" not in all_networks:
    os.system("docker network create -d bridge db_mysql")
+
+if "db_redis" not in all_networks:
+   log_execute("docker network create -d bridge db_redis")
 
 containers = execute("docker container ls")
 if "db_mysql" not in containers:
@@ -50,13 +57,16 @@ if "web_traefik" not in containers:
    time.sleep(2)
    print('Started traefik')
 
+if "db-redis" not in containers:
+   log_execute("docker-compose -f common/docker-compose.redis.yml up -d")
+
 if 'sba_app' in config_data.keys():
     enable = get_config_value(config_data['sba_app'], 'enable', env)
     if enable and "web-sba" not in containers:
        app_port = get_config_value(config_data['sba_app'], 'app_port', env)
        docker_repo = get_config_value(config_data['sba_app'], 'docker_repo', env)
        docker_image = docker_repo + ':' + tag
-       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} docker-compose -f "+env+"/docker-compose.sba.yml up -d"
+       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} docker-compose -f common/docker-compose.sba.yml up -d"
        print('Executing system command: %s' % cmd)
        os.system(cmd)
        time.sleep(2)
