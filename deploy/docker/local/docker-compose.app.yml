@@ -1,0 +1,46 @@
+version: '3'
+services:
+  web:
+    image: ${APP_DOCKER_IMAGE}
+    #    restart: always # prevent other service unavailable yet
+    volumes:
+      - ~/deploy/docker-userapp/${APP_NAME}:/userapp
+      - ${app_volume}:/app
+    environment:
+#      MYSQL_DB_USERNAME: ${DB_USERNAME}
+#      MYSQL_DB_PASSWORD: ${DB_PASSWORD}
+      DEPLOY_IMAGE_ID: ${deploy_image_id}
+      DEPLOY_APP_DIR: ${app_volume}
+      DEPLOY_TAGS: ${deploy_tags}
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+      - ${APP_DEBUG_PORT}:${APP_DEBUG_PORT}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 2
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${ROUTER0}.rule=PathPrefix(`/`)
+      - traefik.http.routers.${ROUTER0}.entrypoints=https
+      - traefik.http.routers.${ROUTER0}.tls=true
+      - traefik.http.routers.${ROUTER0}.service=${ROUTER0}-service
+      - traefik.http.services.${ROUTER0}-service.loadbalancer.server.port=${APP_PORT}
+      - traefik.http.services.${ROUTER0}-service.loadbalancer.healthcheck.path=/v1/status
+      - traefik.http.services.${ROUTER0}-service.loadbalancer.healthcheck.interval=5s
+      - traefik.http.routers.${ROUTER1}.rule=PathPrefix(`/`)
+      - traefik.http.routers.${ROUTER1}.entrypoints=http
+      - traefik.http.routers.${ROUTER1}.service=${ROUTER0}-service
+      - traefik.docker.network=webgateway_traefik
+    networks:
+      - traefik
+      - db
+
+networks:
+  db:
+    external:
+      name: db_mysql
+  traefik:
+    external:
+      name: webgateway_traefik

@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik
+    container_name: "web_traefik"
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+      - ./traefik.config.toml:/etc/traefik/traefik.config.toml # Traefik dynamic config
+      - ~/data/traefik/letsencrypt:/letsencrypt
+      - ~/data/traefik/log:/var/log/traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`${GATEWAY_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+#      - "traefik.http.routers.dashboard.rule=(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=${AUTH_USERS}"
+
+networks:
+  webgateway:
+    external:
+      name: webgateway_traefik
