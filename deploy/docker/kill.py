@@ -17,3 +17,8 @@ web_traefik_id = check_output('docker ps -f name=web_traefik -q', shell=True).de
 if web_traefik_id:
    execute('docker stop ' + web_traefik_id)
 
+
+db_redis = check_output('docker ps -f name=db-redis -q', shell=True).decode().strip()
+if db_redis:
+   execute('docker stop ' + db_redis)
+

@@ -6,11 +6,11 @@ services:
     restart: always
     volumes:
       - ~/deploy/data/redis:/data
-    command: redis-server --save 180 1 --appendonly yes --loglevel warning
+    command: redis-server --save 180 1 --appendonly yes --loglevel warning --requirepass ${REDIS_PASSWORD}
     networks:
       - redis
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:6379'
 networks:
   redis:
     external:

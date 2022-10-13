@@ -13,11 +13,18 @@ if env == "local":
 else:
    tag = "dockerprod"
 
+
+def get_bool_value(data, key, env):
+    config_value = get_config_value(data, key, env)
+    return config_value != None
+
 def get_config_value(data, key, env):
     if 'env_overwrite' in data.keys() and env in data['env_overwrite']:
         if key in data['env_overwrite'][env].keys():
            return data['env_overwrite'][env][key]
-    return data[key]
+    if key in data.keys():
+       return data[key]
+    return None
 
 f = open(conf_path)
 data = json.load(f)
