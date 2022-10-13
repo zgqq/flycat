@@ -62,8 +62,13 @@ if (hasProperty("appClassName")) {
     mainClassName = ext.appClassName
 }
 
-ext.springJvmArgs = ["-Dspring.profiles.active=${env}".toString()]
 
+def depType = ""
+if (hasProperty("deployType")) {
+    depType=deployType
+}
+
+ext.springJvmArgs = ["-Dspring.profiles.active=${depType}${env}".toString()]
 
 def vJavaVersion = vJavaLang as double
 if (vJavaLang.contains(".")) {
@@ -225,6 +230,7 @@ if (vJavaVersion >= 17) {
 
 if (hasProperty('customJvmArgs')) {
     appJvmArgs += customJvmArgs
+    println 'Custom jvm args: ' + customJvmArgs.join(",")
 }
 
 applicationDefaultJvmArgs = appJvmArgs

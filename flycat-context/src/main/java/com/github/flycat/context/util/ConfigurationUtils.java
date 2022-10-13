@@ -8,7 +8,10 @@ public class ConfigurationUtils {
 
     public static Integer getInteger(ApplicationConfiguration applicationConfiguration, String key) {
         if (applicationConfiguration != null) {
-            return applicationConfiguration.getInteger(key);
+            Integer value = applicationConfiguration.getInteger(key);
+            if (value != null) {
+                return Integer.valueOf(value);
+            }
         }
 
         String property = ServerEnvUtils.getProperty(key);
@@ -20,7 +23,10 @@ public class ConfigurationUtils {
 
     public static String getString(ApplicationConfiguration applicationConfiguration, String key) {
         if (applicationConfiguration != null) {
-            return applicationConfiguration.getString(key);
+            String value = applicationConfiguration.getString(key);
+            if (value != null) {
+                return value;
+            }
         }
         return ServerEnvUtils.getProperty(key);
     }

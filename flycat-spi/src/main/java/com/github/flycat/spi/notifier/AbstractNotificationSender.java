@@ -16,10 +16,11 @@
 package com.github.flycat.spi.notifier;
 
 import com.codahale.metrics.MetricRegistry;
+import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.ContextUtils;
-import com.github.flycat.log.MDCUtils;
+import com.github.flycat.spi.cache.CacheOperation;
+import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.cache.ExecuteResult;
-import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.executor.ExecutorUtils;
@@ -27,11 +28,10 @@ import com.google.common.util.concurrent.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.IllegalBlockSizeException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.concurrent.Callable;
+import java.util.Iterator;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class AbstractNotificationSender implements NotificationSender {
@@ -39,18 +39,20 @@ public abstract class AbstractNotificationSender implements NotificationSender {
     private static final MetricRegistry REGISTRY = new MetricRegistry();
     private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
     private static ThreadPoolExecutor threadPoolExecutor;
-    private final StandaloneCacheService standaloneCacheService;
+    private CacheOperation cacheOperation;
 
     static {
         threadPoolExecutor = ExecutorUtils.newExecutor(1, "notifier-executor");
     }
 
+    private ApplicationContext applicationContext;
+
     protected AbstractNotificationSender() {
-        this.standaloneCacheService = null;
+        this.cacheOperation = null;
     }
 
-    protected AbstractNotificationSender(StandaloneCacheService standaloneCacheService) {
-        this.standaloneCacheService = standaloneCacheService;
+    protected AbstractNotificationSender(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -64,11 +66,12 @@ public abstract class AbstractNotificationSender implements NotificationSender {
             message.setCreateTime(new Date());
         }
         if (message.isPreventRepeat()) {
-            if (standaloneCacheService == null) {
-                throw new RuntimeException("Not found standaloneCacheService impl");
+            cacheOperation = getCacheOperation();
+            if (cacheOperation == null) {
+                throw new RuntimeException("Not found cache operation impl");
             }
             String messageMd5 = StringUtils.md5(message.getContent());
-            ExecuteResult<Long> objectExecuteResult = standaloneCacheService
+            ExecuteResult<Long> objectExecuteResult = cacheOperation
                     .executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
                             messageMd5, () -> {
                                 threadPoolExecutor.execute(() -> buildMessageAndSend(message));
@@ -81,6 +84,24 @@ public abstract class AbstractNotificationSender implements NotificationSender {
         } else {
             threadPoolExecutor.execute(() -> buildMessageAndSend(message));
         }
+    }
+
+    private CacheOperation getCacheOperation() {
+        if (cacheOperation != null) {
+            return cacheOperation;
+        }
+        CacheOperation cache = null;
+        if (applicationContext != null) {
+            Iterator<CacheOperation> beans = applicationContext.getBeansIterator(CacheOperation.class);
+            while (beans.hasNext()) {
+                CacheOperation next = beans.next();
+                cache = next;
+                if (next instanceof DistributedCacheService) {
+                    break;
+                }
+            }
+        }
+        return cache;
     }
 
 //    private void sendLimitedNotify(String message) {

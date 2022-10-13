@@ -94,11 +94,4 @@ public interface InMemoryCacheService extends CacheOperation {
             throws CacheException {
         throw new UnsupportedOperationException();
     }
-
-    default <T> ExecuteResult<T> executeOnceAction(String module,
-                                                   Object key,
-                                                   Callable<T> callable,
-                                                   int seconds) {
-        throw new UnsupportedOperationException();
-    }
 }

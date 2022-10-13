@@ -85,6 +85,9 @@ public interface ApplicationConfiguration {
 
     default <T> T getObject(String key, Class<T> clazz) {
         final String value = getStringValue(key);
+        if (value == null) {
+            return null;
+        }
         PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
         editor.setAsText(value);
         return (T) editor.getValue();

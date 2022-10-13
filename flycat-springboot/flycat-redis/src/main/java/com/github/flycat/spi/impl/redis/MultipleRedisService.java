@@ -16,6 +16,8 @@
 package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ContextUtils;
+import com.github.flycat.context.util.ConfigurationUtils;
 import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.util.StringUtils;

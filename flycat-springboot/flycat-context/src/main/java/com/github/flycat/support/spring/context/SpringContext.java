@@ -18,10 +18,13 @@ package com.github.flycat.support.spring.context;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.ContextUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Iterator;
+import java.util.List;
 
 @Component
 public class SpringContext implements ApplicationContext, InitializingBean  {
@@ -45,6 +48,12 @@ public class SpringContext implements ApplicationContext, InitializingBean  {
     @Override
     public Object getBean(String name) {
         return applicationContext.getBean(name);
+    }
+
+    @Override
+    public <T> Iterator<T> getBeansIterator(Class<T> clazz) {
+        ObjectProvider<T> beanProvider = applicationContext.getBeanProvider(clazz);
+        return beanProvider.iterator();
     }
 
     @Override

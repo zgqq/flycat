@@ -36,6 +36,7 @@ import javax.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -266,4 +267,17 @@ public class RedisCacheService implements DistributedCacheService {
         return countMaps;
 
     }
+
+
+    @Override
+    public <T> T queryCacheObject(String module, Object key,
+                                  Callable<T> callable,
+                                  int seconds) throws CacheException {
+        try {
+            return queryCacheObject(module, key, Object.class, callable, seconds);
+        } catch (Exception e) {
+            throw new CacheException("Redis cache error", e);
+        }
+    }
+
 }

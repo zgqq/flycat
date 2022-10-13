@@ -16,8 +16,8 @@
 package com.github.flycat.spi.impl.notifier;
 
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.util.ConfigurationUtils;
-import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
 import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.StringUtils;
@@ -39,16 +39,16 @@ public class DefaultNotificationSender extends AbstractNotificationSender {
 
     @Inject
     public DefaultNotificationSender(ApplicationConfiguration applicationConfiguration,
-                                     StandaloneCacheService standaloneCacheService
+                                     ApplicationContext applicationContext
                                      ) {
-        super(standaloneCacheService);
+        super(applicationContext);
         this.applicationConfiguration = applicationConfiguration;
         if (StringUtils.isNotBlank(ConfigurationUtils.getString(applicationConfiguration, "flycat.mail.sender.smtp"))) {
-            this.notificationSender = new MailNotificationSender(this.applicationConfiguration, standaloneCacheService);
+            this.notificationSender = new MailNotificationSender(this.applicationConfiguration, applicationContext);
 
         } else if (StringUtils.isNotBlank(ConfigurationUtils.getString(applicationConfiguration,
                 "flycat.qywx.sender.corpid"))){
-            this.notificationSender = new QywxNotificationSender(this.applicationConfiguration, standaloneCacheService);
+            this.notificationSender = new QywxNotificationSender(this.applicationConfiguration, applicationContext);
         } else {
             throw new RuntimeException("Not found notification");
         }

@@ -17,15 +17,21 @@ package com.github.flycat.spi;
 
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.ContextUtils;
+import com.github.flycat.context.util.ConfigurationUtils;
 
 public interface SpiService {
 
     default Integer getInteger(String key) {
-        return getApplicationConfiguration().getInteger(key);
+        try {
+            return ConfigurationUtils.getInteger(getApplicationConfiguration(), key);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get key, "+key, e);
+        }
+
     }
 
     default String getString(String key) {
-        return getApplicationConfiguration().getString(key);
+        return ConfigurationUtils.getString(getApplicationConfiguration(), key);
     }
 
     default ApplicationConfiguration getApplicationConfiguration() {

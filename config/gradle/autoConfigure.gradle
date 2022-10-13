@@ -14,9 +14,9 @@ if (!fileObj.isFile()) {
 
 def data = jsonSlurper.parse(fileObj)
 
-if (hasProperty("configKey")) {
-    data = data[configKey]
-}
+//if (hasProperty("configKey")) {
+//    data = data[configKey]
+//}
 
 //get_data_value(key, env) {
 //    if 'env_overwrite' in data.keys() and env in data['env_overwrite']:
@@ -38,23 +38,65 @@ ext.containerPort = appPort
 ext.dockerImage = dockerRepo
 ext.appClassName = mainClass
 
+
 if (hasProperty('customJvmArgs')) {
     ext.customJvmArgs += ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
 } else {
     ext.customJvmArgs = ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
 }
 
+
+ext.addCustomJvmArgs = { argsArr ->
+    if (project.hasProperty('customJvmArgs')) {
+        ext.customJvmArgs += argsArr
+    } else {
+        ext.customJvmArgs = argsArr
+    }
+}
+
+
 if (data.containsKey('app_debug_port')) {
     ext.debugPort=data['app_debug_port'].toString()
 }
 
 
-ext.getConfigValue = { key, env ->
+ext.getConfigValue = { configData, key, env ->
     // Method body here
-    if ('env_overwrite' in data.keys() && env in data['env_overwrite']) {
-        if (key in data['env_overwrite'][env].keys())
-            return data['env_overwrite'][env][key]
+    if ('env_overwrite' in configData.keys() && env in configData['env_overwrite']) {
+        if (key in configData['env_overwrite'][env].keys())
+            return configData['env_overwrite'][env][key]
     }
-    return data[key]
+    return configData[key]
 }
 
+
+ext.getSubConfigValue = { name, key, env ->
+    env = env.toString()
+    println("getSubConfigValue ${name}, ${key}, ${env} ")
+    if (name in data.keySet()) {
+        def configData = data[name]
+        def arr = ['local', 'dev']
+//        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
+//                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
+//                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
+        if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
+            if (key in configData['env_overwrite'][env].keySet())
+                return configData['env_overwrite'][env][key]
+        }
+        return configData[key]
+    }
+    return null
+}
+
+if (getSubConfigValue('infra_redis', 'enable', env)) {
+    def host = getSubConfigValue('infra_redis', 'host', env)
+    def password = getSubConfigValue('infra_redis', 'password', env)
+    def port = getSubConfigValue('infra_redis', 'port', env)
+    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
+                      "-Dflycat.redis.primary.host=${host}".toString(),
+                      "-Dflycat.redis.primary.port=${port}".toString(),
+                      "-Dflycat.redis.primary.password=${password}".toString()])
+//    flycat.redis.primary.enabled=true
+//    flycat.redis.primary.host=localhost
+//    flycat.redis.primary.port=6380
+}

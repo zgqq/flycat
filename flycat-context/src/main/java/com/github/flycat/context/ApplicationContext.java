@@ -15,6 +15,8 @@
  */
 package com.github.flycat.context;
 
+import java.util.Iterator;
+
 public interface ApplicationContext {
 
     boolean isActive();
@@ -22,6 +24,8 @@ public interface ApplicationContext {
     <T> T getBean(Class<T> clazz);
 
     Object getBean(String name);
+
+    <T> Iterator<T> getBeansIterator(Class<T> clazz);
 
     default String getApplicationName() {
         return getApplicationConfiguration().getApplicationName();

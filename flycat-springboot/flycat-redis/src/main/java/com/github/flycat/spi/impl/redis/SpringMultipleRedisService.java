@@ -19,6 +19,8 @@ import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.util.StringUtils;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,6 +39,8 @@ import java.util.List;
 public class SpringMultipleRedisService extends MultipleRedisService
         implements InitializingBean, DisposableBean, BeanClassLoaderAware {
 
+    private static final Logger logger = LoggerFactory.getLogger(SpringMultipleRedisService.class);
+
     private List<SpringRedisProviderAdapter> redisProviderAdapterList;
 
     @Inject
@@ -48,6 +52,7 @@ public class SpringMultipleRedisService extends MultipleRedisService
 
     @Override
     public RedisService newRedisService(String host, Integer port, String password) {
+        logger.info("Creating redis service, host:{}, port:{}, password:{}", host, port, password);
         final StringRedisTemplate secondaryRedisTemplate =
                 createRedisTemplate(host, port, password);
         final SpringRedisProviderAdapter adapter = new SpringRedisProviderAdapter(secondaryRedisTemplate);
