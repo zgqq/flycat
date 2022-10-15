@@ -9,7 +9,7 @@ services:
       - ~/data/mysql:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - mysql
+      - infra
     environment:
 #      MYSQL_USER: 'root'
       MYSQL_ROOT_PASSWORD: 'roow'
@@ -17,6 +17,6 @@ services:
       - '3306:3306'
 
 networks:
-  mysql:
+  infra:
     external:
-      name: db_mysql
+      name: flycat_infra

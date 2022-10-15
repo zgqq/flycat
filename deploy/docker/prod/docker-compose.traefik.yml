@@ -27,4 +27,4 @@ services:
 networks:
   webgateway:
     external:
-      name: webgateway_traefik
+      name: flycat_infra

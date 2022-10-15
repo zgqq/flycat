@@ -32,15 +32,16 @@ services:
       - traefik.http.routers.${ROUTER1}.rule=PathPrefix(`/`)
       - traefik.http.routers.${ROUTER1}.entrypoints=http
       - traefik.http.routers.${ROUTER1}.service=${ROUTER0}-service
-      - traefik.docker.network=webgateway_traefik
+      - traefik.docker.network=flycat_infra
     networks:
-      - traefik
-      - db
+      - infra
+#      - traefik
+#      - db
 
 networks:
-  db:
+#  db:
+#    external:
+#      name: db_mysql
+  infra:
     external:
-      name: db_mysql
-  traefik:
-    external:
-      name: webgateway_traefik
+      name: flycat_infra

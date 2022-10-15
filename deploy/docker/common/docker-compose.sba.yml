@@ -19,11 +19,12 @@ services:
       - traefik.http.routers.${ROUTER_SBA0}.service=${ROUTER_SBA0}-service
       - traefik.http.routers.${ROUTER_SBA1}.entrypoints=http
       - traefik.http.routers.${ROUTER_SBA1}.service=${ROUTER_SBA0}-service
-      - traefik.docker.network=webgateway_traefik
+      - traefik.docker.network=flycat_infra
     networks:
-      - traefik
+#      - traefik
+      - infra
 
 networks:
-  traefik:
+  infra:
     external:
-      name: webgateway_traefik
+      name: flycat_infra

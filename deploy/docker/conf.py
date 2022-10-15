@@ -59,7 +59,7 @@ DOCKER_COMPOSE_APP_YML = 'docker-compose.app.yml'
 APP_BLUE = "blue-"+APP_NAME
 APP_GREEN = "green-"+APP_NAME
 
-APP_TRAEFIK_NETWORK = "webgateway_traefik"
+APP_TRAEFIK_NETWORK = "flycat_infra"
 
 LAST_DEPLOY_ID = env + '/server/last_deploy_id'
 CURRENT_DEPLOY_ID = env + '/server/current_deploy_id'

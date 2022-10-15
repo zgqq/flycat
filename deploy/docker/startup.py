@@ -44,11 +44,16 @@ def log_execute_system(command):
 
 
 all_networks = execute("docker network ls")
-if "webgateway_traefik" not in all_networks:
-   log_execute_system("docker network create -d bridge webgateway_traefik")
 
-if "db_mysql" not in all_networks:
-   os.system("docker network create -d bridge db_mysql")
+
+if "flycat_infra" not in all_networks:
+   log_execute_system("docker network create -d bridge flycat_infra")
+
+# if "webgateway_traefik" not in all_networks:
+#    log_execute_system("docker network create -d bridge webgateway_traefik")
+
+# if "db_mysql" not in all_networks:
+#    os.system("docker network create -d bridge db_mysql")
 
 
 containers = execute("docker container ls")
@@ -65,8 +70,8 @@ if "web_traefik" not in containers:
 if 'infra_redis' in config_data.keys():
     enable = get_bool_value(config_data['infra_redis'], 'enable', env)
     if enable:
-        if "db_redis" not in all_networks:
-           log_execute("docker network create -d bridge db_redis")
+#         if "db_redis" not in all_networks:
+#            log_execute("docker network create -d bridge db_redis")
         if "db-redis" not in containers:
            app_port = get_config_value(config_data['infra_redis'], 'port', env)
            password = get_config_value(config_data['infra_redis'], 'password', env)

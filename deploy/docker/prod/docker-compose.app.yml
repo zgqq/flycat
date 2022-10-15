@@ -31,13 +31,14 @@ services:
       - traefik.http.routers.${ROUTER1}.rule=Host(`${APP_DOMAIN}`)
       - traefik.http.routers.${ROUTER1}.entrypoints=http
       - traefik.http.routers.${ROUTER1}.service=${ROUTER0}-service
-      - traefik.docker.network=webgateway_traefik
+      - traefik.docker.network=flycat_infra
       - traefik.http.middlewares.compress.compress=true
 
     networks:
-      - traefik
+#      - traefik
+      - infra
 
 networks:
-  traefik:
+  infra:
     external:
-      name: webgateway_traefik
+      name: flycat_infra

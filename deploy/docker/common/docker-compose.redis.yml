@@ -8,10 +8,10 @@ services:
       - ~/deploy/data/redis:/data
     command: redis-server --save 180 1 --appendonly yes --loglevel warning --requirepass ${REDIS_PASSWORD} --port ${REDIS_PORT}
     networks:
-      - redis
+      - infra
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
 networks:
-  redis:
+  infra:
     external:
-      name: db_redis
+      name: flycat_infra
