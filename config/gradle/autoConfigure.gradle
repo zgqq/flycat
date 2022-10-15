@@ -61,9 +61,11 @@ if (data.containsKey('app_debug_port')) {
 
 
 ext.getConfigValue = { configData, key, env ->
+    env = env.toString()
     // Method body here
-    if ('env_overwrite' in configData.keys() && env in configData['env_overwrite']) {
-        if (key in configData['env_overwrite'][env].keys())
+    println("getConfigValue ${key}, ${env}")
+    if ('env_overwrite' in configData.keySet() && env in configData['env_overwrite']) {
+        if (key in configData['env_overwrite'][env].keySet())
             return configData['env_overwrite'][env][key]
     }
     return configData[key]
@@ -99,4 +101,20 @@ if (getSubConfigValue('infra_redis', 'enable', env)) {
 //    flycat.redis.primary.enabled=true
 //    flycat.redis.primary.host=localhost
 //    flycat.redis.primary.port=6380
+}
+
+
+
+//def executeDockerBuild = false
+//def executingTasks = project.gradle.startParameter.taskNames
+//if (executingTasks != null && !executingTasks.isEmpty()) {
+//    executeDockerBuild = 'jib' in executingTasks
+//            || 'jibDockerbuild' in executingTasks
+//}
+
+
+//println("Executing docker build, ${executeDockerBuild}, ${executingTasks}")
+if (isDockerBuild()) {
+    ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
+    println("Executing docker build, use profile:${profile}")
 }

@@ -63,12 +63,18 @@ if (hasProperty("appClassName")) {
 }
 
 
-def depType = ""
-if (hasProperty("deployType")) {
-    depType=deployType
-}
+//def depType = ""
+//if (hasProperty("deployType")) {
+//    depType=deployType
+//}
+//def profile = ${depType}${env}
 
-ext.springJvmArgs = ["-Dspring.profiles.active=${depType}${env}".toString()]
+
+def useProfile = env
+if (hasProperty("profile")) {
+    useProfile = profile
+}
+ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
 
 def vJavaVersion = vJavaLang as double
 if (vJavaLang.contains(".")) {
@@ -188,7 +194,8 @@ if (isTest(env)) {
     ext.appJvmArgs += ['-Xtune:virtualized']
 }
 
-if (isDocker(env)) {
+
+if (isDockerBuild()) {
 //    ext.logPath = "/userapp/data/logs"
     ext.logPath = "."
     ext.gcLog = "${logPath}/gc.log".toString()
@@ -251,7 +258,7 @@ distZip.enabled = false
 bootDistTar.enabled = false
 bootDistZip.enabled = false
 
-if (!isDocker(env))
+if (!isDockerBuild())
     distTar.enabled = true
 else
     distTar.enabled = false

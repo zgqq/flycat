@@ -10,7 +10,7 @@ public class SpringBootContextListener implements com.github.flycat.context.Cont
     public void beforeRun(RunContext runContext) {
         String property = System.getProperty("spring.profiles.active");
         if (property == null) {
-            System.setProperty("spring.profiles.active", "dev");
+            System.setProperty("spring.profiles.active", "local");
         }
     }
 

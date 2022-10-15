@@ -12,15 +12,15 @@ def executeDockerBuildLocal = false
 def executingTasks = project.gradle.startParameter.taskNames
 if (executingTasks != null && !executingTasks.isEmpty()) {
     executeDockerBuild = 'jib' in executingTasks
-            || 'jibDockerBuild' in executingTasks
-    executeDockerBuildLocal = 'jibDockerBuild' in executingTasks
+            || 'jibDockerbuild' in executingTasks
+    executeDockerBuildLocal = 'jibDockerbuild' in executingTasks
 }
 
-if (executeDockerBuild) {
-    if (!isDocker(env)) {
-        throw new RuntimeException("Executing jib task need to docker env, current:" + env)
-    }
-}
+//if (executeDockerBuild) {
+//    if (!isDocker(env)) {
+//        throw new RuntimeException("Executing jib task need to docker env, current:" + env)
+//    }
+//}
 
 ext.jibPlatform = "linux/arm64"
 if (hasProperty("platform")) {
