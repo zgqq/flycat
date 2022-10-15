@@ -7,11 +7,11 @@ if len(sys.argv) > 1:
     env = sys.argv[1]
     conf_path = sys.argv[2]
 
-tag = ""
-if env == "local":
-   tag = "dockerlocal"
-else:
-   tag = "dockerprod"
+tag = env
+# if env == "local":
+#    tag = "dockerlocal"
+# else:
+#    tag = "dockerprod"
 
 
 def get_bool_value(data, key, env):
