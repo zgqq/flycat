@@ -9,6 +9,8 @@ public interface JsonObject {
 
     Integer getInteger(String key);
 
+    Long getLong(String key);
+
     String getString(String key);
 
     default Integer getInteger(String key, Integer defaultValue) {
@@ -16,4 +18,7 @@ public interface JsonObject {
         return ValueUtils.getValue(value, defaultValue);
     }
     Double getDouble(String key);
+
+    JsonArray getJsonArray(String key);
+
 }
