@@ -58,4 +58,7 @@ public class DefaultNotificationSender extends AbstractNotificationSender {
     public void doSend(Message message) {
         this.notificationSender.doSend(message);
     }
+
+
+
 }

@@ -279,7 +279,7 @@ bootRun {
     systemProperties = System.properties
 }
 
-test.enabled = false
+//test.enabled = false
 
 if (hasProperty("mainClassName") && mainClassName != null) {
     println "Main class: $mainClassName"

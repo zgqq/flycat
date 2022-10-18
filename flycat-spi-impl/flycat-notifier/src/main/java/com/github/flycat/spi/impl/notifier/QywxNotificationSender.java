@@ -39,6 +39,7 @@ public class QywxNotificationSender extends AbstractNotificationSender {
     @Override
     public void doSend(Message message) {
         String url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=" + corpid + "&corpsecret=" + secret;
+        LOGGER.info("Getting token, url:{}", url);
         String content = HttpUtils.get(url);
         JsonObject jsonObject = JsonUtils.parseObject(content);
         String access_token = jsonObject.getString("access_token");
@@ -59,6 +60,7 @@ public class QywxNotificationSender extends AbstractNotificationSender {
         data.put("enable_duplicate_check", 0);
         String json = JsonUtils.toJsonString(data);
         try {
+            LOGGER.info("Sending message, url:{}, data:{}", msgUrl, json);
             String response = HttpUtils.postJson(msgUrl, json);
             LOGGER.info("Send message to qiye weixin, url:{}, data:{}, response:{}", msgUrl, json, response);
         } catch (IOException e) {

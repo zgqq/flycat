@@ -46,6 +46,7 @@ public abstract class AbstractNotificationSender implements NotificationSender {
     }
 
     private ApplicationContext applicationContext;
+    private volatile boolean asyncSend = false;
 
     protected AbstractNotificationSender() {
         this.cacheOperation = null;
@@ -74,7 +75,7 @@ public abstract class AbstractNotificationSender implements NotificationSender {
             ExecuteResult<Long> objectExecuteResult = cacheOperation
                     .executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
                             messageMd5, () -> {
-                                threadPoolExecutor.execute(() -> buildMessageAndSend(message));
+                                sendMessage(message);
                                 return System.currentTimeMillis();
                             }, message.getRepeatIntervalSeconds(
                             ));
@@ -82,7 +83,15 @@ public abstract class AbstractNotificationSender implements NotificationSender {
                 LOGGER.info("The message was not notified, due to prevent repeat ");
             }
         } else {
+            sendMessage(message);
+        }
+    }
+
+    private void sendMessage(Message message) {
+        if (isAsyncSend()) {
             threadPoolExecutor.execute(() -> buildMessageAndSend(message));
+        } else {
+            buildMessageAndSend(message);
         }
     }
 
@@ -125,6 +134,7 @@ public abstract class AbstractNotificationSender implements NotificationSender {
             inetAddress = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
         }
+
         String applicationName = "unknown";
         try {
             applicationName = ContextUtils.getApplicationName();
@@ -153,5 +163,16 @@ public abstract class AbstractNotificationSender implements NotificationSender {
         doSend(message);
     }
 
+    public void setCacheOperation(CacheOperation cacheOperation) {
+        this.cacheOperation = cacheOperation;
+    }
+
     public abstract void doSend(Message message);
+
+    public void setAsyncSend(boolean asyncSend) {
+        this.asyncSend = asyncSend;
+    }
+    public boolean isAsyncSend() {
+        return this.asyncSend;
+    }
 }
