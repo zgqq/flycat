@@ -64,10 +64,16 @@ ext.getConfigValue = { configData, key, env ->
     env = env.toString()
     // Method body here
     println("getConfigValue ${key}, ${env}")
-    if ('env_overwrite' in configData.keySet() && env in configData['env_overwrite']) {
+//    if ('env_overwrite' in configData.keySet() && env in configData['env_overwrite']) {
+//        if (key in configData['env_overwrite'][env].keySet())
+//            return configData['env_overwrite'][env][key]
+//    }
+    if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
         if (key in configData['env_overwrite'][env].keySet())
             return configData['env_overwrite'][env][key]
     }
+    return configData[key]
+
     return configData[key]
 }
 
@@ -77,15 +83,11 @@ ext.getSubConfigValue = { name, key, env ->
     println("getSubConfigValue ${name}, ${key}, ${env} ")
     if (name in data.keySet()) {
         def configData = data[name]
-        def arr = ['local', 'dev']
+//        def arr = ['local', 'dev']
 //        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
 //                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
 //                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
-        if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
-            if (key in configData['env_overwrite'][env].keySet())
-                return configData['env_overwrite'][env][key]
-        }
-        return configData[key]
+        return getConfigValue(configData, key, env)
     }
     return null
 }
@@ -104,6 +106,12 @@ if (getSubConfigValue('infra_redis', 'enable', env)) {
 }
 
 
+if (!isRunUnitTest()) {
+    if (!getConfigValue(data, 'run_test', env)){
+        println("Disable test in ${env} env")
+        test.enabled = false
+    }
+}
 
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
