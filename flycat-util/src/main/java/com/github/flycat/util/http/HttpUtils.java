@@ -266,10 +266,10 @@ public final class HttpUtils {
                 nvps.add(new BasicNameValuePair(e.getKey(), e.getValue()));
             }
         }
-        httpPost.setEntity(new UrlEncodedFormEntity(nvps, encoding));
+//        httpPost.setEntity(new UrlEncodedFormEntity(nvps, encoding));
+        httpPost.setEntity(new StringEntity("productIds=%5B%7B%22scid%22%3A1%2C%22skuid%22%3A%22952862%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22618810021852%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22952860%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22952870%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100018209748%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100032626621%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100032626637%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22599334862646%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22625236484754%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100010917258%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100017472973%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100010917224%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100026433508%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22605867289654%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22633660452939%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22676109792974%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22677803013807%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22679172448723%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%22100033693295%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22677662801302%22%7D%2C%7B%22scid%22%3A8%2C%22skuid%22%3A%229140204956%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%2231642112157%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22632103480490%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22642571365815%22%7D%2C%7B%22scid%22%3A10%2C%22skuid%22%3A%22626535827999%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%2210049919542901%22%7D%2C%7B%22scid%22%3A1%2C%22skuid%22%3A%2210049343498230%22%7D%5D"));
+//        System.out.println(new StringEntity(httpPost.getEntity()));
         return postWithTimeout(encoding, headers, timeoutInMs, httpPost);
-
-
     }
 
     private static Pair<Integer, String> postWithTimeout(String encoding, Map<String, String> headers, int timeoutInMs,
@@ -284,8 +284,8 @@ public final class HttpUtils {
     }
     httpPost.setEntity(new StringEntity(sb.toString()));
     */
-        // httpPost.addHeader("Content-type", "text/json; charset=" + encoding);
-        if (headers == null || headers.isEmpty()) {
+//        httpPost.addHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+        if (headers != null) {
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 httpPost.addHeader(entry.getKey(), entry.getValue());
             }
@@ -441,4 +441,13 @@ public final class HttpUtils {
     public static String postJson(String url, String json) throws IOException {
         return postJson(url, json, Charset.defaultCharset().name());
     }
+
+    public static String post(String url, Map<String, String> params) {
+        try {
+            return postWithTimeout(url, params, "UTF-8", HeaderMaps.contentTypeUrlencoded(), -1).getR();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
