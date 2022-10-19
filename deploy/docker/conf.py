@@ -1,5 +1,8 @@
 import sys
 import json
+from subprocess import check_output
+import os
+
 env = "local"
 conf_path = "../../../config.json"
 if len(sys.argv) > 1:
@@ -44,6 +47,12 @@ APP_ROUTER1 =  APP_NAME + '1'
 GATEWAY_DOMAIN = get_config_value(data, 'gateway_domain', env)
 config_data = data
 
+
+def get_sub_config_value(main_key, key, env):
+    if main_key in data.keys():
+       return get_config_value(data[main_key], key, env)
+    return None
+
 # APP_DOCKER_REPO = "zgqq/flycat-price:"+tag
 # APP_NAME = "flycat-price"
 # APP_DOMAIN = "price.zhenvip.wang"
@@ -64,3 +73,19 @@ APP_TRAEFIK_NETWORK = "flycat_infra"
 LAST_DEPLOY_ID = env + '/server/last_deploy_id'
 CURRENT_DEPLOY_ID = env + '/server/current_deploy_id'
 print('Using %s env' % env)
+
+
+def execute(cmd):
+    return check_output(cmd, shell=True).decode().strip()
+
+def log_execute(command):
+   print("Executing system command: %s" % (command))
+   os.system(command)
+
+def log_execute_system(command):
+   print("Executing system command: %s" % (command))
+   code = os.system(command)
+   if code > 0:
+      sys.exit(code)
+
+

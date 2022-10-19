@@ -6,3 +6,6 @@ letsencrypt
 
 
 .env
+
+
+mysql-initdb/*
