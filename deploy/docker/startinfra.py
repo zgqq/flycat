@@ -104,8 +104,83 @@ if 'infra_nacos' in config_data.keys():
        user = get_config_value(config_data['infra_nacos'], 'mysql_user', env)
        password = get_config_value(config_data['infra_nacos'], 'mysql_password', env)
        database = get_config_value(config_data['infra_nacos'], 'mysql_database', env)
+
+       jvm_xmx = get_config_value(config_data['infra_nacos'], 'jvm_xmx', env)
+       jvm_xms = get_config_value(config_data['infra_nacos'], 'jvm_xms', env)
+       jvm_xmn = get_config_value(config_data['infra_nacos'], 'jvm_xmn', env)
+
+       jmx_port = get_config_value(config_data['infra_nacos'], 'jmx_port', env)
+       jmx_port_map = ""
+       jvm_args = []
+       if jmx_port and jmx_port > 0:
+           jmx_port_map = f"- \"{jmx_port}:{jmx_port}\""
+           jvm_args.extend([
+                                                    "-Djava.rmi.server.hostname=localhost",
+                                                    "-Dcom.sun.management.jmxremote.local.only=false",
+                                                    "-Dcom.sun.management.jmxremote=true",
+                                                    "-Dcom.sun.management.jmxremote.port="+str(jmx_port),
+                                                    "-Dcom.sun.management.jmxremote.rmi.port="+str(jmx_port),
+                                                    "-Dcom.sun.management.jmxremote.authenticate=false",
+                                                    "-Dcom.sun.management.jmxremote.ssl=false"])
+       java_opt =  ' '.join(jvm_args)
+       if not os.path.exists('./target/'):
+          os.makedirs('./target/')
+
+       MYSQL_PORT=port
+       MYSQL_DATABASE=database
+       MYSQL_USER=user
+       MYSQL_PASSWORD=password
+       MYSQL_HOST=host
+       JVM_XMX = jvm_xmx
+       JVM_XMS = jvm_xms
+       JVM_XMN = jvm_xmn
+
+       JAVA_OPT=java_opt
+
+       template = f"""
+version: '3'
+services:
+  config:
+    container_name: "config-nacos"
+    image: nacos/nacos-server:v2.1.1-slim
+    restart: always
+    volumes:
+      - ~/deploy/logs/nacos/standalone-logs/:/home/nacos/logs
+    networks:
+      - infra
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST={MYSQL_HOST}
+      - MYSQL_SERVICE_DB_NAME={MYSQL_DATABASE}
+      - MYSQL_SERVICE_PORT={MYSQL_PORT}
+      - MYSQL_SERVICE_USER={MYSQL_USER}
+      - MYSQL_SERVICE_PASSWORD={MYSQL_PASSWORD}
+      - JVM_XMS={JVM_XMS}
+      - JVM_XMX={JVM_XMX}
+      - JVM_XMN={JVM_XMN}
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+      - JAVA_OPT={JAVA_OPT}
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9555:9555"
+      {jmx_port_map}
+
+networks:
+  infra:
+    external:
+      name: flycat_infra
+"""
+       text_file = open("./target/docker-compose.nacos.yml", "w")
+       #write string to file
+       text_file.write(template)
+       #close file
+       text_file.close()
+
        log_execute_system(f"MYSQL_PORT={port} MYSQL_DATABASE={database} MYSQL_USER={user}" \
-        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} docker-compose -f common/docker-compose.nacos.yml up -d")
+        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" docker-compose -f ./target/docker-compose.nacos.yml up -d")
 
 
 # if op == "update":
