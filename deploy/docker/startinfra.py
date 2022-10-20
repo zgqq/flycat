@@ -1,6 +1,7 @@
 from conf import *
 import time
 import os
+import shutil
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
 
@@ -53,16 +54,43 @@ if 'infra_sba' in config_data.keys():
 
 if 'infra_mysql' in config_data.keys():
     enable = get_config_value(config_data['infra_mysql'], 'enable', env)
-    if enable and "db-mysql" not in containers:
+    if enable:
+       need_wait = False
        app_port = get_config_value(config_data['infra_mysql'], 'port', env)
        user = get_config_value(config_data['infra_mysql'], 'user', env)
        password = get_config_value(config_data['infra_mysql'], 'password', env)
        root_password = get_config_value(config_data['infra_mysql'], 'root_password', env)
        database = get_config_value(config_data['infra_mysql'], 'database', env)
-       if user == "root":
-         print("Unable to set mysql user as root, it was created by default!")
-         exit(0)
-       log_execute_system(f"""MYSQL_PORT={app_port} MYSQL_DATABASE={database} MYSQL_USER={user} MYSQL_PASSWORD={password} MYSQL_ROOT_PASSWORD={root_password} docker-compose -f common/docker-compose.mysql.yml up -d""")
+       if "db-mysql" not in containers:
+           if user == "root":
+             print("Unable to set mysql user as root, it was created by default!")
+             exit(0)
+           log_execute_system(f"""MYSQL_PORT={app_port} MYSQL_DATABASE={database} MYSQL_USER={user} MYSQL_PASSWORD={password} MYSQL_ROOT_PASSWORD={root_password} docker-compose -f common/docker-compose.mysql.yml up -d""")
+           need_wait = True
+
+       if need_wait:
+          time.sleep(5)
+          need_wait = False
+       docker_id = check_output('docker ps -f name=%s -q' % 'db-mysql', shell=True).decode().strip()
+       grantsql = f"""'echo "GRANT ALL PRIVILEGES ON *.* TO '"'"'{user}'"'"'@'"'"'%'"'"' WITH GRANT OPTION;" > /tmp/grant.sql'"""
+       log_execute_system(f"docker exec {docker_id} /bin/sh -c {grantsql}")
+       log_execute_system(f"docker exec {docker_id} /bin/sh -c 'mysql -u root -p{root_password} < /tmp/grant.sql'")
+#        template = f"""CREATE USER IF NOT EXISTS 'user'@ IDENTIFIED BY 'password';"""
+       sql_files = get_config_value(config_data['infra_mysql'], 'initSQL_files', env)
+       if not os.path.exists(home_dir+'/deploy/cache/init-mysql'):
+          os.makedirs(home_dir+ '/deploy/cache/init-mysql')
+       for file in sql_files:
+           basename = os.path.basename(file)
+           dst = home_dir+'/deploy/cache/init-mysql/'+basename
+           if not os.path.exists(dst):
+#               if file.startswith('/'):
+#                  raise Exception("Sorry, file path cannot start with /")
+    #            log_execute_system(f"docker exec {docker_id} /bin/sh -c 'mysql -u {user} -p{password} <{dst}'")
+               src = config_dir + '/' + file
+               log_execute_system(f"docker cp {src} {docker_id}:/tmp/{basename}")
+#                log_execute_system(f"docker exec {docker_id} /bin/sh -c 'mysql -u root -p{root_password} </tmp/{basename}'")
+               log_execute_system(f"docker exec {docker_id} /bin/sh -c 'mysql -u {user} -p{password} </tmp/{basename}'")
+               shutil.copyfile(src, dst)
 # if 'infra_nacos' in config_data.keys():
 #     enable = get_config_value(config_data['infra_nacos'], 'enable', env)
 #     if enable and "config-nacos" not in containers:

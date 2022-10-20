@@ -2,6 +2,9 @@ import sys
 import json
 from subprocess import check_output
 import os
+from pathlib import Path
+
+home_dir = str(Path.home())
 
 env = "local"
 conf_path = "../../../config.json"
@@ -88,4 +91,4 @@ def log_execute_system(command):
    if code > 0:
       sys.exit(code)
 
-
+config_dir = os.path.dirname(os.path.abspath(conf_path)) ## directory of file
