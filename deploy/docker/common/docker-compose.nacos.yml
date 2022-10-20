@@ -1,0 +1,28 @@
+version: '3'
+services:
+  config:
+    container_name: "config-nacos"
+    image: nacos/nacos-server:v2.1.1-slim
+    restart: always
+    volumes:
+      - ~/deploy/logs/nacos/standalone-logs/:/home/nacos/logs
+    networks:
+      - infra
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=${MYSQL_HOST}
+      - MYSQL_SERVICE_DB_NAME=${MYSQL_DATABASE}
+      - MYSQL_SERVICE_PORT=${MYSQL_PORT}
+      - MYSQL_SERVICE_USER=${MYSQL_USER}
+      - MYSQL_SERVICE_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9555:9555"
+networks:
+  infra:
+    external:
+      name: flycat_infra

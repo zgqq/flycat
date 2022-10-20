@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  cache:
     container_name: "db-redis"
     image: redis:6.2.7-alpine
     restart: always

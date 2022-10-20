@@ -25,4 +25,8 @@ if db_redis:
    execute('docker stop ' + db_redis)
    execute('docker rm db-redis')
 
+config_nacos = check_output('docker ps -f name=config-nacos -q', shell=True).decode().strip()
+if config_nacos:
+   execute('docker stop ' + config_nacos)
+   execute('docker rm config-nacos')
 

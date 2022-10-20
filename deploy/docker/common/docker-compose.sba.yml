@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web:
+  monitor:
     image: ${SBA_DOCKER_IMAGE}
     container_name: "web-sba"
     #    restart: always # prevent other service unavailable yet
