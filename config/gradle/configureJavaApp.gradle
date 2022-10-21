@@ -1,0 +1,49 @@
+
+if (!hasProperty('configObj')) {
+    throw new RuntimeException("Not found configObj!")
+}
+
+def appPort= configObj['app_port'].toString()
+def appName= configObj['app_name'].toString()
+def dockerRepo= configObj['docker_repo'].toString()
+def mainClass= configObj['main_class'].toString()
+
+ext.containerPort = appPort
+ext.dockerImage = dockerRepo
+if (hasProperty('appClassName')) {
+    throw new RuntimeException("appClassName has defined")
+}
+ext.appClassName = mainClass
+
+if (hasProperty('customJvmArgs')) {
+    ext.customJvmArgs += ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
+} else {
+    ext.customJvmArgs = ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
+}
+
+
+
+if (configObj.containsKey('app_debug_port')) {
+    ext.debugPort=configObj['app_debug_port']
+}
+
+ext.jmxPort = getSubConfigValue('infra_sba', 'jmx_port', env, 0)
+
+if (!isRunUnitTest()) {
+    if (!getConfigValue(configObj, 'run_test', env)){
+        println("Disable test in ${env} env")
+        test.enabled = false
+    }
+}
+
+//"-Xms256m",
+//"-Xmx256m",
+//"-Xmn128m"
+def jvmXmx = getSubConfigValue('infra_sba', 'jvm_xmx', env, '256m')
+def jvmXms= getSubConfigValue('infra_sba', 'jvm_xms', env, '256m')
+def jvmXmn= getSubConfigValue('infra_sba', 'jvm_xmn', env, '128m')
+ext.heapJvmArgs = [
+        "-Xms"+jvmXms,
+        "-Xmx"+jvmXmx,
+        "-Xmn"+jvmXmn
+]

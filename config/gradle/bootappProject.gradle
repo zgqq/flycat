@@ -118,6 +118,7 @@ if (isProd(env)) {
 }
 
 
+
 ext.appJvmArgs += [
         // openj9
         // SharedCacheHardLimit > Xscmx >Xscmaxaot
@@ -147,38 +148,40 @@ if (!isProd(env)) {
 }
 
 
-ext.debugServerPort = '5005'
-if (hasProperty("debugPort")) {
-    ext.debugServerPort = "$debugPort"
-}
+//ext.debugServerPort = '5005'
+//if (hasProperty("debugPort")) {
+//    ext.debugServerPort = "$debugPort"
+//}
 
-if (isTest(env)) {
+//if (isTest(env)) {
 //    before java v5 not work on openj9
 //    ext.appJvmArgs += ["-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,address=0.0.0.0:${ext.debugServerPort}, server=y,suspend=n".toString()]
-
 //    after java8 allow remote and local
 //    ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005']
+//    ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005']
+//}
 
-    ext.appJvmArgs += ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:5005']
+
+if (hasProperty('debugPort') && debugPort > 0) {
+    ext.appJvmArgs += ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=0.0.0.0:${debugPort}".toString()]
 }
 
-if (isTest(env) && !useDcevm) {
 
+if (hasProperty('jmxPort') && jmxPort > 0) {
     ext.frJvmArgs = ["-Dcom.sun.management.jmxremote=true",
-                     "-Dcom.sun.management.jmxremote.port=7091",
-                     "-Dcom.sun.management.jmxremote.rmi.port=7091",
+                     "-Dcom.sun.management.jmxremote.port=${jmxPort}".toString(),
+                     "-Dcom.sun.management.jmxremote.rmi.port=${jmxPort}".toString(),
                      "-Dcom.sun.management.jmxremote.authenticate=false",
                      "-Dcom.sun.management.jmxremote.ssl=false",
-                     "-XX:+UnlockCommercialFeatures",
+                     "-Djava.rmi.server.hostname=localhost",
+                     "-Dcom.sun.management.jmxremote.local.only=false",
+                     "-XX:+UnlockCommercialFeatures", // To open flight recorder in java8
                      "-XX:+FlightRecorder",
                      "-XX:+UnlockDiagnosticVMOptions",
                      "-XX:+DebugNonSafepoints"
     ]
-
     ext.appJvmArgs += ext.frJvmArgs
-
 }
-
 
 ext.gcLog = "gc.log"
 ext.errorLog = "hs_err_pid%p.log"

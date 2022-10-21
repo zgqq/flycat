@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+
 def jsonSlurper = new JsonSlurper()
 
 def configFile = "./config.json"
@@ -13,6 +14,7 @@ if (!fileObj.isFile()) {
 }
 
 def data = jsonSlurper.parse(fileObj)
+ext.configObj = data
 
 //if (hasProperty("configKey")) {
 //    data = data[configKey]
@@ -28,39 +30,7 @@ def data = jsonSlurper.parse(fileObj)
 println("Read config: ${data}")
 //rootProject.name = data['app_name']
 
-def appPort= data['app_port'].toString()
-def appName= data['app_name'].toString()
-def dockerRepo= data['docker_repo'].toString()
-def mainClass= data['main_class'].toString()
-
-
-ext.containerPort = appPort
-ext.dockerImage = dockerRepo
-ext.appClassName = mainClass
-
-
-if (hasProperty('customJvmArgs')) {
-    ext.customJvmArgs += ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
-} else {
-    ext.customJvmArgs = ["-Dserver.port=${appPort}".toString(), "-Dspring.application.name=${appName}".toString()]
-}
-
-
-ext.addCustomJvmArgs = { argsArr ->
-    if (project.hasProperty('customJvmArgs')) {
-        ext.customJvmArgs += argsArr
-    } else {
-        ext.customJvmArgs = argsArr
-    }
-}
-
-
-if (data.containsKey('app_debug_port')) {
-    ext.debugPort=data['app_debug_port'].toString()
-}
-
-
-ext.getConfigValue = { configData, key, env ->
+ext.getConfigValue = { configData, key, env, defaultValue = null ->
     env = env.toString()
     // Method body here
     println("getConfigValue ${key}, ${env}")
@@ -72,13 +42,14 @@ ext.getConfigValue = { configData, key, env ->
         if (key in configData['env_overwrite'][env].keySet())
             return configData['env_overwrite'][env][key]
     }
-    return configData[key]
-
-    return configData[key]
+    if (key in configData.keySet()) {
+        return configData[key]
+    }
+    return defaultValue
 }
 
 
-ext.getSubConfigValue = { name, key, env ->
+ext.getSubConfigValue = { name, key, env, defaultValue = null ->
     env = env.toString()
     println("getSubConfigValue ${name}, ${key}, ${env} ")
     if (name in data.keySet()) {
@@ -87,10 +58,20 @@ ext.getSubConfigValue = { name, key, env ->
 //        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
 //                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
 //                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
-        return getConfigValue(configData, key, env)
+        return getConfigValue(configData, key, env, defaultValue)
     }
-    return null
+    return defaultValue
 }
+
+
+ext.addCustomJvmArgs = { argsArr ->
+    if (project.hasProperty('customJvmArgs')) {
+        ext.customJvmArgs += argsArr
+    } else {
+        ext.customJvmArgs = argsArr
+    }
+}
+
 
 if (getSubConfigValue('infra_redis', 'enable', env)) {
     def host = getSubConfigValue('infra_redis', 'host', env)
@@ -106,12 +87,6 @@ if (getSubConfigValue('infra_redis', 'enable', env)) {
 }
 
 
-if (!isRunUnitTest()) {
-    if (!getConfigValue(data, 'run_test', env)){
-        println("Disable test in ${env} env")
-        test.enabled = false
-    }
-}
 
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
@@ -126,3 +101,4 @@ if (isDockerBuild()) {
     ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
     println("Executing docker build, use profile:${profile}")
 }
+

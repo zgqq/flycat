@@ -45,8 +45,59 @@ if 'infra_sba' in config_data.keys():
     if enable and "web-sba" not in containers:
        app_port = get_config_value(config_data['infra_sba'], 'app_port', env)
        docker_repo = get_config_value(config_data['infra_sba'], 'docker_repo', env)
+       jmx_port = get_config_value(config_data['infra_sba'], 'jmx_port', env)
        docker_image = docker_repo + ':' + tag
-       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} docker-compose -f common/docker-compose.sba.yml up -d"
+
+       JMX_PORT_MAP = ""
+       if jmx_port and jmx_port > 0:
+           JMX_PORT_MAP = f"- {jmx_port}:{jmx_port}"
+
+       SBA_DOCKER_IMAGE=docker_image
+       SBA_APP_PORT=app_port
+
+       ROUTER_SBA0='flycat-sba0'
+       ROUTER_SBA1='flycat-sba1'
+       template = f"""
+version: '3'
+services:
+  monitor:
+    image: {SBA_DOCKER_IMAGE}
+    container_name: "web-sba"
+    #    restart: always # prevent other service unavailable yet
+    ports:
+      - {SBA_APP_PORT}:{SBA_APP_PORT}
+      {JMX_PORT_MAP}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 2
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
+      - traefik.http.routers.{ROUTER_SBA0}.tls=true
+      - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
+      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
+      - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
+      - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
+      - traefik.docker.network=flycat_infra
+    networks:
+#      - traefik
+      - infra
+
+networks:
+  infra:
+    external:
+      name: flycat_infra
+      """
+
+       text_file = open("./target/docker-compose.sba.yml", "w")
+       #write string to file
+       text_file.write(template)
+       #close file
+       text_file.close()
+
+       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} docker-compose -f target/docker-compose.sba.yml up -d"
        print('Executing system command: %s' % cmd)
        log_execute_system(cmd)
        time.sleep(2)

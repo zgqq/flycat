@@ -27,17 +27,23 @@ plugins {
 
 ext.configDir = "../../config"
 ext.gradleConfigDir = "${configDir}/gradle"
-ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
 //ext.env = env
 ext.vJavaLang = '17'
-ext.dockerImage = 'zgqq/flycat-sba'
-ext.containerPort = '8081'
-ext.configKey = 'sba_app'
+
 apply from: "${gradleConfigDir}/env.gradle"
+apply from: "${gradleConfigDir}/autoConfigure.gradle"
+
+
+ext.configObj = configObj['infra_sba']
+apply from: "${gradleConfigDir}/configureJavaApp.gradle"
+ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
+//ext.jmxPort = getSubConfigValue('infra_sba', 'jmx_port', env, 0)
+//ext.dockerImage = getSubConfigValue('infra_sba', 'docker_repo', env, 'zgqq/flycat-sba')
+//ext.containerPort = getSubConfigValue('infra_sba', 'app_port', env, 8081)
+
 apply from: "${gradleConfigDir}/javaProject.gradle"
 apply from: "${gradleConfigDir}/bootappProject.gradle"
 apply from: "${gradleConfigDir}/dockerProject.gradle"
-apply from: "${gradleConfigDir}/autoConfigure.gradle"
 
 dependencies {
 //    implementation project(':flycat-context')
