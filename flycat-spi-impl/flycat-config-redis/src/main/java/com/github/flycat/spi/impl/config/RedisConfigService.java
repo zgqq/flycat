@@ -17,7 +17,9 @@ package com.github.flycat.spi.impl.config;
 
 import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
+import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonService;
+import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.redis.RedisService;
 import com.github.flycat.spi.task.TaskService;
 import org.slf4j.Logger;
@@ -112,5 +114,11 @@ public class RedisConfigService implements ConfigService {
     public <T> T getJsonConfig(String dataId, String name, Class<T> type) throws ConfigException {
         final RedisConfig redisConfig = getRedisConfig(dataId);
         return redisConfig.getConfigValue(dataId, type);
+    }
+
+    @Override
+    public JsonObject getJsonConfig(String dataId) throws ConfigException {
+        String string = redisService.get(dataId);
+        return JsonUtils.parseObject(string);
     }
 }

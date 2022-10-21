@@ -150,6 +150,11 @@ if 'infra_mysql' in config_data.keys():
 if 'infra_nacos' in config_data.keys():
     enable = get_config_value(config_data['infra_nacos'], 'enable', env)
     if enable and "config-nacos" not in containers:
+
+       nacos_port = get_config_value(config_data['infra_nacos'], 'port', env, 8848)
+       if nacos_port and nacos_port > 0:
+           nacos_port_map = f"- {nacos_port}:{nacos_port}"
+
        host = get_config_value(config_data['infra_nacos'], 'mysql_host', env)
        port = get_config_value(config_data['infra_nacos'], 'mysql_port', env)
        user = get_config_value(config_data['infra_nacos'], 'mysql_user', env)
@@ -187,6 +192,7 @@ if 'infra_nacos' in config_data.keys():
        JVM_XMN = jvm_xmn
 
        JAVA_OPT=java_opt
+       NACOS_PORT = nacos_port
 
        template = f"""
 version: '3'
@@ -203,6 +209,7 @@ services:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=mysql
+      - NACOS_AUTH_ENABLE=true
       - MYSQL_SERVICE_HOST={MYSQL_HOST}
       - MYSQL_SERVICE_DB_NAME={MYSQL_DATABASE}
       - MYSQL_SERVICE_PORT={MYSQL_PORT}
@@ -213,11 +220,12 @@ services:
       - JVM_XMN={JVM_XMN}
       - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
       - JAVA_OPT={JAVA_OPT}
+      - NACOS_APPLICATION_PORT={NACOS_PORT}
     ports:
-      - "8848:8848"
       - "9848:9848"
       - "9555:9555"
       {jmx_port_map}
+      {nacos_port_map}
 
 networks:
   infra:

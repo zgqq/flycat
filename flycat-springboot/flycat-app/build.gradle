@@ -10,7 +10,7 @@ dependencies {
 
 
     api project(':flycat-cache-guava')
-    api project(':flycat-config-redis')
+//    api project(':flycat-config-redis')
     api project(':flycat-cache-redis')
     api project(':flycat-notifier')
     api project(':flycat-ds-hikari')

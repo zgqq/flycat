@@ -73,20 +73,24 @@ ext.addCustomJvmArgs = { argsArr ->
 }
 
 
-if (getSubConfigValue('infra_redis', 'enable', env)) {
-    def host = getSubConfigValue('infra_redis', 'host', env)
-    def password = getSubConfigValue('infra_redis', 'password', env)
-    def port = getSubConfigValue('infra_redis', 'port', env)
-    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
-                      "-Dflycat.redis.primary.host=${host}".toString(),
-                      "-Dflycat.redis.primary.port=${port}".toString(),
-                      "-Dflycat.redis.primary.password=${password}".toString()])
-//    flycat.redis.primary.enabled=true
-//    flycat.redis.primary.host=localhost
-//    flycat.redis.primary.port=6380
-}
+//if (getSubConfigValue('infra_redis', 'enable', env)) {
+//    def host = getSubConfigValue('infra_redis', 'host', env)
+//    def password = getSubConfigValue('infra_redis', 'password', env)
+//    def port = getSubConfigValue('infra_redis', 'port', env)
+//    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
+//                      "-Dflycat.redis.primary.host=${host}".toString(),
+//                      "-Dflycat.redis.primary.port=${port}".toString(),
+//                      "-Dflycat.redis.primary.password=${password}".toString()])
+////    flycat.redis.primary.enabled=true
+////    flycat.redis.primary.host=localhost
+////    flycat.redis.primary.port=6380
+//}
 
-
+//if (getSubConfigValue('infra_nacos', 'enable', env)) {
+//    def host = getSubConfigValue('infra_nacos', 'host', env)
+//    def port = getSubConfigValue('infra_nacos', 'port', env)
+//    addCustomJvmArgs(["-Dflycat.nacos.config.server-addr=" + host + ":" + port])
+//}
 
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
@@ -101,4 +105,3 @@ if (isDockerBuild()) {
     ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
     println("Executing docker build, use profile:${profile}")
 }
-

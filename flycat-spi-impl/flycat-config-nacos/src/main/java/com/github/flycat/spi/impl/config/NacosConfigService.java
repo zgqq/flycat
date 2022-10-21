@@ -15,15 +15,18 @@
  */
 package com.github.flycat.spi.impl.config;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+//import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.api.common.Constants;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.github.flycat.spi.SpiService;
 import com.github.flycat.spi.config.ConfigException;
 import com.github.flycat.spi.config.ConfigService;
 import com.github.flycat.context.ApplicationConfiguration;
+import com.github.flycat.spi.json.JsonObject;
+import com.github.flycat.spi.json.JsonUtils;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.concurrent.Callable;
@@ -34,6 +37,7 @@ public class NacosConfigService implements ConfigService, SpiService {
     private com.alibaba.nacos.api.config.ConfigService configService;
     private final ApplicationConfiguration applicationConfiguration;
 
+    @Inject
     public NacosConfigService(ApplicationConfiguration applicationConfiguration) {
         this.applicationConfiguration = applicationConfiguration;
         createConfigService();
@@ -73,7 +77,7 @@ public class NacosConfigService implements ConfigService, SpiService {
     @Override
     public <T> T getJsonConfig(String dataId, Class<T> type) throws ConfigException {
         final String config = getConfig(dataId);
-        return checkException(() -> JSON.parseObject(config, type));
+        return checkException(() -> JsonUtils.parseObject(config, type));
     }
 
     private <T> T checkException(Callable<T> callable) throws ConfigException {
@@ -88,13 +92,23 @@ public class NacosConfigService implements ConfigService, SpiService {
     public <T> T getJsonConfig(String dataId, String name, Class<T> type) throws ConfigException {
         final String config = getConfig(dataId);
         return checkException(() -> {
-            final JSONObject jsonObject = JSON.parseObject(config);
-            return jsonObject.getObject(name, type);
+            JsonObject jsonObject = JsonUtils.parseObject(config);
+            return jsonObject.getJsonObject(name, type);
+//            final JSONObject jsonObject = JSON.parseObject(config);
+//            return jsonObject.getObject(name, type);
         });
+    }
+
+    @Override
+    public JsonObject getJsonConfig(String dataId) throws ConfigException {
+        final String config = getConfig(dataId);
+        return JsonUtils.parseObject(config);
     }
 
     public void createConfigService() {
         final String addr = getString("flycat.nacos.config.server-addr");
-        configService = NacosUtils.createConfigService(addr);
+        final String user = getString("flycat.nacos.config.user");
+        final String password = getString("flycat.nacos.config.password");
+        configService = NacosUtils.createConfigService(addr, user, password);
     }
 }

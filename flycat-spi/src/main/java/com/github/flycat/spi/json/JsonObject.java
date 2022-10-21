@@ -7,6 +7,8 @@ public interface JsonObject {
 
     JsonObject getJsonObject(String key);
 
+    <T> T getJsonObject(String key, Class<T> clazz);
+
     Integer getInteger(String key);
 
     Long getLong(String key);

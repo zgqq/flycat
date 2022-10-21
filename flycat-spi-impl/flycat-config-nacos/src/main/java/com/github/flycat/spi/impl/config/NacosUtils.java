@@ -16,26 +16,34 @@
 package com.github.flycat.spi.impl.config;
 
 import com.alibaba.nacos.api.NacosFactory;
+import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
+import com.github.flycat.spi.config.ConfigException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
 public class NacosUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NacosUtils.class);
 
     public static ConfigService createConfigService(
-            String serverAddr) {
+            String serverAddr, String username, String password) {
         try {
             // Initialize the configuration service,
             // and the console automatically obtains the following parameters
             // through the sample code.
             Properties properties = new Properties();
-            properties.put("serverAddr", serverAddr);
+            properties.put(PropertyKeyConst.SERVER_ADDR, serverAddr);
+            properties.put(PropertyKeyConst.USERNAME, username);
+            properties.put(PropertyKeyConst.PASSWORD, password);
+            LOGGER.info("Creating config service, {}, {}, {}", serverAddr, username, password);
             ConfigService configService = NacosFactory.createConfigService(properties);
             // Actively get the configuration.
             return configService;
         } catch (NacosException e) {
-            throw new RuntimeException("Unable to load nacos", e);
+            throw new ConfigException("Unable to load nacos", e);
         }
     }
 }

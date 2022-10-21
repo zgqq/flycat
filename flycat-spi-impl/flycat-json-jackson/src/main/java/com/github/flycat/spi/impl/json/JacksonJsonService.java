@@ -181,6 +181,10 @@ public class JacksonJsonService implements JsonService {
     @Override
     public JsonObject parseJsonObject(String json) {
         JsonNode jsonNode = (JsonNode) parseTree(json);
-        return new JsonObjectImpl(jsonNode);
+        return new JsonObjectImpl(jsonNode, this);
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 }

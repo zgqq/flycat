@@ -24,13 +24,13 @@ def get_bool_value(data, key, env):
     config_value = get_config_value(data, key, env)
     return config_value != None
 
-def get_config_value(data, key, env):
+def get_config_value(data, key, env, default_value = None):
     if 'env_overwrite' in data.keys() and env in data['env_overwrite']:
         if key in data['env_overwrite'][env].keys():
            return data['env_overwrite'][env][key]
     if key in data.keys():
        return data[key]
-    return None
+    return default_value
 
 f = open(conf_path)
 data = json.load(f)
@@ -38,7 +38,7 @@ APP_DOCKER_REPO = data['docker_repo']+":"+tag
 APP_NAME = data['app_name']
 APP_DOMAIN = data['app_domain']
 APP_PORT = data['app_port']
-APP_DEBUG_PORT = data['app_debug_port']
+APP_DEBUG_PORT = data['debug_port']
 
 GATEWAY_USER = data['gateway_user']
 GATEWAY_PASS = data['gateway_pass']

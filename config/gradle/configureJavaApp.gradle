@@ -22,12 +22,11 @@ if (hasProperty('customJvmArgs')) {
 }
 
 
-
-if (configObj.containsKey('app_debug_port')) {
-    ext.debugPort=configObj['app_debug_port']
+if (configObj.containsKey('debug_port')) {
+    ext.debugPort=configObj['debug_port']
 }
 
-ext.jmxPort = getSubConfigValue('infra_sba', 'jmx_port', env, 0)
+ext.jmxPort = getConfigValue(configObj, 'jmx_port', env, 0)
 
 if (!isRunUnitTest()) {
     if (!getConfigValue(configObj, 'run_test', env)){

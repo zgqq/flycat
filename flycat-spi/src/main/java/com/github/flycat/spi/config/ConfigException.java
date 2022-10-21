@@ -15,7 +15,7 @@
  */
 package com.github.flycat.spi.config;
 
-public class ConfigException extends Exception {
+public class ConfigException extends RuntimeException {
 
     public ConfigException() {
     }

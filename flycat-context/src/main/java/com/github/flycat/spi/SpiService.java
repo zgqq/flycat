@@ -27,7 +27,6 @@ public interface SpiService {
         } catch (Exception e) {
             throw new RuntimeException("Unable to get key, "+key, e);
         }
-
     }
 
     default String getString(String key) {

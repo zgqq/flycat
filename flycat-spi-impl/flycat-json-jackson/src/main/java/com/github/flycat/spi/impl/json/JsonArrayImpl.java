@@ -12,14 +12,16 @@ import java.util.stream.Collectors;
 public class JsonArrayImpl implements JsonArray {
 
     private final JsonNode jsonNode;
+    private final JacksonJsonService jsonService;
 
-    public JsonArrayImpl(JsonNode jsonNode) {
+    public JsonArrayImpl(JsonNode jsonNode, JacksonJsonService jsonService) {
         this.jsonNode = jsonNode;
+        this.jsonService = jsonService;
     }
 
     @Override
     public JsonObject getJsonObject(int index) {
-        return new JsonObjectImpl(jsonNode.get(index));
+        return new JsonObjectImpl(jsonNode.get(index), jsonService);
     }
 
     @Override
@@ -27,7 +29,7 @@ public class JsonArrayImpl implements JsonArray {
         Iterator<JsonNode> iterator = jsonNode.iterator();
         return Lists.newArrayList(iterator)
                 .stream()
-                .map(obj -> new JsonObjectImpl(obj))
+                .map(obj -> new JsonObjectImpl(obj, jsonService))
                 .collect(Collectors.toList()).iterator();
     }
 }

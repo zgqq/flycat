@@ -15,6 +15,8 @@
  */
 package com.github.flycat.spi.config;
 
+import com.github.flycat.spi.json.JsonObject;
+
 public interface ConfigService {
 
     String getConfig(String dataId) throws ConfigException;
@@ -26,4 +28,7 @@ public interface ConfigService {
     <T> T getJsonConfig(String dataId, Class<T> type) throws ConfigException;
 
     <T> T getJsonConfig(String dataId, String name, Class<T> type) throws ConfigException;
+
+    JsonObject getJsonConfig(String dataId) throws ConfigException;
+
 }
