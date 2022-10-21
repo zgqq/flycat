@@ -24,7 +24,7 @@ containers = execute("docker container ls")
 #    log_execute_system("docker-compose -f docker-compose.mysql.yml up -d")
 
 if "web_traefik" not in containers:
-   cmd=f"GATEWAY_DOMAIN={GATEWAY_DOMAIN} AUTH_USERS={AUTH_USERS} docker-compose -f "+env+"/docker-compose.traefik.yml up -d"
+   cmd=f"GATEWAY_DOMAIN={GATEWAY_DOMAIN} AUTH_USERS='{AUTH_USERS}' docker-compose -f "+env+"/docker-compose.traefik.yml up -d"
    print('Executing system command: %s' % cmd)
    log_execute_system(cmd)
    time.sleep(2)
@@ -74,6 +74,8 @@ services:
         max_attempts: 2
     labels:
       - traefik.enable=true
+      - traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
+      - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
       - traefik.http.routers.{ROUTER_SBA0}.tls=true
       - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
@@ -194,6 +196,9 @@ if 'infra_nacos' in config_data.keys():
        JAVA_OPT=java_opt
        NACOS_PORT = nacos_port
 
+       ROUTER_NACOS0='flycat-nacos0'
+       ROUTER_NACOS1='flycat-nacos1'
+
        template = f"""
 version: '3'
 services:
@@ -221,6 +226,17 @@ services:
       - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
       - JAVA_OPT={JAVA_OPT}
       - NACOS_APPLICATION_PORT={NACOS_PORT}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.{ROUTER_NACOS0}.rule=PathPrefix(`/nacos`)
+      - traefik.http.routers.{ROUTER_NACOS1}.rule=PathPrefix(`/nacos`)
+      - traefik.http.routers.{ROUTER_NACOS0}.entrypoints=https
+      - traefik.http.routers.{ROUTER_NACOS0}.tls=true
+      - traefik.http.services.{ROUTER_NACOS0}-service.loadbalancer.server.port={NACOS_PORT}
+      - traefik.http.routers.{ROUTER_NACOS0}.service={ROUTER_NACOS0}-service
+      - traefik.http.routers.{ROUTER_NACOS1}.entrypoints=http
+      - traefik.http.routers.{ROUTER_NACOS1}.service={ROUTER_NACOS0}-service
+      - traefik.docker.network=flycat_infra
     ports:
       - "9848:9848"
       - "9555:9555"

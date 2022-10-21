@@ -274,7 +274,7 @@ if need_start:
         boot_status = 'green'
 
     print('Starting %s container' % boot_project)
-    cp_container_id = execute('docker create %s' % APP_DOCKER_REPO)
+    cp_container_id = execute('docker create %s' % APP_DOCKER_IMAGE)
 
     directory = "%s/deploy/docker-container/%s/%s" % (Path.home(), APP_NAME, boot_status)
     current_deploy = "%s/deploy/docker-container/%s/current" % (Path.home(), APP_NAME)
@@ -290,8 +290,13 @@ if need_start:
     deploy_tags = get_image_tags(deploy_image_id)
     print('Preparing deploy, image id %s, app directory %s, tags %s' % (deploy_image_id, app_directory, deploy_tags))
     yml = DOCKER_COMPOSE_APP_YML
-    execute('cd %s && %s docker-compose -f %s --project-name=%s up -d' % (
-        env,
+#     execute('cd %s && %s docker-compose -f %s --project-name=%s up -d' % (
+#         env,
+#         'app_volume=' + app_directory+' deploy_image_id='+deploy_image_id+' deploy_tags='+(','.join(deploy_tags)),
+#         yml,
+#         boot_project))
+
+    execute('%s docker-compose -f %s --project-name=%s up -d' % (
         'app_volume=' + app_directory+' deploy_image_id='+deploy_image_id+' deploy_tags='+(','.join(deploy_tags)),
         yml,
         boot_project))

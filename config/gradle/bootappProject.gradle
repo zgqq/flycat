@@ -34,6 +34,11 @@ if (ignoredEnv) {
     return
 }
 
+if (!hasProperty("profile")) {
+    ext.profile = env
+}
+def useProfile = profile
+
 apply plugin: "java"
 apply plugin: 'application'
 apply from: "${gradleConfigDir}/tasks.gradle"
@@ -70,10 +75,6 @@ if (hasProperty("appClassName")) {
 //def profile = ${depType}${env}
 
 
-def useProfile = env
-if (hasProperty("profile")) {
-    useProfile = profile
-}
 ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
 
 def vJavaVersion = vJavaLang as double

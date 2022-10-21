@@ -1,9 +1,9 @@
 task copyConfiguration {
         doLast {
-            println "Target environment: $env"
+            println "Target environment: $profile"
 
             copy {
-                from "src/main/env/$env"
+                from "src/main/env/$profile"
                 into "src/main/resources"
                 include "**/*"
             }

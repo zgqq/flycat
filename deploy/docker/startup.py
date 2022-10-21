@@ -8,24 +8,99 @@ import time
 # if len(sys.argv) > 1:
 #     env = sys.argv[1]
 
-docker_env = f"""# AUTO GENERATED
-APP_NAME={APP_NAME}
-APP_DOMAIN={APP_DOMAIN}
-APP_DOCKER_IMAGE={APP_DOCKER_REPO}
-APP_PORT={APP_PORT}
-APP_DEBUG_PORT={APP_DEBUG_PORT}
-ROUTER0={APP_ROUTER0}
-ROUTER1={APP_ROUTER1}
-"""
-f = open(env+"/.env", "w")
-f.write(docker_env)
-f.close()
+ROUTER0 =  APP_ROUTER0
+ROUTER1 =  APP_ROUTER1
+
+# docker_env = f"""# AUTO GENERATED
+# APP_NAME={APP_NAME}
+# APP_DOCKER_IMAGE={APP_DOCKER_REPO}
+# APP_PORT={APP_PORT}
+# APP_DEBUG_PORT={APP_DEBUG_PORT}
+# ROUTER0={APP_ROUTER0}
+# ROUTER1={APP_ROUTER1}
+# """
+# f = open(env+"/.env", "w")
+# f.write(docker_env)
+# f.close()
 
 op = "deploy"
 if len(sys.argv) > 3:
     op = sys.argv[3]
 
 print('Executing operation, op:%s, env:%s' %(op, env))
+
+router_domain = get_main_config_value("router_domain", env)
+router_path = get_main_config_value("router_path", env)
+
+
+
+ROUTER_DOMAIN=router_domain
+ROUTER_PATH=router_path
+
+router_label = ""
+if router_domain:
+   router_label=f"""
+       - traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`)
+       - traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`)
+                    """
+if router_path:
+   router_label=f"""
+       - traefik.http.routers.{ROUTER0}.rule=PathPrefix(`{ROUTER_PATH}`)
+       - traefik.http.routers.{ROUTER1}.rule=PathPrefix(`{ROUTER_PATH}`)
+                    """
+
+if router_domain and router_path:
+   router_label=f"""
+      - traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)
+      - traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)
+                    """
+ROUTER_LABEL = router_label
+
+template = f"""
+version: '3'
+services:
+  web:
+    image: {APP_DOCKER_IMAGE}
+#    restart: always # prevent other service unavailable yet
+    volumes:
+      - ~/deploy/docker-userapp/{APP_NAME}:/userapp
+      - ${{app_volume}}:/app
+    environment:
+      DEPLOY_IMAGE_ID: ${{deploy_image_id}}
+      DEPLOY_APP_DIR: ${{app_volume}}
+      DEPLOY_TAGS: ${{deploy_tags}}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 2
+    labels:
+      - traefik.enable=true
+      {ROUTER_LABEL}
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.{ROUTER0}.entrypoints=https
+      - traefik.http.routers.{ROUTER0}.tls=true
+      - traefik.http.routers.{ROUTER0}.tls.certResolver=certer
+      - traefik.http.routers.{ROUTER0}.service={ROUTER0}-service
+      - traefik.http.services.{ROUTER0}-service.loadbalancer.server.port={APP_PORT}
+      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.path=/v1/status
+      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.interval=5s
+      - traefik.http.routers.{ROUTER1}.middlewares=https-redirect,compress
+      - traefik.http.routers.{ROUTER1}.entrypoints=http
+      - traefik.http.routers.{ROUTER1}.service={ROUTER0}-service
+      - traefik.docker.network=flycat_infra
+      - traefik.http.middlewares.compress.compress=true
+
+    networks:
+#      - traefik
+      - infra
+
+networks:
+  infra:
+    external:
+      name: flycat_infra
+"""
+write_template("./target/docker-compose.app.yml", template)
 
 if op == "rollback":
    id = ''

@@ -73,24 +73,36 @@ ext.addCustomJvmArgs = { argsArr ->
 }
 
 
-//if (getSubConfigValue('infra_redis', 'enable', env)) {
-//    def host = getSubConfigValue('infra_redis', 'host', env)
-//    def password = getSubConfigValue('infra_redis', 'password', env)
-//    def port = getSubConfigValue('infra_redis', 'port', env)
-//    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
-//                      "-Dflycat.redis.primary.host=${host}".toString(),
-//                      "-Dflycat.redis.primary.port=${port}".toString(),
-//                      "-Dflycat.redis.primary.password=${password}".toString()])
-////    flycat.redis.primary.enabled=true
-////    flycat.redis.primary.host=localhost
-////    flycat.redis.primary.port=6380
-//}
+if (getSubConfigValue('infra_redis', 'enable', env)) {
+    def host = getSubConfigValue('infra_redis', 'host', env)
+    def password = getSubConfigValue('infra_redis', 'password', env)
+    def port = getSubConfigValue('infra_redis', 'port', env)
 
-//if (getSubConfigValue('infra_nacos', 'enable', env)) {
-//    def host = getSubConfigValue('infra_nacos', 'host', env)
-//    def port = getSubConfigValue('infra_nacos', 'port', env)
-//    addCustomJvmArgs(["-Dflycat.nacos.config.server-addr=" + host + ":" + port])
-//}
+    if (isStartupFromCode()) {
+        host = "localhost"
+    }
+    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
+                      "-Dflycat.redis.primary.host=${host}".toString(),
+                      "-Dflycat.redis.primary.port=${port}".toString(),
+                      "-Dflycat.redis.primary.password=${password}".toString()])
+}
+
+
+
+if (getSubConfigValue('infra_nacos', 'enable', env)) {
+    def host = getSubConfigValue('infra_nacos', 'host', env)
+    def port = getSubConfigValue('infra_nacos', 'port', env)
+
+    def nacosUser = getSubConfigValue('infra_nacos', 'nacos_user', env)
+    def nacosPassword = getSubConfigValue('infra_nacos', 'nacos_password', env)
+    if (isStartupFromCode()) {
+        host = "localhost"
+    }
+    addCustomJvmArgs(["-Dflycat.nacos.config.server-addr=${host}:${port}".toString(),
+                      "-Dflycat.nacos.config.user=${nacosUser}".toString(),
+                      "-Dflycat.nacos.config.password=${nacosPassword}".toString()
+    ])
+}
 
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames

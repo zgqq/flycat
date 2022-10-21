@@ -34,18 +34,14 @@ def get_config_value(data, key, env, default_value = None):
 
 f = open(conf_path)
 data = json.load(f)
-APP_DOCKER_REPO = data['docker_repo']+":"+tag
+# APP_DOMAIN = data['app_domain']
 APP_NAME = data['app_name']
-APP_DOMAIN = data['app_domain']
 APP_PORT = data['app_port']
 APP_DEBUG_PORT = data['debug_port']
 
 GATEWAY_USER = data['gateway_user']
 GATEWAY_PASS = data['gateway_pass']
 AUTH_USERS = data['gateway_auths']
-
-APP_ROUTER0 =  APP_NAME + '0'
-APP_ROUTER1 =  APP_NAME + '1'
 
 GATEWAY_DOMAIN = get_config_value(data, 'gateway_domain', env)
 config_data = data
@@ -56,17 +52,16 @@ def get_sub_config_value(main_key, key, env):
        return get_config_value(data[main_key], key, env)
     return None
 
+def get_main_config_value(key, env, default_value = None):
+    return get_config_value(data, key, env)
+
 # APP_DOCKER_REPO = "zgqq/flycat-price:"+tag
 # APP_NAME = "flycat-price"
 # APP_DOMAIN = "price.zhenvip.wang"
 # APP_PORT = 9020
 # APP_DEBUG_PORT = 5006
 # APP_TRAEFIK_SERVICE_URL = "http://localhost:8080/api/http/services/"+APP_ROUTER0+"-service@docker"
-APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
-# APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
-print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
 
-DOCKER_COMPOSE_APP_YML = 'docker-compose.app.yml'
 
 APP_BLUE = "blue-"+APP_NAME
 APP_GREEN = "green-"+APP_NAME
@@ -91,4 +86,21 @@ def log_execute_system(command):
    if code > 0:
       sys.exit(code)
 
+def write_template(file_path, template):
+   text_file = open(file_path, "w")
+   #write string to file
+   text_file.write(template)
+   #close file
+   text_file.close()
+
 config_dir = os.path.dirname(os.path.abspath(conf_path)) ## directory of file
+
+
+APP_ROUTER0 =  APP_NAME + '0'
+APP_ROUTER1 =  APP_NAME + '1'
+DOCKER_COMPOSE_APP_YML = './target/docker-compose.app.yml'
+APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
+# APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
+print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
+
+APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag

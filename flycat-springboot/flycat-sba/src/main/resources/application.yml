@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 spring.security.user.name: zgqq
 spring.security.user.password: zgqq
 server.port: 8081
+spring.boot.admin.context-path: /sba-admin
