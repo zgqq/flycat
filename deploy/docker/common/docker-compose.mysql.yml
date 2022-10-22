@@ -7,7 +7,6 @@ services:
     restart: always
     volumes:
       - ~/deploy/data/mysql8:/var/lib/mysql
-      - ./mysql-initdb:/docker-entrypoint-initdb.d
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - infra

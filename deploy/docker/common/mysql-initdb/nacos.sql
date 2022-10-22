@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-CREATE DATABASE nacos_config;
-USE nacos_config;
+CREATE DATABASE {DATABASE};
+USE {DATABASE};
 /******************************************/
 /*   数据库全名 = nacos_config   */
 /*   表名称 = config_info   */
@@ -218,6 +218,6 @@ CREATE TABLE `permissions` (
     UNIQUE INDEX `uk_role_permission` (`role`,`resource`,`action`) USING BTREE
 );
 
-INSERT INTO users (username, password, enabled) VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', TRUE);
+INSERT INTO users (username, password, enabled) VALUES ('{NACOS_USER}', '{NACOS_PASSWORD}', TRUE);
 
-INSERT INTO roles (username, role) VALUES ('nacos', 'ROLE_ADMIN');
+INSERT INTO roles (username, role) VALUES ('{NACOS_USER}', 'ROLE_ADMIN');

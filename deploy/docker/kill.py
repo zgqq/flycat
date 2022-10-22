@@ -30,3 +30,8 @@ if config_nacos:
    execute('docker stop ' + config_nacos)
    execute('docker rm config-nacos')
 
+db_mysql = check_output('docker ps -f name=db-mysql -q', shell=True).decode().strip()
+if db_mysql:
+   execute('docker stop ' + db_mysql)
+   execute('docker rm db-mysql')
+
