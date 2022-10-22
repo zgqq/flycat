@@ -5,8 +5,6 @@ import shutil
 from pathlib import Path
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
-if not os.path.exists('./target/'):
-  os.makedirs('./target/')
 
 if 'infra_mysql' in config_data.keys():
     if not os.path.exists('./common/mysql-initdb'):
@@ -129,7 +127,7 @@ def execute_sql_files(base_path, sql_files, user, password, root_password, need_
        if not os.path.exists(dst):
            if need_wait:
               print('Waiting mysql started')
-              time.sleep(15)
+              time.sleep(20)
               need_wait = False
            if not granted:
               grantsql = f"""'echo "CREATE USER IF NOT EXISTS '"'"'{user}'"'"'@'"'"'%'"'"' IDENTIFIED BY '"'"'{password}'"'"'; GRANT ALL PRIVILEGES ON *.* TO '"'"'{user}'"'"'@'"'"'%'"'"' WITH GRANT OPTION;" > /tmp/grant.sql'"""
