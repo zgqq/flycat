@@ -5,6 +5,8 @@ import shutil
 from pathlib import Path
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
+if not os.path.exists('./target/'):
+  os.makedirs('./target/')
 
 if 'infra_mysql' in config_data.keys():
     if not os.path.exists('./common/mysql-initdb'):
@@ -209,8 +211,6 @@ if 'infra_nacos' in config_data.keys():
                                                     "-Dcom.sun.management.jmxremote.authenticate=false",
                                                     "-Dcom.sun.management.jmxremote.ssl=false"])
        java_opt =  ' '.join(jvm_args)
-       if not os.path.exists('./target/'):
-          os.makedirs('./target/')
 
        MYSQL_PORT=port
        MYSQL_DATABASE=database
