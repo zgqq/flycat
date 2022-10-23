@@ -50,14 +50,17 @@ ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
     def connectKey
     if (!isDockerBuild()) {
         connectKey = env + "_not_docker"
-    }  else {
+    } else {
         connectKey = env
     }
     // Method body here
     println("getConfigConnectValue ${key}, ${connectKey}")
-    if ('connected_from' in configData.keySet() && configData['connected_from'].containsKey(connectKey)) {
-        if (key in configData['connected_from'][connectKey].keySet())
-            return configData['connected_from'][connectKey][key]
+    if ('connected' in configData.keySet() && configData['connected'].containsKey(connectKey)) {
+        if (key in configData['connected'][connectKey].keySet())
+            return configData['connected'][connectKey][key]
+    }
+    if ('common' in configData['connected'].keySet() && key in configData['connected']['common'].keySet()) {
+        return configData['connected']['common'][key]
     }
     if (connectKey in configData.keySet()) {
         return configData[connectKey]
@@ -100,32 +103,36 @@ ext.addCustomJvmArgs = { argsArr ->
 }
 
 
+def autoConfigMap = new TreeMap<String, String>();
 if (getSubConfigValue('infra_redis', 'enable', env)) {
     def host = getSubConfigConnectValue('infra_redis', 'host', env)
     def password = getSubConfigConnectValue('infra_redis', 'password', env)
     def port = getSubConfigConnectValue('infra_redis', 'port', env)
 
-    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
-                      "-Dflycat.redis.primary.host=${host}".toString(),
-                      "-Dflycat.redis.primary.port=${port}".toString(),
-                      "-Dflycat.redis.primary.password=${password}".toString()])
+    autoConfigMap.put("flycat.redis.primary.enabled", true)
+    autoConfigMap.put("flycat.redis.primary.host", host)
+    autoConfigMap.put("flycat.redis.primary.port", port)
+    autoConfigMap.put("flycat.redis.primary.password", password)
+//    addCustomJvmArgs(["-Dflycat.redis.primary.enabled=true",
+//                      "-Dflycat.redis.primary.host=${host}".toString(),
+//                      "-Dflycat.redis.primary.port=${port}".toString(),
+//                      "-Dflycat.redis.primary.password=${password}".toString()])
 }
-
-
 
 if (getSubConfigValue('infra_nacos', 'enable', env)) {
     def host = getSubConfigConnectValue('infra_nacos', 'host', env)
     def port = getSubConfigConnectValue('infra_nacos', 'port', env)
 
-    def nacosUser = getSubConfigValue('infra_nacos', 'nacos_user', env)
-    def nacosPassword = getSubConfigValue('infra_nacos', 'nacos_password', env)
-    if (isStartupFromCode()) {
-        host = "localhost"
-    }
-    addCustomJvmArgs(["-Dflycat.nacos.config.server-addr=${host}:${port}".toString(),
-                      "-Dflycat.nacos.config.user=${nacosUser}".toString(),
-                      "-Dflycat.nacos.config.password=${nacosPassword}".toString()
-    ])
+    def nacosUser = getSubConfigConnectValue('infra_nacos', 'nacos_user', env)
+    def nacosPassword = getSubConfigConnectValue('infra_nacos', 'nacos_password', env)
+
+    autoConfigMap.put("flycat.nacos.config.server-addr", "${host}:${port}".toString())
+    autoConfigMap.put("flycat.nacos.config.user", "${nacosUser}".toString())
+    autoConfigMap.put("flycat.nacos.config.password", "${nacosPassword}".toString())
+//    addCustomJvmArgs(["-Dflycat.nacos.config.server-addr=${host}:${port}".toString(),
+//                      "-Dflycat.nacos.config.user=${nacosUser}".toString(),
+//                      "-Dflycat.nacos.config.password=${nacosPassword}".toString()
+//    ])
 }
 
 //def executeDockerBuild = false
@@ -137,7 +144,73 @@ if (getSubConfigValue('infra_nacos', 'enable', env)) {
 
 
 //println("Executing docker build, ${executeDockerBuild}, ${executingTasks}")
+//if (isDockerBuild()) {
+//    ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
+//    println("Executing docker build, use profile:${profile}")
+//}
+
+ext.profile = env
 if (isDockerBuild()) {
-    ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
-    println("Executing docker build, use profile:${profile}")
+    ext.profile = "docker" + profile
 }
+
+
+def profilePath = fileObj.getParent() + "/profile.json"
+def config = new File(profilePath)
+if (!config.isFile()) {
+    println("Not found profile file " + profilePath)
+    return
+}
+
+
+def profileConf = jsonSlurper.parse(config)
+
+def handleConf = { configMap, profileConfig ->
+    profileConfig.each { key, value ->
+        if (key != "env_overwrite") {
+            if (key in configMap.keySet()) {
+                configMap.remove(key)
+            }
+            configMap.put(key, value)
+//                common += (key + "=" + value +"\n")
+        }
+    }
+
+    if ("env_overwrite" in profileConfig.keySet()) {
+        if (env.toString() in profileConfig['env_overwrite'].keySet()) {
+            profileConfig['env_overwrite'][env.toString()].each { skey, svalue ->
+                if (key in configMap.keySet()) {
+                    configMap.remove(key)
+                }
+                configMap.put(key, value)
+            }
+        }
+    }
+}
+
+
+def configMap = new TreeMap<String, String>(autoConfigMap);
+def resourcesDir = sourceSets.main.output.resourcesDir
+resourcesDir.mkdirs()
+
+def common = ""
+def commonConfig = profileConf['common']
+handleConf(configMap, commonConfig)
+
+if (isDockerBuild()) {
+    def dockerConfig = profileConf['docker']
+    handleConf(configMap, dockerConfig)
+}
+
+configMap.each { key, value ->
+    common += (key + "=" + value + "\n")
+}
+
+println("Handling resource")
+println(common)
+def applicationConfigFile = new File(resourcesDir, "application-" + profile + ".properties")
+println("Write config to file "+ applicationConfigFile.getAbsolutePath())
+applicationConfigFile.text = common
+
+//profile_docker
+//profile_common
