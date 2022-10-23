@@ -1,0 +1,93 @@
+import groovy.json.JsonSlurper
+
+def jsonSlurper = new JsonSlurper()
+
+def configFile = "./config.json"
+if (hasProperty("config")) {
+    configFile = config
+}
+
+def fileObj = new File(configFile)
+if (!fileObj.isFile()) {
+    println("Not found config file " + configFile)
+    return
+}
+
+def data = jsonSlurper.parse(fileObj)
+ext.configObj = data
+ext.configFileObj = fileObj
+
+println("Read config: ${configObj}")
+//rootProject.name = configObj['app_name']
+
+ext.getConfigValue = { configData, key, env, defaultValue = null ->
+    env = env.toString()
+    // Method body here
+    println("getConfigValue ${key}, ${env}")
+    if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
+        if (key in configData['env_overwrite'][env].keySet())
+            return configData['env_overwrite'][env][key]
+    }
+    if (key in configData.keySet()) {
+        return configData[key]
+    }
+    return defaultValue
+}
+
+
+ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
+    env = env.toString()
+    def connectKey
+    if (!isDockerBuild()) {
+        connectKey = env + "_not_docker"
+    } else {
+        connectKey = env
+    }
+    // Method body here
+    println("getConfigConnectValue ${key}, ${connectKey}")
+    if ('connected' in configData.keySet() && configData['connected'].containsKey(connectKey)) {
+        if (key in configData['connected'][connectKey].keySet())
+            return configData['connected'][connectKey][key]
+    }
+    if ('common' in configData['connected'].keySet() && key in configData['connected']['common'].keySet()) {
+        return configData['connected']['common'][key]
+    }
+    if (connectKey in configData.keySet()) {
+        return configData[connectKey]
+    }
+    return getConfigValue(configData, key, env, defaultValue)
+}
+
+
+ext.getSubConfigConnectValue = { name, key, env, defaultValue = null ->
+    env = env.toString()
+    println("getSubConfigConnectValue ${name}, ${key}, ${env} ")
+    if (name in configObj.keySet()) {
+        def configData = configObj[name]
+        return getConfigConnectValue(configData, key, env, defaultValue)
+    }
+    return defaultValue
+}
+
+ext.getSubConfigValue = { name, key, env, defaultValue = null ->
+    env = env.toString()
+    println("getSubConfigValue ${name}, ${key}, ${env} ")
+    if (name in configObj.keySet()) {
+        def configData = configObj[name]
+//        def arr = ['local', 'dev']
+//        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
+//                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
+//                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
+        return getConfigValue(configData, key, env, defaultValue)
+    }
+    return defaultValue
+}
+
+
+ext.addCustomJvmArgs = { argsArr ->
+    if (project.hasProperty('customJvmArgs')) {
+        ext.customJvmArgs += argsArr
+    } else {
+        ext.customJvmArgs = argsArr
+    }
+}

@@ -38,6 +38,7 @@ data = json.load(f)
 APP_NAME = data['app_name']
 APP_PORT = data['app_port']
 APP_DEBUG_PORT = data['debug_port']
+HEALTHCHECK_PATH = data['healthcheck_path']
 
 GATEWAY_USER = data['gateway_user']
 GATEWAY_PASS = data['gateway_pass']

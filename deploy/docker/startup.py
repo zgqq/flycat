@@ -32,6 +32,12 @@ print('Executing operation, op:%s, env:%s' %(op, env))
 router_domain = get_main_config_value("router_domain", env)
 router_path = get_main_config_value("router_path", env)
 
+jmx_port = get_main_config_value('jmx_port', env, 0)
+jmx_port_map = ""
+jvm_args = []
+if jmx_port and jmx_port > 0:
+   jmx_port_map = f"- {jmx_port}:{jmx_port}"
+JMX_PORT_MAP = jmx_port_map
 
 
 ROUTER_DOMAIN=router_domain
@@ -69,6 +75,8 @@ services:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
       DEPLOY_APP_DIR: ${{app_volume}}
       DEPLOY_TAGS: ${{deploy_tags}}
+    ports:
+      {JMX_PORT_MAP}
     deploy:
       restart_policy:
         condition: on-failure
@@ -83,7 +91,7 @@ services:
       - traefik.http.routers.{ROUTER0}.tls.certResolver=certer
       - traefik.http.routers.{ROUTER0}.service={ROUTER0}-service
       - traefik.http.services.{ROUTER0}-service.loadbalancer.server.port={APP_PORT}
-      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.path=/v1/status
+      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.path={HEALTHCHECK_PATH}
       - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.interval=5s
       - traefik.http.routers.{ROUTER1}.middlewares=https-redirect,compress
       - traefik.http.routers.{ROUTER1}.entrypoints=http
