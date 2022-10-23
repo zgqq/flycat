@@ -34,6 +34,24 @@ apply from: "${gradleConfigDir}/env.gradle"
 apply from: "${gradleConfigDir}/autoConfigure.gradle"
 
 
+
+//spring.security.user.name: zgqq
+//spring.security.user.password: zgqq
+//server.port: 8081
+//spring.boot.admin.context-path: /sba-admin
+
+if (getSubConfigValue('infra_sba', 'enable', env)) {
+    def router_path = getSubConfigConnectValue('infra_sba', 'router_path', env)
+    def port = getSubConfigConnectValue('infra_sba', 'app_port', env)
+    def user = getSubConfigConnectValue('infra_sba', 'sba_user', env)
+    def password = getSubConfigConnectValue('infra_sba', 'sba_password', env)
+    addCustomJvmArgs(["-Dspring.security.user.name=${user}".toString(),
+                      "-Dspring.security.user.password=${password}".toString(),
+                      "-Dserver.port=${port}".toString(),
+                      "-Dspring.boot.admin.context-path=${router_path}".toString(),
+    ])
+}
+
 ext.configObj = configObj['infra_sba']
 apply from: "${gradleConfigDir}/configureJavaApp.gradle"
 ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'

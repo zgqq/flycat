@@ -135,6 +135,34 @@ if (getSubConfigValue('infra_nacos', 'enable', env)) {
 //    ])
 }
 
+
+if (getSubConfigValue('infra_sba', 'enable', env)) {
+    def user = getSubConfigConnectValue('infra_sba', 'sba_user', env)
+    def password = getSubConfigConnectValue('infra_sba', 'sba_password', env)
+
+    def meta_user = getSubConfigConnectValue('infra_sba', 'meta_user', env)
+    def meta_password = getSubConfigConnectValue('infra_sba', 'meta_password', env)
+    def client_url = getSubConfigConnectValue('infra_sba', 'client_url', env)
+
+    autoConfigMap.put("spring.security.user.name", user)
+    autoConfigMap.put("spring.security.user.password", password)
+    autoConfigMap.put("spring.boot.admin.client.username", meta_user)
+    autoConfigMap.put("spring.boot.admin.client.password", meta_password)
+    autoConfigMap.put("spring.boot.admin.client.metadata.user.name", '${spring.security.user.name}')
+    autoConfigMap.put("spring.boot.admin.client.metadata.user.password", '${spring.security.user.password}')
+
+    autoConfigMap.put("spring.boot.admin.client.url", client_url)
+//"spring.security.user.name": "zgq",
+//"spring.security.user.password": "zgq",
+//"spring.boot.admin.client.username": "zgqq",
+//"spring.boot.admin.client.password": "zgqq",
+//"spring.boot.admin.client.metadata.user.name": "${spring.security.user.name}",
+//"spring.boot.admin.client.metadata.user.password": "${spring.security.user.password}",
+
+}
+
+
+
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
 //if (executingTasks != null && !executingTasks.isEmpty()) {
