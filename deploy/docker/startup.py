@@ -32,11 +32,15 @@ print('Executing operation, op:%s, env:%s' %(op, env))
 router_domain = get_main_config_value("router_domain", env)
 router_path = get_main_config_value("router_path", env)
 
+
+
 jmx_port = get_main_config_value('jmx_port', env, 0)
 jmx_port_map = ""
 jvm_args = []
+PORTS = ""
 if jmx_port and jmx_port > 0:
-   jmx_port_map = f"- {jmx_port}:{jmx_port}"
+   PORTS = "-port"
+   jmx_port_map = f"""- {jmx_port}:{jmx_port}"""
 JMX_PORT_MAP = jmx_port_map
 
 
@@ -75,7 +79,7 @@ services:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
       DEPLOY_APP_DIR: ${{app_volume}}
       DEPLOY_TAGS: ${{deploy_tags}}
-    ports:
+    {PORTS}
       {JMX_PORT_MAP}
     deploy:
       restart_policy:
