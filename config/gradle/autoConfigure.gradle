@@ -118,10 +118,10 @@ def handleConf = { configMap, profileConfig ->
     if ("env_overwrite" in profileConfig.keySet()) {
         if (env.toString() in profileConfig['env_overwrite'].keySet()) {
             profileConfig['env_overwrite'][env.toString()].each { skey, svalue ->
-                if (key in configMap.keySet()) {
-                    configMap.remove(key)
+                if (skey in configMap.keySet()) {
+                    configMap.remove(skey)
                 }
-                configMap.put(key, value)
+                configMap.put(skey, svalue)
             }
         }
     }
