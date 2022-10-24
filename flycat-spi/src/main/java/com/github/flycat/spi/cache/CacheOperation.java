@@ -112,53 +112,17 @@ public interface CacheOperation {
     }
 
 
-    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
-                                                     Callable<T> callable, int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
-                                                     Callable<T> callable) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
-                                                     Type type,
-                                                     Callable<T> callable, int seconds) throws CacheException {
-        return queryNullableCacheObject(module, key, callable, seconds);
-    }
-
-    default <T> Optional<T> queryNullableCacheObject(String module, String key,
-                                                     Type type,
-                                                     Callable<T> callable) throws CacheException {
-        return queryNullableCacheObject(module, key, callable);
-    }
-
     default boolean isValueRefreshed(String module, Object key,
                                      int seconds) throws CacheException {
         throw new UnsupportedOperationException();
     }
 
-    default <T> T queryCacheObject(String module, Object key,
-                                   Callable<T> callable,
-                                   int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
 
-    default <T> ExecuteResult<T> executeOnceAction(String module,
-                                                   Object key,
-                                                   Callable<T> callable,
-                                                   int seconds) {
+//    default <T> ExecuteResult<T> executeOnceAction(String module,
+//                                                   Object key,
+//                                                   Callable<T> callable,
+//                                                   int seconds){
+//        throw new UnsupportedOperationException();
+//    }
 
-        AtomicBoolean newValue = new AtomicBoolean(false);
-        T returnValue = queryCacheObject(module, key,
-                () -> {
-                    T call = callable.call();
-                    newValue.set(true);
-                    return call;
-                }, seconds
-        );
-        ExecuteResult<T> result = new ExecuteResult<>(newValue.get(), returnValue);
-        return result;
-    }
 }

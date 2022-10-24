@@ -21,6 +21,7 @@ import com.github.flycat.context.ContextUtils;
 import com.github.flycat.spi.cache.CacheOperation;
 import com.github.flycat.spi.cache.DistributedCacheService;
 import com.github.flycat.spi.cache.ExecuteResult;
+import com.github.flycat.spi.cache.InMemoryCacheService;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.date.DateFormatter;
 import com.github.flycat.util.executor.ExecutorUtils;
@@ -72,13 +73,22 @@ public abstract class AbstractNotificationSender implements NotificationSender {
                 throw new RuntimeException("Not found cache operation impl");
             }
             String messageMd5 = StringUtils.md5(message.getContent());
-            ExecuteResult<Long> objectExecuteResult = cacheOperation
-                    .executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
-                            messageMd5, () -> {
-                                sendMessage(message);
-                                return System.currentTimeMillis();
-                            }, message.getRepeatIntervalSeconds(
-                            ));
+            ExecuteResult<Long> objectExecuteResult = null;
+            if (cacheOperation instanceof DistributedCacheService) {
+                objectExecuteResult = ((DistributedCacheService) cacheOperation).executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
+                        messageMd5, Long.class, () -> {
+                            sendMessage(message);
+                            return System.currentTimeMillis();
+                        }, message.getRepeatIntervalSeconds(
+                        ));
+            } else {
+                objectExecuteResult = ((InMemoryCacheService) cacheOperation).executeOnceAction("com.github.flycat.spi.notifier.AbstractNotificationSender.send",
+                        messageMd5, () -> {
+                            sendMessage(message);
+                            return System.currentTimeMillis();
+                        }, message.getRepeatIntervalSeconds(
+                        ));
+            }
             if (!objectExecuteResult.isExecuted()) {
                 LOGGER.info("The message was not notified, due to prevent repeat ");
             }
@@ -172,6 +182,7 @@ public abstract class AbstractNotificationSender implements NotificationSender {
     public void setAsyncSend(boolean asyncSend) {
         this.asyncSend = asyncSend;
     }
+
     public boolean isAsyncSend() {
         return this.asyncSend;
     }

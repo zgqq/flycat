@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface DistributedCacheService extends CacheOperation {
 
@@ -31,7 +32,7 @@ public interface DistributedCacheService extends CacheOperation {
     }
 
     default <T> Optional<T> queryNullableCacheObject(String module, Object key,
-                                                     Type type,
+                                                     Class<T> type,
                                                      Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
@@ -48,6 +49,30 @@ public interface DistributedCacheService extends CacheOperation {
 //    }
 
 
+//    <T> Optional<T> queryNullableCacheObject(String module, String key,
+//                                                     Class<T> type,
+//                                                     Callable<T> callable, int seconds);
 
+    <T> Optional<T> queryNullableCacheObject(String module, String key,
+                                             Class<T> type,
+                                             Callable<T> callable) throws CacheException;
+
+
+    default <T> ExecuteResult<T> executeOnceAction(String module,
+                                                   Object key,
+                                                   Class<T> type,
+                                                   Callable<T> callable,
+                                                   int seconds) {
+        AtomicBoolean newValue = new AtomicBoolean(false);
+        T returnValue = queryCacheObject(module, key, type,
+                () -> {
+                    T call = callable.call();
+                    newValue.set(true);
+                    return call;
+                }, seconds
+        );
+        ExecuteResult<T> result = new ExecuteResult<>(newValue.get(), returnValue);
+        return result;
+    }
 
 }

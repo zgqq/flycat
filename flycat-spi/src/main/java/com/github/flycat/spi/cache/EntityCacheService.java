@@ -74,46 +74,46 @@ public class EntityCacheService<E> implements CacheOperation {
         return cacheOperation.queryCacheObject(key, type, callable);
     }
 
-    @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Callable<T> callable, int seconds) throws CacheException {
-        return cacheOperation.queryNullableCacheObject(module, key, callable, seconds);
-    }
-
-    @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Callable<T> callable) throws CacheException {
-        return cacheOperation.queryNullableCacheObject(module, key, callable);
-    }
-
-    @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable, int seconds) throws CacheException {
-        return cacheOperation.queryNullableCacheObject(module, key, type, callable, seconds);
-    }
-
-    @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable) throws CacheException {
-        return cacheOperation.queryNullableCacheObject(module, key, type, callable);
-    }
+//    @Override
+//    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Callable<T> callable, int seconds) throws CacheException {
+//        return cacheOperation.queryNullableCacheObject(module, key, callable, seconds);
+//    }
+//
+//    @Override
+//    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Callable<T> callable) throws CacheException {
+//        return cacheOperation.queryNullableCacheObject(module, key, callable);
+//    }
+//
+//    @Override
+//    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable, int seconds) throws CacheException {
+//        return cacheOperation.queryNullableCacheObject(module, key, type, callable, seconds);
+//    }
+//
+//    @Override
+//    public <T> Optional<T> queryNullableCacheObject(String module, String key, Type type, Callable<T> callable) throws CacheException {
+//        return cacheOperation.queryNullableCacheObject(module, key, type, callable);
+//    }
 
     @Override
     public boolean isValueRefreshed(String module, Object key, int seconds) throws CacheException {
         return cacheOperation.isValueRefreshed(module, key, seconds);
     }
 
-    public <T> T queryCacheEntityById(String key, Type type, Callable<T> callable) throws ResourceNotFoundException {
-        return queryNullableCacheObject(entityCache.byIdKey(),
-                key,
-                type,
-                callable).orElseThrow(ResourceNotFoundException::new);
-
-    }
-
-
-    public E queryCacheEntityById(String key,
-                                  Callable<E> callable) throws ResourceNotFoundException {
-        return queryNullableCacheObject(entityCache.byIdKey(),
-                key,
-                callable).orElseThrow(ResourceNotFoundException::new);
-    }
+//    public <T> T queryCacheEntityById(String key, Type type, Callable<T> callable) throws ResourceNotFoundException {
+//        return queryNullableCacheObject(entityCache.byIdKey(),
+//                key,
+//                type,
+//                callable).orElseThrow(ResourceNotFoundException::new);
+//
+//    }
+//
+//
+//    public E queryCacheEntityById(String key,
+//                                  Callable<E> callable) throws ResourceNotFoundException {
+//        return queryNullableCacheObject(entityCache.byIdKey(),
+//                key,
+//                callable).orElseThrow(ResourceNotFoundException::new);
+//    }
 
     public void removeQueryEntityAndPageCache(String id) {
         entityCache.removeQueryEntityAndPageCache(cacheOperation, id);

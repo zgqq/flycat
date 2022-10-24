@@ -20,22 +20,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 public interface InMemoryCacheService extends CacheOperation {
 
 
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
+                                                     Callable<T> callable, int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> Optional<T> queryNullableCacheObject(String module, Object key,
+                                                     Callable<T> callable) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
     default <T> T queryCacheObject(String module, Object key,
                                    Callable<T> callable) throws CacheException {
         throw new UnsupportedOperationException();
     }
-
-    default <T> T queryCacheObject(String module, Object key,
-                                   Callable<T> callable,
-                                   int seconds) throws CacheException {
-        throw new UnsupportedOperationException();
-    }
-
 
     default <T> T queryAllCacheObjects(String module,
                                        Callable<T> callable) throws CacheException {
@@ -94,4 +98,29 @@ public interface InMemoryCacheService extends CacheOperation {
             throws CacheException {
         throw new UnsupportedOperationException();
     }
+
+
+    default <T> T queryCacheObject(String module, Object key,
+                                   Callable<T> callable,
+                                   int seconds) throws CacheException {
+        throw new UnsupportedOperationException();
+    }
+
+    default <T> ExecuteResult<T> executeOnceAction(String module,
+                                                   Object key,
+                                                   Callable<T> callable,
+                                                   int seconds) {
+
+        AtomicBoolean newValue = new AtomicBoolean(false);
+        T returnValue = queryCacheObject(module, key,
+                () -> {
+                    T call = callable.call();
+                    newValue.set(true);
+                    return call;
+                }, seconds
+        );
+        ExecuteResult<T> result = new ExecuteResult<>(newValue.get(), returnValue);
+        return result;
+    }
+
 }

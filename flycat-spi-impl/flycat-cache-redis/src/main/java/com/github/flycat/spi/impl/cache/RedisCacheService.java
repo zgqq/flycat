@@ -36,7 +36,6 @@ import javax.inject.Singleton;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -85,7 +84,8 @@ public class RedisCacheService implements DistributedCacheService {
                         redisOperations.multi();
                         redisOperations.setEx(redisKey, seconds, jsonString);
                         final String moduleKeys = createModuleKeys(module);
-                        redisOperations.zAdd(moduleKeys, System.currentTimeMillis(), redisKey);
+                        redisOperations.zAdd(moduleKeys, System.currentTimeMillis()
+                                + TimeUnit.SECONDS.toMillis(seconds), redisKey);
                         return redisOperations.exec();
                     });
                 }
@@ -107,7 +107,7 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
     @Override
-    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Type type, Callable<T> callable)
+    public <T> Optional<T> queryNullableCacheObject(String module, Object key, Class<T> type, Callable<T> callable)
             throws CacheException {
         return queryNullableCacheObject(module, key, type, callable, 300);
     }
@@ -136,6 +136,12 @@ public class RedisCacheService implements DistributedCacheService {
                 stringListType,
                 () -> callable.call(), seconds
         );
+    }
+
+
+    @Override
+    public <T> Optional<T> queryNullableCacheObject(String module, String key, Class<T> type, Callable<T> callable) throws CacheException {
+        return queryNullableCacheObject(module, key, type, callable, 300);
     }
 
     @Override
@@ -269,15 +275,14 @@ public class RedisCacheService implements DistributedCacheService {
     }
 
 
-    @Override
-    public <T> T queryCacheObject(String module, Object key,
-                                  Callable<T> callable,
-                                  int seconds) throws CacheException {
-        try {
-            return queryCacheObject(module, key, Object.class, callable, seconds);
-        } catch (Exception e) {
-            throw new CacheException("Redis cache error", e);
-        }
-    }
-
+//    @Override
+//    public <T> T queryCacheObject(String module, Object key,
+//                                  Callable<T> callable,
+//                                  int seconds) throws CacheException {
+//        try {
+//            return queryCacheObject(module, key, Object.class, callable, seconds);
+//        } catch (Exception e) {
+//            throw new CacheException("Redis cache error", e);
+//        }
+//    }
 }

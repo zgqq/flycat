@@ -1,11 +1,14 @@
 package com.github.flycat.web.spring;
 
 import com.github.flycat.context.ContextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class ServerStatus {
 
+    private static final Logger logger = LoggerFactory.getLogger(ServerStatus.class);
 
     public static ResponseEntity response() {
         return response(null);
@@ -23,6 +26,7 @@ public class ServerStatus {
                         HttpStatus.OK
                 );
             } catch (Exception e) {
+                logger.error("Status error! ", e);
                 responseEntity = new ResponseEntity("Server error",
                         HttpStatus.INTERNAL_SERVER_ERROR
                 );
