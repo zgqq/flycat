@@ -39,7 +39,7 @@ jmx_port_map = ""
 jvm_args = []
 PORTS = ""
 if jmx_port and jmx_port > 0:
-   PORTS = "-port"
+   PORTS = "ports:"
    jmx_port_map = f"""- {jmx_port}:{jmx_port}"""
 JMX_PORT_MAP = jmx_port_map
 
