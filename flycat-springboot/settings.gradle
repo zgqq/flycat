@@ -13,8 +13,6 @@ project(':flycat-springboot-app').projectDir = new File('./flycat-springboot/fly
 //include 'flycat-springboot-sba'
 //project(':flycat-springboot-sba').projectDir = new File('./flycat-springboot/flycat-sba')
 
-include 'flycat-springboot-mybatis'
-project(':flycat-springboot-mybatis').projectDir = new File('./flycat-springboot/flycat-mybatis')
 
 include 'flycat-springboot-redis'
 project(':flycat-springboot-redis').projectDir = new File('./flycat-springboot/flycat-redis')
@@ -31,3 +29,9 @@ include 'flycat-springboot-task'
 project(':flycat-springboot-task').projectDir = new File('./flycat-springboot/flycat-task')
 
 
+include 'flycat-springboot-mybatis'
+project(':flycat-springboot-mybatis').projectDir = new File('./flycat-springboot/flycat-mybatis')
+
+
+include 'flycat-springboot-mybatisplus'
+project(':flycat-springboot-mybatisplus').projectDir = new File('./flycat-springboot/flycat-mybatisplus')

@@ -16,6 +16,7 @@
 package com.github.flycat.platform.springboot.annotation;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -29,8 +30,9 @@ import java.lang.annotation.*;
 @Inherited
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
         TransactionAutoConfiguration.class,
-        MybatisPlusAutoConfiguration.class,
         RedisAutoConfiguration.class
+//        , MybatisAutoConfiguration.class,
+//        MybatisPlusAutoConfiguration.class
 })
 public @interface SpringBoot {
 

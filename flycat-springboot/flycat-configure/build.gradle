@@ -12,6 +12,7 @@ dependencies {
 
     compileOnly project(':flycat-springboot-context')
     compileOnly project(':flycat-springboot-mybatis')
+    compileOnly project(':flycat-springboot-mybatisplus')
     compileOnly project(':flycat-springboot-web')
 
     compileOnly project(':flycat-ds')

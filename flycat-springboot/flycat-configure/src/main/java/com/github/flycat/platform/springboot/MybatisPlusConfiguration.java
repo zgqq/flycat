@@ -15,16 +15,14 @@
  */
 package com.github.flycat.platform.springboot;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.github.flycat.db.mybatis.MybatisUtils;
 import com.github.flycat.util.StringUtils;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.type.TypeHandler;
-import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
-import org.mybatis.spring.boot.autoconfigure.SqlSessionFactoryBeanCustomizer;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +49,9 @@ import static com.github.flycat.module.ModuleManager.getModulePackagesAsString;
  */
 @Configuration
 //@ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class})
-public class MybatisConfiguration {
+public class MybatisPlusConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisPlusConfiguration.class);
     public static final String SQL_SESSION_FACTORY_NAME_1 = "sqlSessionFactory1";
 
 
@@ -61,26 +59,23 @@ public class MybatisConfiguration {
 
     @Configuration
     @ConditionalOnBean(DataSourceConfiguration.CreatePrimaryDataSourceConfiguration.class)
-    @EnableConfigurationProperties(MybatisProperties.class)
-    @ConditionalOnClass(MapperScannerConfigurer.class)
-    public static class Mybatis1Configuration extends MybatisAutoConfiguration {
+    @EnableConfigurationProperties(MybatisPlusProperties.class)
+    @ConditionalOnClass({MybatisPlusProperties.class, MapperScannerConfigurer.class})
+    public static class Mybatis1Configuration extends MybatisPlusAutoConfiguration {
 
         @Autowired
-        public Mybatis1Configuration(MybatisProperties properties,
+        public Mybatis1Configuration(MybatisPlusProperties properties,
                                      ObjectProvider<Interceptor[]> interceptorsProvider,
-                                     ObjectProvider<TypeHandler[]> typeHandlersProvider,
-                                     ObjectProvider<LanguageDriver[]> languageDriversProvider,
-                                     ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
-                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                     ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
+                                     ResourceLoader resourceLoader,
+                                     ObjectProvider<DatabaseIdProvider> databaseIdProvider,
+                                     ObjectProvider<List<ConfigurationCustomizer>>
+                                             configurationCustomizersProvider,
+                                     ObjectProvider<List<MybatisPlusPropertiesCustomizer>>
+                                             mybatisPlusPropertiesCustomizerProvider,
                                      ApplicationContext applicationContext) {
-            super(properties, interceptorsProvider, typeHandlersProvider,
-                    languageDriversProvider,
-                    resourceLoader,
-                    databaseIdProvider,
-                    configurationCustomizersProvider,
-                    sqlSessionFactoryBeanCustomizers,
-                    applicationContext);
+            super(properties, interceptorsProvider, resourceLoader,
+                    databaseIdProvider, configurationCustomizersProvider,
+                    mybatisPlusPropertiesCustomizerProvider, applicationContext);
         }
 
         // http://www.importnew.com/25940.html
@@ -94,7 +89,7 @@ public class MybatisConfiguration {
             } catch (IllegalArgumentException e) {
             }
             String modulePackagesAsString = getScanPackages(name);
-            LOGGER.info("Creating primary mybatis mapper, config:{}, module:{}", name, modulePackagesAsString);
+            LOGGER.info("Creating primary mybatis plus mapper, config:{}, module:{}", name, modulePackagesAsString);
             return MybatisUtils.createMapperConfigurer(modulePackagesAsString, SQL_SESSION_FACTORY_NAME_1);
         }
 
@@ -120,30 +115,26 @@ public class MybatisConfiguration {
 
     @Configuration
     @ConditionalOnBean(DataSourceConfiguration.CreateSecondaryDataSourceConfiguration.class)
-    @EnableConfigurationProperties(MybatisProperties.class)
-    @ConditionalOnClass(MapperScannerConfigurer.class)
-    public static class MybatisSqlFactory2Configuration extends MybatisAutoConfiguration {
+    @EnableConfigurationProperties(MybatisPlusProperties.class)
+    @ConditionalOnClass({MybatisPlusProperties.class, MapperScannerConfigurer.class})
+    public static class Mybatis2Configuration extends MybatisPlusAutoConfiguration {
 
         public static final String SQL_SESSION_FACTORY_NAME_2 = "sqlSessionFactory2";
 
         @Autowired
-        public MybatisSqlFactory2Configuration(MybatisProperties properties,
-                                     ObjectProvider<Interceptor[]> interceptorsProvider,
-                                     ObjectProvider<TypeHandler[]> typeHandlersProvider,
-                                     ObjectProvider<LanguageDriver[]> languageDriversProvider,
-                                     ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
-                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                     ObjectProvider<List<SqlSessionFactoryBeanCustomizer>> sqlSessionFactoryBeanCustomizers,
-                                     ApplicationContext applicationContext) {
-            super(properties, interceptorsProvider, typeHandlersProvider,
-                    languageDriversProvider,
-                    resourceLoader,
-                    databaseIdProvider,
-                    configurationCustomizersProvider,
-                    sqlSessionFactoryBeanCustomizers,
-                    applicationContext);
+        public Mybatis2Configuration(MybatisPlusProperties properties,
+                                               ObjectProvider<Interceptor[]> interceptorsProvider,
+                                               ResourceLoader resourceLoader,
+                                               ObjectProvider<DatabaseIdProvider> databaseIdProvider,
+                                               ObjectProvider<List<ConfigurationCustomizer>>
+                                                       configurationCustomizersProvider,
+                                               ObjectProvider<List<MybatisPlusPropertiesCustomizer>>
+                                                       mybatisPlusPropertiesCustomizerProvider,
+                                               ApplicationContext applicationContext) {
+            super(properties, interceptorsProvider, resourceLoader,
+                    databaseIdProvider, configurationCustomizersProvider,
+                    mybatisPlusPropertiesCustomizerProvider, applicationContext);
         }
-
 
         // http://www.importnew.com/25940.html
         @Bean
@@ -156,7 +147,7 @@ public class MybatisConfiguration {
                         resolveRequiredPlaceholders("${flycat.datasource.secondary.mybatis.mapper}");
             } catch (IllegalArgumentException e) {
             }
-            LOGGER.info("Creating secondary mybatis mapper, {}", name);
+            LOGGER.info("Creating secondary mybatis plus mapper, {}", name);
             return MybatisUtils.createMapperConfigurer(name, SQL_SESSION_FACTORY_NAME_2);
         }
 

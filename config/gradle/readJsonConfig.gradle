@@ -45,9 +45,10 @@ ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
     }
     // Method body here
     if ('connected' in configData.keySet() && configData['connected'].containsKey(connectKey)) {
-        if (key in configData['connected'][connectKey].keySet())
+        if (key in configData['connected'][connectKey].keySet()) {
             println("getConfigConnectValue from env, ${key}, ${connectKey}, ${configData['connected'][connectKey][key]}")
             return configData['connected'][connectKey][key]
+        }
     }
     if ('common' in configData['connected'].keySet() && key in configData['connected']['common'].keySet()) {
         println("getConfigConnectValue from common, ${key}, ${env}, ${configData['connected']['common'][key]}")

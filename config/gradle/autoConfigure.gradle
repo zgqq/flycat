@@ -75,6 +75,23 @@ if (getConfigValue(configObj, 'router_path', env)) {
     autoConfigMap.put("server.servlet.context-path", getConfigValue(configObj, 'router_path', env))
 }
 
+
+if (getSubConfigValue('infra_mysql', 'enable', env)) {
+    def host = getSubConfigConnectValue('infra_mysql', 'host', env)
+    def port = getSubConfigConnectValue('infra_mysql', 'port', env)
+    def user = getSubConfigConnectValue('infra_mysql', 'user', env)
+    def password = getSubConfigConnectValue('infra_mysql', 'password', env)
+    def database = getSubConfigConnectValue('infra_mysql', 'database', env)
+
+    autoConfigMap.put("flycat.datasource.primary.enabled", true)
+    autoConfigMap.put("flycat.datasource.primary.url", "jdbc:mysql://${host}:${port}/${database}?useUnicode=true&characterEncoding=utf-8".toString())
+    autoConfigMap.put("flycat.datasource.primary.username", user)
+    autoConfigMap.put("flycat.datasource.primary.password", password)
+    autoConfigMap.put("flycat.datasource.primary.initSQL", "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci")
+    autoConfigMap.put("flycat.datasource.primary.driverClassName", "com.mysql.jdbc.Driver")
+}
+
+
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
 //if (executingTasks != null && !executingTasks.isEmpty()) {

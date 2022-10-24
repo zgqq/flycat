@@ -10,12 +10,12 @@ dependencies {
 
     api group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
 //    api group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
-//    api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
+    api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
     // https://mvnrepository.com/artifact/p6spy/p6spy
-//    api group: 'p6spy', name: 'p6spy', version: '3.8.5'
+    api group: 'p6spy', name: 'p6spy', version: '3.8.5'
 
 //    api group: 'com.baomidou', name: 'mybatis-plus', version: '3.2.0'
-    api("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2")
+
 }
 
 
