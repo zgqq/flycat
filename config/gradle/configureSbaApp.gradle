@@ -26,10 +26,10 @@ if (configObj.containsKey('debug_port')) {
     ext.debugPort=configObj['debug_port']
 }
 
-ext.jmxPort = getConfigValue(configObj, 'jmx_port', env, 0)
+ext.jmxPort = getConfigValueFromObject(configObj, 'jmx_port', env, 0)
 
 if (!isRunUnitTest()) {
-    if (!getConfigValue(configObj, 'run_test', env)){
+    if (!getConfigValueFromObject(configObj, 'run_test', env)){
         println("Disable test in ${env} env")
         test.enabled = false
     }
@@ -38,9 +38,11 @@ if (!isRunUnitTest()) {
 //"-Xms256m",
 //"-Xmx256m",
 //"-Xmn128m"
-def jvmXmx = getSubConfigValue('infra_sba', 'jvm_xmx', env, '256m')
-def jvmXms= getSubConfigValue('infra_sba', 'jvm_xms', env, '256m')
-def jvmXmn= getSubConfigValue('infra_sba', 'jvm_xmn', env, '128m')
+def jvmXmx = getConfigValueFromObject(configObj, 'jvm_xmx', env, '256m')
+def jvmXms= getConfigValueFromObject(configObj, 'jvm_xms', env, '256m')
+def jvmXmn= getConfigValueFromObject(configObj, 'jvm_xmn', env, '128m')
+
+
 ext.heapJvmArgs = [
         "-Xms"+jvmXms,
         "-Xmx"+jvmXmx,

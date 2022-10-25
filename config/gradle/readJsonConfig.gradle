@@ -20,7 +20,21 @@ ext.configFileObj = fileObj
 println("Read config: ${configObj}")
 //rootProject.name = configObj['app_name']
 
-ext.getConfigValue = { configData, key, env, defaultValue = null ->
+
+ext.getConfigValue = { key, env, defaultValue = null ->
+    if ('modules' in configObj.keySet()) {
+        if (project.name in configObj['modules'].keySet()) {
+            def configValue = getConfigValueFromObject(configObj['modules'][project.name], key, env, null)
+            if (configValue != null) {
+                return configValue
+            }
+        }
+    }
+    return getConfigValueFromObject(configObj, key, env, defaultValue)
+}
+
+
+ext.getConfigValueFromObject = { configData, key, env, defaultValue = null ->
     env = env.toString()
     // Method body here
     println("getConfigValue ${key}, ${env}")
@@ -58,15 +72,28 @@ ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
         println("getConfigConnectValue from main, ${key}, ${connectKey}, ${configData[connectKey]}")
         return configData[connectKey]
     }
-    return getConfigValue(configData, key, env, defaultValue)
+    return getConfigValueFromObject(configData, key, env, defaultValue)
+}
+
+ext.getSubConfigConnectValue = { name, key, env, defaultValue = null ->
+    if ('modules' in configObj.keySet()) {
+        if (project.name in configObj['modules'].keySet()) {
+            def configValue = getSubConfigConnectValueFromObject(configObj['modules'][project.name], name, key, env, null)
+            if (configValue != null) {
+                return configValue
+            }
+        }
+    }
+    return getSubConfigConnectValueFromObject(configObj, name, key, env, defaultValue)
 }
 
 
-ext.getSubConfigConnectValue = { name, key, env, defaultValue = null ->
+
+ext.getSubConfigConnectValueFromObject = {configObject, name, key, env, defaultValue = null ->
     env = env.toString()
     println("getSubConfigConnectValue ${name}, ${key}, ${env} ")
-    if (name in configObj.keySet()) {
-        def configData = configObj[name]
+    if (name in configObject.keySet()) {
+        def configData = configObject[name]
         return getConfigConnectValue(configData, key, env, defaultValue)
     }
     return defaultValue
@@ -81,7 +108,7 @@ ext.getSubConfigValue = { name, key, env, defaultValue = null ->
 //        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
 //                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
 //                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
-        return getConfigValue(configData, key, env, defaultValue)
+        return getConfigValueFromObject(configData, key, env, defaultValue)
     }
     return defaultValue
 }

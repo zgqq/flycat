@@ -71,8 +71,8 @@ if (getSubConfigValue('infra_sba', 'enable', env)) {
 //"spring.boot.admin.client.metaconfigObj.user.password": "${spring.security.user.password}",
 }
 
-if (getConfigValue(configObj, 'router_path', env)) {
-    autoConfigMap.put("server.servlet.context-path", getConfigValue(configObj, 'router_path', env))
+if (getConfigValue('router_path', env)) {
+    autoConfigMap.put("server.servlet.context-path", getConfigValue('router_path', env))
 }
 
 
@@ -91,6 +91,43 @@ if (getSubConfigValue('infra_mysql', 'enable', env)) {
     autoConfigMap.put("flycat.datasource.primary.driverClassName", "com.mysql.jdbc.Driver")
 }
 
+
+def appPort= getConfigValue('app_port',env)
+def appName= getConfigValue('app_name',env)
+def dockerRepo= getConfigValue('docker_repo',env)
+def mainClass= getConfigValue('main_class',env)
+
+ext.containerPort = appPort
+ext.dockerImage = dockerRepo
+if (hasProperty('appClassName')) {
+    throw new RuntimeException("appClassName has defined")
+}
+ext.appClassName = mainClass
+
+autoConfigMap.put("server.port", "${appPort}".toString())
+autoConfigMap.put("spring.application.name", "${appName}".toString())
+
+ext.debugPort=getConfigValue('debug_port',env, 0)
+ext.jmxPort = getConfigValue('jmx_port', env, 0)
+
+if (!isRunUnitTest()) {
+    if (!getConfigValue( 'run_test', env)){
+        println("Disable test in ${env} env")
+        test.enabled = false
+    }
+}
+
+//"-Xms256m",
+//"-Xmx256m",
+//"-Xmn128m"
+def jvmXmx = getConfigValue('jvm_xmx', env, '256m')
+def jvmXms= getConfigValue('jvm_xms', env, '256m')
+def jvmXmn= getConfigValue('jvm_xmn', env, '128m')
+ext.heapJvmArgs = [
+        "-Xms"+jvmXms,
+        "-Xmx"+jvmXmx,
+        "-Xmn"+jvmXmn
+]
 
 //def executeDockerBuild = false
 //def executingTasks = project.gradle.startParameter.taskNames
@@ -161,6 +198,8 @@ if (isDockerBuild()) {
 configMap.each { key, value ->
     common += (key + "=" + value + "\n")
 }
+
+
 
 println("Handling resource")
 println(common)

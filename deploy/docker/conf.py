@@ -13,6 +13,10 @@ if len(sys.argv) > 1:
     env = sys.argv[1]
     conf_path = sys.argv[2]
 
+module_name = None
+if len(sys.argv) > 3:
+    module_name = sys.argv[3]
+
 tag = env
 # if env == "local":
 #    tag = "dockerlocal"
@@ -25,6 +29,15 @@ def get_bool_value(data, key, env):
     return config_value != None
 
 def get_config_value(data, key, env, default_value = None):
+    global module_name
+    if 'modules' in data.keys() and len(data['modules'].keys())>0:
+        if not module_name:
+           module_name = list(data['modules'].keys())[0]
+        module_config = data['modules'][module_name]
+        conf_value = get_config_value(module_config, key, env, None)
+        if conf_value != None:
+           return conf_value
+
     if 'env_overwrite' in data.keys() and env in data['env_overwrite']:
         if key in data['env_overwrite'][env].keys():
            return data['env_overwrite'][env][key]
@@ -35,14 +48,14 @@ def get_config_value(data, key, env, default_value = None):
 f = open(conf_path)
 data = json.load(f)
 # APP_DOMAIN = data['app_domain']
-APP_NAME = data['app_name']
-APP_PORT = data['app_port']
-APP_DEBUG_PORT = data['debug_port']
-HEALTHCHECK_PATH = data['healthcheck_path']
+APP_NAME = get_config_value(data, 'app_name', env)
+APP_PORT = get_config_value(data, 'app_port', env)
+APP_DEBUG_PORT = get_config_value(data, 'debug_port', env)
+HEALTHCHECK_PATH = get_config_value(data, 'healthcheck_path', env)
 
-GATEWAY_USER = data['gateway_user']
-GATEWAY_PASS = data['gateway_pass']
-AUTH_USERS = data['gateway_auths']
+GATEWAY_USER = get_config_value(data, 'gateway_user', env)
+GATEWAY_PASS = get_config_value(data, 'gateway_pass', env)
+AUTH_USERS = get_config_value(data, 'gateway_auths', env)
 
 GATEWAY_DOMAIN = get_config_value(data, 'gateway_domain', env)
 config_data = data

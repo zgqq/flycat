@@ -89,7 +89,7 @@ public class WebConfiguration {
     }
 
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public FilterRegistrationBean webCorsFilter() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         Filter customFilter = new WebCorsFilter();
         registration.setFilter(customFilter);

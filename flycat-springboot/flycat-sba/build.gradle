@@ -53,7 +53,7 @@ if (getSubConfigValue('infra_sba', 'enable', env)) {
 }
 
 ext.configObj = configObj['infra_sba']
-apply from: "${gradleConfigDir}/configureJavaApp.gradle"
+apply from: "${gradleConfigDir}/configureSbaApp.gradle"
 ext.appClassName = 'com.github.flycat.sba.SpringBootAdminApplication'
 //ext.jmxPort = getSubConfigValue('infra_sba', 'jmx_port', env, 0)
 //ext.dockerImage = getSubConfigValue('infra_sba', 'docker_repo', env, 'zgqq/flycat-sba')
