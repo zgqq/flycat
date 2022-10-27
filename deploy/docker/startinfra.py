@@ -178,6 +178,70 @@ if 'infra_mysql' in config_data.keys():
           internal_files = ['nacos.sql']
           execute_sql_files(sql_dir, internal_files, user, password, root_password, need_wait, executed)
 
+       backup_databases = get_config_value(config_data['infra_mysql'], 'backup_databases', env, [])
+       if len(backup_databases) > 0:
+          print('Scheduling backup job')
+          backup_dir = home_dir + '/backup/databases'
+          if not os.path.exists(backup_dir):
+             os.makedirs(backup_dir)
+          backup_cron = get_config_value(config_data['infra_mysql'], 'backup_cron', env, '')
+#           date_time = now.strftime("%Y%m%d-%H%M%S")
+          jobs_str = ""
+          try:
+             jobs_str = execute('crontab -l')
+          except Exception as e:
+             pass
+
+          job_list = jobs_str.split("\n")
+          new_list = []
+          cmd_list  = []
+          for backup_database in backup_databases:
+#                  /usr/bin/mysqldump -h $mysql_host -u $mysql_username -p$mysql_password $mysql_database | gzip -9 -c > $backup_path/$today/$mysql_database-`date +%H%M`.sql.gz
+              backup_cmd = f"docker exec db-mysql sh -c 'exec mysqldump -u{user} -p{password} {backup_database} "\
+              f"| gzip -9 -c' > {backup_dir}/{backup_database}-`date +'%Y-%m-%d_%H%M%S'`.sql.gz"
+              cmd_list.append(backup_cmd)
+#               backup = f"{backup_cron} {backup_cmd}"
+#               new_list.append(backup)
+#               for job in job_list:
+#                   if backup_cmd in job:
+#                      job_list.remove(job)
+
+          with open(home_dir + '/deploy/backup_mysql.sh', 'w') as f:
+            for line in cmd_list:
+                f.write(f"{line}\n")
+          script_path = home_dir + '/deploy/backup_mysql.sh'
+          log_execute_system('chmod +x '+script_path)
+
+          for job in job_list:
+              if not job:
+                continue
+              if script_path in job:
+                 new_list.append(f"{backup_cron} {script_path}")
+              else:
+                 new_list.append(job)
+
+          print('crontab list size %s' % len(new_list))
+          if len(new_list) == 0:
+              new_list.append(f"{backup_cron} {script_path}")
+
+#           for job in job_list:
+#               if job not in new_list:
+#                  new_list.append(job)
+
+          with open('/tmp/new_crontab', 'w') as f:
+            for line in new_list:
+                f.write(f"{line}\n")
+          log_execute_system('crontab /tmp/new_crontab')
+
+          with open('/tmp/new_crontab') as f:
+            contents = f.read()
+            print(contents)
+
+#           log_execute_system('rm /tmp/new_crontab')
+          print('Scheduled backup job' )
+#            crontab
+
+
 if 'infra_nacos' in config_data.keys():
     enable = get_config_value(config_data['infra_nacos'], 'enable', env)
     if enable and "config-nacos" not in containers:

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE DATABASE {DATABASE};
 USE {DATABASE};
