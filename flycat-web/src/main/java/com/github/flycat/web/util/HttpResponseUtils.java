@@ -19,7 +19,7 @@ import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.web.response.ResponseFactory;
 import com.github.flycat.web.response.ResponseFactoryHolder;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 

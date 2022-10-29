@@ -27,7 +27,8 @@ public class SpringDruidUtils {
     public static ServletRegistrationBean statViewServletRegistrationBean(DruidStatProperties properties) {
         DruidStatProperties.StatViewServlet config = properties.getStatViewServlet();
         ServletRegistrationBean registrationBean = new ServletRegistrationBean();
-        registrationBean.setServlet(new StatViewServlet());
+//        StatViewServlet statViewServlet = new StatViewServlet();
+//        registrationBean.setServlet(statViewServlet);
         registrationBean.addUrlMappings(config.getUrlPattern() != null ? config.getUrlPattern() : "/druid/*");
         if (config.getAllow() != null) {
             registrationBean.addInitParameter("allow", config.getAllow());
@@ -53,8 +54,8 @@ public class SpringDruidUtils {
     public static FilterRegistrationBean webStatFilterRegistrationBean(DruidStatProperties properties) {
         DruidStatProperties.WebStatFilter config = properties.getWebStatFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        WebStatFilter filter = new WebStatFilter();
-        registrationBean.setFilter(filter);
+//        WebStatFilter filter = new WebStatFilter();
+//        registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns(config.getUrlPattern() != null ? config.getUrlPattern() : "/*");
         registrationBean.addInitParameter("exclusions",
                 config.getExclusions() != null ? config.getExclusions()

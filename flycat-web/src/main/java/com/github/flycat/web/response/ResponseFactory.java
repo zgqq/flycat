@@ -17,7 +17,6 @@ package com.github.flycat.web.response;
 
 import com.github.flycat.web.context.ExceptionContext;
 
-import javax.validation.ValidationException;
 
 public interface ResponseFactory {
 
@@ -27,7 +26,7 @@ public interface ResponseFactory {
         return null;
     }
 
-    default Object createValidationExceptionResponse(ValidationException exception) {
+    default Object createValidationExceptionResponse(Exception exception) {
         return null;
     }
 

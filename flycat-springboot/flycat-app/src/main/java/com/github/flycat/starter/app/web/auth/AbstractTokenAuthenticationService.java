@@ -28,7 +28,7 @@ import com.github.flycat.web.request.LocalRequestBody;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public abstract class AbstractTokenAuthenticationService implements TokenAuthenticationService {

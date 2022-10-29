@@ -15,12 +15,13 @@ buildscript {
     dependencies {
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
 //        classpath 'org.springframework:springloaded:1.2.0.RELEASE'
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.0-RC1" //
     }
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.7.4' apply false
-    id "io.spring.dependency-management" version "1.0.14.RELEASE" apply false
+//    id 'org.springframework.boot' version '2.7.4' apply false
+    id "io.spring.dependency-management" version "1.1.0" apply false
 
     id "com.github.hierynomus.license" version "0.15.0" apply false
 //    id "io.freefair.lombok" version "4.1.0" apply false
@@ -31,7 +32,7 @@ plugins {
     id "net.ltgt.errorprone" version "1.1.1" apply false
 }
 
-ext.flycatVersion = '0.27.0-SNAPSHOT'
+ext.flycatVersion = '0.30.0-SNAPSHOT'
 ext.flycatGroup = 'com.github.zgqq'
 
 ext.configDir = "${project.rootDir}/config"
@@ -100,10 +101,10 @@ configure(javaProjects) { it ->
         // replaced with log4j-over-slf4j
         all*.exclude group: 'log4j', module: 'log4j'
 //        compile.exclude module: "spring-boot-starter-tomcat"
-        developmentOnly
-        runtimeClasspath {
-            extendsFrom developmentOnly
-        }
+//        developmentOnly
+//        runtimeClasspath {
+//            extendsFrom developmentOnly
+//        }
     }
 
 
@@ -125,10 +126,11 @@ configure(javaProjects) { it ->
 
 
     if (buildDir.toString().contains("springboot")) {
-        println("Configuring spring boot module, $buildDir")
-        apply from: "${gradleConfigDir}/springbootProject.gradle"
+//        println("Configuring spring boot module, $buildDir")
+//        apply plugin: 'io.spring.dependency-management'
+//        apply plugin: 'org.springframework.boot'
+//        apply from: "${gradleConfigDir}/springbootProject.gradle"
     }
-
 }
 
 //ext.bootProjects = javaProjects.findAll {

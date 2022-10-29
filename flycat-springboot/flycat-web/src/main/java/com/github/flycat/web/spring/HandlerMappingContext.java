@@ -34,7 +34,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

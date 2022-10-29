@@ -1,3 +1,5 @@
+apply from: "${gradleConfigDir}/springbootProject.gradle"
+
 dependencies {
 
     api project(':flycat-springboot-context')

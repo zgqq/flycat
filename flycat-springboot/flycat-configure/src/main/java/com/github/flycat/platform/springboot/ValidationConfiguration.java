@@ -24,9 +24,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
+import java.util.function.Supplier;
 
 @Configuration
 @AutoConfigureBefore(ValidationAutoConfiguration.class)
@@ -48,7 +50,7 @@ public class ValidationConfiguration {
         final MethodValidationPostProcessor methodValidationPostProcessor =
                 new MethodValidationPostProcessor() {
             @Override
-            protected Advice createMethodValidationAdvice(Validator validator) {
+            protected Advice createMethodValidationAdvice(Supplier<Validator> validator) {
                 final OrderedMethodValidationInterceptor orderedMethodValidationInterceptor =
                         new OrderedMethodValidationInterceptor(validator());
                 return orderedMethodValidationInterceptor;

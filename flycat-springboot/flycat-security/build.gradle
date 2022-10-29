@@ -1,8 +1,11 @@
+apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
     implementation project(':flycat-util')
     api project(':flycat-web')
     // api ("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
     api ("org.springframework.boot:spring-boot-starter-security")
-    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
+//    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '4.0.1'
 }
