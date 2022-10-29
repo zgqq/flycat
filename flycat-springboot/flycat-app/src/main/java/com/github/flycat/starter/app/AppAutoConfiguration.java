@@ -16,6 +16,8 @@
 package com.github.flycat.starter.app;
 
 import ch.qos.logback.classic.Level;
+import com.github.flycat.component.datasource.DataSourceFactory;
+import com.github.flycat.component.datasource.hikari.HikariDataSourceFactory;
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.logback.LoggerCreator;
@@ -28,6 +30,10 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(WebAutoConfiguration.class)
 public class AppAutoConfiguration {
+    @Bean
+    public DataSourceFactory dataSourceFactory() {
+        return new HikariDataSourceFactory();
+    }
 
     @Bean
     @ConditionalOnProperty(name = "logging.file.path")

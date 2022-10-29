@@ -7,7 +7,9 @@ dependencies {
     // api "org.springframework.boot:spring-boot-starter-aop:$springBootVersion"
 
     api "org.springframework.boot:spring-boot"
-    api "org.springframework.boot:spring-boot-starter-aop"
+    (api "org.springframework.boot:spring-boot-starter-aop") {
+        exclude group: 'log4j', module: 'log4j'
+    }
 }
 
 

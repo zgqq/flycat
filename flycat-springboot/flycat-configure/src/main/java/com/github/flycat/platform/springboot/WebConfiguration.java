@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Set;
 
 @Configuration
-@ConditionalOnClass(WebFactoryConfiguration.class)
+//@ConditionalOnClass(WebFactoryConfiguration.class)
 public class WebConfiguration {
 
     @Bean(name = DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
@@ -145,12 +145,12 @@ public class WebConfiguration {
     }
 
 
-    @Bean
-    @ConditionalOnMissingBean(WebFactoryConfiguration.class)
-    public WebFactoryConfiguration defaultFlycatWebConfiguration() {
-        return new WebFactoryConfiguration() {
-        };
-    }
+//    @Bean
+//    @ConditionalOnMissingBean(WebFactoryConfiguration.class)
+//    public WebFactoryConfiguration defaultFlycatWebConfiguration() {
+//        return new WebFactoryConfiguration() {
+//        };
+//    }
 
     @Autowired
     WebFactoryConfiguration webFactoryConfiguration;

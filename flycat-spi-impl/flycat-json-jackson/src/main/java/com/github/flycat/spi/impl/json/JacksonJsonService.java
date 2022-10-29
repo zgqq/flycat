@@ -26,9 +26,9 @@ import com.github.flycat.spi.json.JsonException;
 import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Iterator;

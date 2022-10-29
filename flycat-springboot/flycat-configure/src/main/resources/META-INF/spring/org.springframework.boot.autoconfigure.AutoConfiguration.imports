@@ -1,0 +1,8 @@
+com.github.flycat.platform.springboot.SpringContextConfiguration
+com.github.flycat.platform.springboot.WechatConfiguration
+com.github.flycat.platform.springboot.WebConfiguration
+com.github.flycat.platform.springboot.MybatisPlusConfiguration
+com.github.flycat.platform.springboot.MybatisConfiguration
+com.github.flycat.platform.springboot.ServerConfiguration
+com.github.flycat.platform.springboot.DataSourceConfiguration
+com.github.flycat.platform.springboot.ValidationConfiguration

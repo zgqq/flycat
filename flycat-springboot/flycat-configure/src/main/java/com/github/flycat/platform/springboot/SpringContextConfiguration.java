@@ -40,6 +40,10 @@ import java.util.concurrent.CompletableFuture;
 public class SpringContextConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringContextConfiguration.class);
 
+    public SpringContextConfiguration() {
+        System.out.println("Spring context");
+    }
+
     @Bean
     public static DispatcherRegisterProcessor dispatcherRegisterProcessor() {
         return new DispatcherRegisterProcessor();
