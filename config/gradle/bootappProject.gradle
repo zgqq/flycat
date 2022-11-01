@@ -60,6 +60,7 @@ version = env + tag + '-' + gitVersionInfo
 if (isProd(env)) {
     version += '-pkg_' + (new Date().format("yyyyMMdd_HHmmss"))
 }
+//version = '0.0.1-SNAPSHOT'
 
 
 if (hasProperty("appClassName")) {
@@ -256,7 +257,7 @@ println 'App jvm args: ' + applicationDefaultJvmArgs.join(",")
 
 //// disable to fix distTar(not copy app self jar)
 jar.enabled = true
-bootJar.enabled = false
+//bootJar.enabled = true
 
 distZip.enabled = false
 bootDistTar.enabled = false
@@ -273,9 +274,10 @@ if (isDev) {
 
 
 
-bootJar {
-    archiveClassifier = 'boot'
-}
+//bootJar.enabled = true
+//bootJar {
+//    archiveClassifier = ''
+//}
 
 
 bootRun {
