@@ -6,20 +6,20 @@ dependencies {
 //    apiproject(':flycat-alarm')
 
     // util
-//    api group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
+//    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.6'
 
-    api group: 'commons-codec', name: 'commons-codec', version: '1.12'
-    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-    api group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
-    api group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-    api group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
-    api'org.modelmapper:modelmapper:2.3.0'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.12'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    implementation group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
+    implementation group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+    implementation group: 'org.apache.commons', name: 'commons-pool2', version: '2.6.2'
+    implementation 'org.modelmapper:modelmapper:2.3.0'
 
 // https://mvnrepository.com/artifact/commons-collections/commons-collections
-    api group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
+    implementation group: 'commons-collections', name: 'commons-collections', version: '3.2.1'
 
-    api'commons-io:commons-io:2.6'
+    implementation 'commons-io:commons-io:2.6'
 
 }

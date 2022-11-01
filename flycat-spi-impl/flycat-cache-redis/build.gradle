@@ -1,7 +1,7 @@
 
 dependencies {
     implementation project(':flycat-spi')
-    implementation project(':flycat-spi')
+    implementation project(':flycat-util')
 }
 
 

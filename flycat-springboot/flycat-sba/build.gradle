@@ -19,7 +19,7 @@ plugins {
     id "net.ltgt.errorprone" version "1.1.1" apply false
 
     id 'org.hidetake.ssh' version '2.10.1'
-    id "net.rdrei.android.buildtimetracker" version "0.11.0"
+//    id "net.rdrei.android.buildtimetracker" version "0.11.0"
 
     id 'com.google.cloud.tools.jib' version '3.1.1' apply false
 //    id 'com.google.cloud.tools.jib' version '3.2.0' apply false
@@ -67,11 +67,11 @@ dependencies {
 //    implementation project(':flycat-context')
 //    implementation project(':flycat-spi')
 
-    api group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.7.5'
+    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.7.5'
     // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    // api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    // implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 
     api"org.springframework.boot:spring-boot-starter-web"
-    api("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
 }

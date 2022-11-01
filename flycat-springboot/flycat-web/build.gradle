@@ -1,29 +1,42 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api(project(':flycat-web')) {
-        exclude group: 'jakarta.validation', module: 'validation-api'
+    implementation(project(':flycat-web')) {
+        exclude group: 'jakarta.validation', module: 'validation-implementation '
     }
-//    api group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
 
-    api("org.springframework.boot:spring-boot-starter-web")
+    implementation project(':flycat-spi')
+    implementation project(':flycat-context')
+    implementation project(':flycat-util')
+
+
+//    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+//    implementation('org.springframework.boot:spring-boot-starter-web') {
+//        exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-core'
+//        exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-websocket'
+//    }
+//    implementation "org.apache.tomcat.experimental:tomcat-embed-programmatic:${dependencyManagement.importedProperties["tomcat.version"]}"
+
 // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat
-//    api group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat'
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat'
 
-    // api("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
+    // implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion") {
     //     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     // }
     // compileOnly "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
-    // api "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
+    // implementation "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
 
-//    api "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+//    implementation "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
 
 
 // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
-    api group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
 //    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '2.0.2'
-//    api group: 'jakarta.validation', name: 'validation-api', version: '2.0.1.Final'
-//    api 'jakarta.servlet:jakarta.servlet-api:3.1.0'
+//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
+//    implementation 'jakarta.servlet:jakarta.servlet-api:3.1.0'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
     implementation group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'

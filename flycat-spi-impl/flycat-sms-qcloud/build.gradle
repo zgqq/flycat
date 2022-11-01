@@ -1,6 +1,7 @@
 dependencies {
-    api project(':flycat-spi')
-    api group: 'com.github.qcloudsms', name: 'qcloudsms', version: '1.0.6'
+    implementation project(':flycat-context')
+    implementation project(':flycat-spi')
+    implementation group: 'com.github.qcloudsms', name: 'qcloudsms', version: '1.0.6'
 }
 
 

@@ -1,7 +1,7 @@
 dependencies {
-    api project(':flycat-context')
-    api project(':flycat-spi')
-    api group: 'com.aliyun.mns', name: 'aliyun-sdk-mns', version: '1.1.8'
+    implementation project(':flycat-context')
+    implementation project(':flycat-spi')
+    implementation group: 'com.aliyun.mns', name: 'aliyun-sdk-mns', version: '1.1.8'
 }
 
 

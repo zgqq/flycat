@@ -1,13 +1,14 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api project(':flycat-context')
-    api project(':flycat-agent')
-    // api "org.springframework.boot:spring-boot:$springBootVersion"
-    // api "org.springframework.boot:spring-boot-starter-aop:$springBootVersion"
+    implementation project(':flycat-context')
+    implementation project(':flycat-agent')
+    implementation project(':flycat-util')
+    // implementation "org.springframework.boot:spring-boot:$springBootVersion"
+    // implementation "org.springframework.boot:spring-boot-starter-aop:$springBootVersion"
 
-    api "org.springframework.boot:spring-boot"
-    (api "org.springframework.boot:spring-boot-starter-aop") {
+    implementation "org.springframework.boot:spring-boot"
+    (implementation "org.springframework.boot:spring-boot-starter-aop") {
         exclude group: 'log4j', module: 'log4j'
     }
 }

@@ -1,7 +1,7 @@
 
 dependencies {
-    api project(':flycat-context')
-    api project(':flycat-spi')
+    implementation project(':flycat-context')
+    implementation project(':flycat-spi')
     implementation project(':flycat-spi')
 }
 

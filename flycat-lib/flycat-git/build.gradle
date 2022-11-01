@@ -1,7 +1,7 @@
 
 dependencies {
-    api project(':flycat-util')
-    api 'org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r'
+    implementation project(':flycat-util')
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r'
 }
 
 

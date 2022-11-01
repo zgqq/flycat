@@ -1,21 +1,21 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api project(':flycat-util')
+    implementation project(':flycat-util')
 
-    // api "org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion"
-    api "org.springframework.boot:spring-boot-starter-jdbc"
+    // implementation "org.springframework.boot:spring-boot-starter-jdbc:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     // Datasource
-//    api group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
-//    api group: 'org.mybatis', name: 'mybatis-spring', version: '1.3.2'
+//    implementation group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
+//    implementation group: 'org.mybatis', name: 'mybatis-spring', version: '1.3.2'
 
-    api group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
-//    api group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
-    api group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.30'
+//    implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
+    implementation group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
     // https://mvnrepository.com/artifact/p6spy/p6spy
-    api group: 'p6spy', name: 'p6spy', version: '3.8.5'
+    implementation group: 'p6spy', name: 'p6spy', version: '3.8.5'
 
-//    api group: 'com.baomidou', name: 'mybatis-plus', version: '3.2.0'
+//    implementation group: 'com.baomidou', name: 'mybatis-plus', version: '3.2.0'
 
 }
 

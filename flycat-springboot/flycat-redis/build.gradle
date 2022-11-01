@@ -1,11 +1,11 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api project(':flycat-spi')
-    api project(':flycat-context')
-    api project(':flycat-util')
-    // api "org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"
-    api "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation project(':flycat-spi')
+    implementation project(':flycat-context')
+    implementation project(':flycat-util')
+    // implementation "org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
 }
 
 

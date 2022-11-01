@@ -1,7 +1,7 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api project(':flycat-util')
+    implementation project(':flycat-util')
 
     // compileOnly "org.springframework.boot:spring-boot:$springBootVersion"
 //    compileOnly "org.springframework.boot:spring-boot"

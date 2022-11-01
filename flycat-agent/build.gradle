@@ -1,13 +1,13 @@
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 
-    api project(':flycat-util')
+    implementation project(':flycat-util')
 
 
     implementation 'org.ow2.asm:asm-commons:7.0'
     implementation 'org.ow2.asm:asm:7.0'
 
-    api'ognl:ognl:3.1.19'
+    implementation 'ognl:ognl:3.1.19'
 
     compileOnly 'com.github.olivergondza:maven-jdk-tools-wrapper:0.1'
 

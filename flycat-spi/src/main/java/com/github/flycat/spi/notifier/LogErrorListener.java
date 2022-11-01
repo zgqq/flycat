@@ -23,7 +23,6 @@ import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 

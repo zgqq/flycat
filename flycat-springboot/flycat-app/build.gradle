@@ -1,34 +1,40 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-
-    api project(':flycat-springboot-context')
-    api project(':flycat-springboot-configure')
-    api project(':flycat-springboot-redis')
-    api project(':flycat-springboot-mybatis')
-    api project(':flycat-springboot-security')
-    api project(':flycat-springboot-web')
-    api project(':flycat-springboot-task')
+    implementation project(':flycat-spi')
+    implementation project(':flycat-web')
+    implementation project(':flycat-context')
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
 
 
-    api project(':flycat-cache-guava')
-//    api project(':flycat-config-redis')
-    api project(':flycat-cache-redis')
-    api project(':flycat-notifier')
-    api project(':flycat-ds-hikari')
-    api project(':flycat-json-jackson')
+    implementation project(':flycat-springboot-context')
+    implementation project(':flycat-springboot-configure')
+    implementation project(':flycat-springboot-redis')
+    implementation project(':flycat-springboot-mybatis')
+    implementation project(':flycat-springboot-security')
+    implementation project(':flycat-springboot-web')
+    implementation project(':flycat-springboot-task')
 
-    api project(':flycat-util')
+
+    implementation project(':flycat-cache-guava')
+//    implementation project(':flycat-config-redis')
+    implementation project(':flycat-cache-redis')
+    implementation project(':flycat-notifier')
+    implementation project(':flycat-ds')
+    implementation project(':flycat-ds-hikari')
+    implementation project(':flycat-json-jackson')
+
+    implementation project(':flycat-util')
 
 //    if (isProd(ext)) {
-    // api("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
-    // api("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    // implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    // implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 
 
-    api("org.springframework.boot:spring-boot-starter-actuator")
-    api("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
-//    api group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.7.5'
+//    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.7.5'
 
 // https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client
     implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '3.0.0-M5'

@@ -17,12 +17,9 @@ package com.github.flycat.context;
 
 import com.github.flycat.util.io.FileUtils;
 import com.google.common.collect.Lists;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;

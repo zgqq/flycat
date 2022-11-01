@@ -2,11 +2,14 @@ apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
 
-    // api "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
+    // implementation "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"
     // compileOnly "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
 
-    api "org.springframework.boot:spring-boot-autoconfigure"
-    compileOnly "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation project(':flycat-util')
+
+    compileOnly("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2")
+    compileOnly group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
 
     compileOnly project(':flycat-context')
     compileOnly project(':flycat-spi')
@@ -15,6 +18,9 @@ dependencies {
     compileOnly project(':flycat-springboot-context')
     compileOnly project(':flycat-springboot-mybatis')
     compileOnly project(':flycat-springboot-mybatisplus')
+
+    compileOnly project(':flycat-web')
+    compileOnly "org.springframework.boot:spring-boot-starter-web"
     compileOnly project(':flycat-springboot-web')
 
     compileOnly project(':flycat-ds')
@@ -28,7 +34,7 @@ dependencies {
 //    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '4.0.1'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
-//    api group: 'jakarta.validation', name: 'validation-api', version: '2.0.1.Final'
+//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
 
 //    compileOnly 'org.hibernate.validator:hibernate-validator:6.0.18.Final'
     compileOnly 'org.hibernate.validator:hibernate-validator:7.0.5.Final'

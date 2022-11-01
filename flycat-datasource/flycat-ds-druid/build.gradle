@@ -1,9 +1,11 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    api project(':flycat-ds')
+    implementation project(':flycat-ds')
+    implementation project(':flycat-context')
     implementation group: 'com.alibaba', name: 'druid', version: '1.2.14'
 
+    compileOnly "org.springframework.boot:spring-boot"
     compileOnly project(':flycat-springboot-context')
     compileOnly project(':flycat-springboot-web')
 }

@@ -1,6 +1,6 @@
 dependencies {
-    api project(':flycat-spi')
-    api 'org.simplejavamail:simple-java-mail:5.2.0'
+    implementation project(':flycat-spi')
+    implementation 'org.simplejavamail:simple-java-mail:5.2.0'
     implementation project(':flycat-context')
     implementation project(':flycat-util')
 }
