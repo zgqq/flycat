@@ -3,7 +3,6 @@ package com.github.flycat.spi.impl.notifier;
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.util.ConfigurationUtils;
-import com.github.flycat.spi.cache.StandaloneCacheService;
 import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonUtils;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
@@ -11,10 +10,10 @@ import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.http.HttpUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 

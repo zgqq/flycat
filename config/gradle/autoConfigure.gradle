@@ -1,6 +1,11 @@
 import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
 
+if (ignoredEnv()) {
+    logger.info("Ignored env, skipping auto configure")
+    return
+}
+
 //if (hasProperty("configKey")) {
 //    configObj = data[configKey]
 //}

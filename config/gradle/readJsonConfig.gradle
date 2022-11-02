@@ -9,7 +9,7 @@ if (hasProperty("config")) {
 
 def fileObj = new File(configFile)
 if (!fileObj.isFile()) {
-    println("Not found config file " + configFile)
+    logger.error("Not found config file " + configFile)
     return
 }
 
@@ -37,7 +37,7 @@ ext.getConfigValue = { key, env, defaultValue = null ->
 ext.getConfigValueFromObject = { configData, key, env, defaultValue = null ->
     env = env.toString()
     // Method body here
-    println("getConfigValue ${key}, ${env}")
+    logger.debug("getConfigValueFromObject ${key}, ${env}")
     if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
         if (key in configData['env_overwrite'][env].keySet())
             return configData['env_overwrite'][env][key]
@@ -60,16 +60,16 @@ ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
     // Method body here
     if ('connected' in configData.keySet() && configData['connected'].containsKey(connectKey)) {
         if (key in configData['connected'][connectKey].keySet()) {
-            println("getConfigConnectValue from env, ${key}, ${connectKey}, ${configData['connected'][connectKey][key]}")
+            logger.debug("getConfigConnectValue from env, ${key}, ${connectKey}, ${configData['connected'][connectKey][key]}")
             return configData['connected'][connectKey][key]
         }
     }
     if ('common' in configData['connected'].keySet() && key in configData['connected']['common'].keySet()) {
-        println("getConfigConnectValue from common, ${key}, ${env}, ${configData['connected']['common'][key]}")
+        logger.debug("getConfigConnectValue from common, ${key}, ${env}, ${configData['connected']['common'][key]}")
         return configData['connected']['common'][key]
     }
     if (connectKey in configData.keySet()) {
-        println("getConfigConnectValue from main, ${key}, ${connectKey}, ${configData[connectKey]}")
+        logger.debug("getConfigConnectValue from main, ${key}, ${connectKey}, ${configData[connectKey]}")
         return configData[connectKey]
     }
     return getConfigValueFromObject(configData, key, env, defaultValue)
@@ -91,7 +91,7 @@ ext.getSubConfigConnectValue = { name, key, env, defaultValue = null ->
 
 ext.getSubConfigConnectValueFromObject = {configObject, name, key, env, defaultValue = null ->
     env = env.toString()
-    println("getSubConfigConnectValue ${name}, ${key}, ${env} ")
+    logger.debug("getSubConfigConnectValue ${name}, ${key}, ${env} ")
     if (name in configObject.keySet()) {
         def configData = configObject[name]
         return getConfigConnectValue(configData, key, env, defaultValue)
@@ -101,7 +101,7 @@ ext.getSubConfigConnectValueFromObject = {configObject, name, key, env, defaultV
 
 ext.getSubConfigValue = { name, key, env, defaultValue = null ->
     env = env.toString()
-    println("getSubConfigValue ${name}, ${key}, ${env} ")
+    logger.debug("getSubConfigValue ${name}, ${key}, ${env} ")
     if (name in configObj.keySet()) {
         def configData = configObj[name]
 //        def arr = ['local', 'dev']

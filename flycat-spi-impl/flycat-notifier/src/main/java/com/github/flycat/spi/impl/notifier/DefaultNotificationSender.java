@@ -50,7 +50,8 @@ public class DefaultNotificationSender extends AbstractNotificationSender {
                 "flycat.qywx.sender.corpid"))){
             this.notificationSender = new QywxNotificationSender(this.applicationConfiguration, applicationContext);
         } else {
-            throw new RuntimeException("Not found notification");
+//            throw new RuntimeException("Not found notification");
+            this.notificationSender = new NullNotificationSender(this.applicationConfiguration, applicationContext);
         }
     }
 

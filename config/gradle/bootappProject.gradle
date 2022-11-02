@@ -96,7 +96,10 @@ if (vJavaLang.contains(".")) {
     vJavaVersion = vJavaLang.split(".")
 }
 
-ext.springJvmArgs = []
+def useProfile = profile
+ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
+//System.setProperty("spring.profiles.active", useProfile.toString())
+
 if (vJavaVersion > 8) {
     ext.appJvmArgs = ext.springJvmArgs + [
             '-Dfile.encoding=UTF-8',
@@ -284,18 +287,22 @@ if (isDev) {
 }
 
 
-
 //bootJar.enabled = true
 //bootJar {
 //    archiveClassifier = ''
 //}
 
-
 bootRun {
     classpath += files("${System.properties['java.home']}/../lib/tools.jar".toString())
     systemProperties = System.properties
+    setAllJvmArgs(appJvmArgs)
 }
 
+if (tasks.findByName("processAot")!=null) {
+    tasks.named("processAot") {
+        setAllJvmArgs(appJvmArgs)
+    }
+}
 
 if (hasProperty("mainClassName") && mainClassName != null) {
     println "Main class: $mainClassName"
@@ -313,5 +320,6 @@ if (hasProperty("mainClassName") && mainClassName != null) {
 if (distTar.enabled) {
     println 'distTar path:' + distTar.archiveFile.get()
 }
+
 
 
