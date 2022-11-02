@@ -7,19 +7,19 @@ configurations {
     // replaced with log4j-over-slf4j
     all*.exclude group: 'log4j', module: 'log4j'
 //    compile.exclude module: "spring-boot-starter-tomcat"
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
+//    developmentOnly
+//    runtimeClasspath {
+//        extendsFrom developmentOnly
+//    }
 }
 
 //apply plugin: 'io.spring.dependency-management'
 //apply plugin: 'org.springframework.boot'
 
-dependencies {
-    if (!isProd(env)) {
-        developmentOnly("org.springframework.boot:spring-boot-devtools")
-    }
+//dependencies {
+//    if (!isProd(env)) {
+//        developmentOnly("org.springframework.boot:spring-boot-devtools")
+//    }
 
 //        testImplementation "org.springframework:spring-test"
 //        testImplementation "org.springframework.boot:spring-boot-test"
@@ -27,17 +27,15 @@ dependencies {
     // testImplementation group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'
     // testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-}
+//}
 
 
 if (ignoredEnv) {
     return
 }
 
-if (!hasProperty("profile")) {
-    ext.profile = env
-}
-def useProfile = profile
+
+//def useProfile = profile
 
 apply plugin: "java"
 apply plugin: 'application'
@@ -75,13 +73,30 @@ if (hasProperty("appClassName")) {
 //}
 //def profile = ${depType}${env}
 
+//ext.appRunArgs = []
 
-ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
+//ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
+//if (isProd(env)) {
+//    ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
+//} else if(isDockerBuild() || isNativeBuild()) {
+//    ext.appJvmArgs += [
+//            '-Dspring.devtools.restart.enabled=false']
+//}  else if (isTest(env) || isDev(env)) {
+//    ext.appJvmArgs += [
+//            '-Dspring.devtools.restart.enabled=true']
+//} else {
+//    if (useDcevm) {
+//        ext.appJvmArgs += [
+//                '-Dspring.devtools.restart.enabled=false']
+//    }
+//}
 
 def vJavaVersion = vJavaLang as double
 if (vJavaLang.contains(".")) {
     vJavaVersion = vJavaLang.split(".")
 }
+
+ext.springJvmArgs = []
 if (vJavaVersion > 8) {
     ext.appJvmArgs = ext.springJvmArgs + [
             '-Dfile.encoding=UTF-8',
@@ -107,17 +122,6 @@ if (!isProd(env) && !isTest(env) && hasProperty("hotswapAgentPath")) {
 
 ext.appJvmArgs += ["-XX:+IgnoreUnrecognizedVMOptions"]
 
-if (isProd(env)) {
-    ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
-} else if (isTest(env) || isDev(env)) {
-    ext.appJvmArgs += [
-            '-Dspring.devtools.restart.enabled=true']
-} else {
-    if (useDcevm) {
-        ext.appJvmArgs += [
-                '-Dspring.devtools.restart.enabled=false']
-    }
-}
 
 
 
@@ -250,6 +254,13 @@ applicationDefaultJvmArgs = appJvmArgs
 
 println 'Run java home:' + System.properties['java.home']
 println 'App jvm args: ' + applicationDefaultJvmArgs.join(",")
+
+
+//if (project.hasProperty("args")) {
+//    println "Our input argument with project property ["+project.getProperty("args")+"]"
+//}
+
+
 
 
 //defaultTasks 'compileJava', 'checkStyle'

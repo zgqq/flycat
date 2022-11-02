@@ -12,7 +12,19 @@ def jsonSlurper = new JsonSlurper()
 //    return configObj[key]
 //}
 
-
+if (!hasProperty("profile")) {
+    if (isDockerBuild()) {
+        ext.profile = "docker" + profile
+    } else {
+//        println("Check ${isNativeTask()}")
+        if (isNativeTask()) {
+            ext.profile = "native" + env
+        } else {
+            ext.profile = env
+        }
+    }
+}
+logger.info("Use ${profile} profile")
 
 def autoConfigMap = new TreeMap<String, String>();
 if (getSubConfigValue('infra_redis', 'enable', env)) {
@@ -107,6 +119,18 @@ ext.appClassName = mainClass
 autoConfigMap.put("server.port", "${appPort}".toString())
 autoConfigMap.put("spring.application.name", "${appName}".toString())
 
+//def useProfile = profile
+//autoConfigMap.put("spring.profiles.active", "${useProfile}".toString())
+if (isProd(env)) {
+    autoConfigMap.put("spring.devtools.restart.enabled", false)
+} else if(isDockerBuild() || isNativeTask()) {
+    autoConfigMap.put("spring.devtools.restart.enabled", false)
+}  else if (isLocal(env) || isDev(env)) {
+    autoConfigMap.put("spring.devtools.restart.enabled", true)
+} else {
+    autoConfigMap.put("spring.devtools.restart.enabled", false)
+}
+
 ext.debugPort=getConfigValue('debug_port',env, 0)
 ext.jmxPort = getConfigValue('jmx_port', env, 0)
 
@@ -142,11 +166,6 @@ ext.heapJvmArgs = [
 //    ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
 //    println("Executing docker build, use profile:${profile}")
 //}
-
-ext.profile = env
-if (isDockerBuild()) {
-    ext.profile = "docker" + profile
-}
 
 
 def profilePath = configFileObj.getParent() + "/profile.json"
