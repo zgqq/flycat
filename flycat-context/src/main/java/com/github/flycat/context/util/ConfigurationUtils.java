@@ -17,7 +17,7 @@ public class ConfigurationUtils {
             }
 
             String property = ServerEnvUtils.getProperty(key);
-            if (Strings.isNullOrEmpty(property)) {
+            if (property == null) {
                 return null;
             }
             return Integer.valueOf(property);

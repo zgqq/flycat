@@ -23,6 +23,7 @@ import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
 import com.github.flycat.util.DateTimeUtils;
 import com.github.flycat.util.ExceptionUtils;
+import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,10 @@ public class SpringBootPlatform {
 // get a RuntimeMXBean reference
     public static void run(Class<?> primarySource, String[] args, Class<? extends Module>... modules) {
         try {
+//            String property = System.getProperty("spring.profiles.active");
+//            if (StringUtils.isEmpty(property)) {
+//                System.setProperty("spring.profiles.active", "nativelocal");
+//            }
             RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
             List<String> arguments = runtimeMxBean.getInputArguments();
             Map<String, String> env = System.getenv();

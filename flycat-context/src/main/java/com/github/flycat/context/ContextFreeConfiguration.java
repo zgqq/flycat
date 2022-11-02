@@ -16,6 +16,7 @@
 package com.github.flycat.context;
 
 import com.github.flycat.context.util.ServerEnvUtils;
+import com.github.flycat.util.ObjectUtils;
 import com.google.common.base.CaseFormat;
 
 import java.beans.PropertyEditor;
@@ -41,7 +42,7 @@ public class ContextFreeConfiguration {
     }
 
     public int getIntValue(String key, int defaultValue) {
-        Integer value  = getInteger(key);
+        Integer value = getInteger(key);
         if (value == null) {
             return defaultValue;
         }
@@ -95,9 +96,7 @@ public class ContextFreeConfiguration {
 
     <T> T getObject(String key, Class<T> clazz) {
         final String value = getStringValue(key);
-        PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
-        editor.setAsText(value);
-        return (T) editor.getValue();
+        return ObjectUtils.convertObject(value, clazz);
     }
 
     public String getStringValue(String key) {

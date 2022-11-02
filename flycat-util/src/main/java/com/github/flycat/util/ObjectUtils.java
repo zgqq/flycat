@@ -15,6 +15,9 @@
  */
 package com.github.flycat.util;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+
 public class ObjectUtils {
 
     /**
@@ -38,5 +41,28 @@ public class ObjectUtils {
                 && null != target
                 && src.equals(target);
 
+    }
+
+    public static <T> T convertObject(String value, Class<T> clazz) {
+        if (value == null) {
+            return null;
+        }
+        PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
+        if (editor == null) {
+            return (T)ObjectUtils.toObject( value, clazz);
+        }
+        editor.setAsText(value);
+        return (T) editor.getValue();
+    }
+
+    public static Object toObject( String value, Class clazz) {
+        if (Boolean.class == clazz) return Boolean.parseBoolean(value);
+        if (Byte.class == clazz) return Byte.parseByte(value);
+        if (Short.class == clazz) return Short.parseShort(value);
+        if (Integer.class == clazz) return Integer.parseInt(value);
+        if (Long.class == clazz) return Long.parseLong(value);
+        if (Float.class == clazz) return Float.parseFloat(value);
+        if (Double.class == clazz) return Double.parseDouble(value);
+        return value;
     }
 }
