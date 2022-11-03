@@ -15,7 +15,7 @@
  */
 package com.github.flycat.spi.notifier;
 
-import com.codahale.metrics.MetricRegistry;
+//import com.codahale.metrics.MetricRegistry;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.context.ContextUtils;
 import com.github.flycat.spi.cache.CacheOperation;
@@ -37,8 +37,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public abstract class AbstractNotificationSender implements NotificationSender {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractNotificationSender.class);
-    private static final MetricRegistry REGISTRY = new MetricRegistry();
-    private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
+//    private static final MetricRegistry REGISTRY = new MetricRegistry();
+//    private static final RateLimiter RATE_LIMITER = RateLimiter.create(1.0);
     private static ThreadPoolExecutor threadPoolExecutor;
     private CacheOperation cacheOperation;
 

@@ -33,7 +33,7 @@ dependencies {
 
 
 // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
-    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
+    implementation(FlycatLibVersion.jakarta_validation_api)
 //    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '2.0.2'
 //    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
 //    implementation 'jakarta.servlet:jakarta.servlet-api:3.1.0'

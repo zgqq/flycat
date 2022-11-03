@@ -53,6 +53,7 @@ configure(javaProjects) { it ->
 
     ext.needCheckCompile = !project.name.endsWith("agent")
 
+    apply from: "${gradleConfigDir}/versionManagement.gradle"
     apply from: "${gradleConfigDir}/javaProject.gradle"
 
     ext.needCheck = !project.name.endsWith("agent")
@@ -153,7 +154,6 @@ configure(jarProjects) { project ->
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
-
 
     task sourceJar(type: Jar) {
         classifier "sources"

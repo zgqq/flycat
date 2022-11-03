@@ -44,10 +44,10 @@ public class SpringContextConfiguration {
         System.out.println("Spring context");
     }
 
-    @Bean
-    public static DispatcherRegisterProcessor dispatcherRegisterProcessor() {
-        return new DispatcherRegisterProcessor();
-    }
+//    @Bean
+//    public static DispatcherRegisterProcessor dispatcherRegisterProcessor() {
+//        return new DispatcherRegisterProcessor();
+//    }
 
     @Bean
     @Order(value = Ordered.HIGHEST_PRECEDENCE)

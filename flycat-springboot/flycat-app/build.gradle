@@ -4,7 +4,7 @@ dependencies {
     implementation project(':flycat-spi')
     implementation project(':flycat-web')
     implementation project(':flycat-context')
-    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
+    compileOnly(FlycatLibVersion.jakarta_servlet_api)
 
 
     implementation project(':flycat-springboot-context')

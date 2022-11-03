@@ -8,8 +8,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation project(':flycat-util')
 
-    compileOnly("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2")
-    compileOnly group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
+    compileOnly(FlycatLibVersion.mybatis_starter)
+    compileOnly(FlycatLibVersion.mybatis_plus_starter)
+//    compileOnly group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.1.2'
 
     compileOnly project(':flycat-context')
     compileOnly project(':flycat-spi')
@@ -25,11 +26,13 @@ dependencies {
 
     compileOnly project(':flycat-ds')
 
-    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
+//    compileOnly(FlycatLibVersion.jakarta_servlet_api)
+    compileOnly(FlycatLibVersion.jakarta_servlet_api)
 
 
 // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
-    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
+//    implementation(FlycatLibVersion.jakarta_validation_api)
+    implementation(FlycatLibVersion.jakarta_validation_api)
 
 //    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '4.0.1'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
@@ -37,7 +40,8 @@ dependencies {
 //    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
 
 //    compileOnly 'org.hibernate.validator:hibernate-validator:6.0.18.Final'
-    compileOnly 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
+//    compileOnly 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
+    compileOnly(FlycatLibVersion.hibernate_validator)
 }
 
 
