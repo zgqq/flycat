@@ -30,6 +30,7 @@ dependencies {
 //    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.6'
 
 //    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 targetCompatibility = vJavaLang

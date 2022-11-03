@@ -1,6 +1,8 @@
 buildscript {
     ext {
         dubboVersion = '2.7.1'
+        springBootVersion = '3.0.0-RC1'
+        springManagementVersion = '1.1.0'
     }
 
     //https://spring.io/blog/2020/10/29/notice-of-permissions-changes-to-repo-spring-io-fall-and-winter-2020
@@ -15,8 +17,8 @@ buildscript {
     dependencies {
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
 //        classpath 'org.springframework:springloaded:1.2.0.RELEASE'
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.0-RC1" //
-        classpath "io.spring.gradle:dependency-management-plugin:1.1.0"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}" //
+        classpath "io.spring.gradle:dependency-management-plugin:${springManagementVersion}"
     }
 }
 
