@@ -18,7 +18,7 @@ package com.github.flycat.platform.springboot;
 import org.springframework.core.Ordered;
 import org.springframework.validation.beanvalidation.MethodValidationInterceptor;
 
-import jakarta.validation.Validator;
+import javax.validation.Validator;
 
 public class OrderedMethodValidationInterceptor extends MethodValidationInterceptor implements Ordered {
 

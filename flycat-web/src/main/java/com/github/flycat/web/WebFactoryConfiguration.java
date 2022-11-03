@@ -20,7 +20,7 @@ import com.github.flycat.web.request.RequestParameterResolver;
 import com.github.flycat.web.response.ResponseFactory;
 import com.github.flycat.web.response.ResponseFactoryImpl;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 public interface WebFactoryConfiguration extends WebConfiguration {
 

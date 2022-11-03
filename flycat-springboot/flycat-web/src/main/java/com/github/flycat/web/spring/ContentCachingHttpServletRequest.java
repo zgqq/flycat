@@ -22,9 +22,9 @@ import com.github.flycat.util.io.IOUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

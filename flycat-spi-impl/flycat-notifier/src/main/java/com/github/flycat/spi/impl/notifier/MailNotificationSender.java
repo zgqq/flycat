@@ -28,7 +28,7 @@ import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 public class MailNotificationSender extends AbstractNotificationSender {
 

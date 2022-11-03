@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -37,11 +36,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ValidationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import java.util.Set;
 
 @ControllerAdvice
@@ -147,7 +146,20 @@ public class WebExceptionHandler {
         final ResponseEntityExceptionHandler responseEntityExceptionHandler = new ResponseEntityExceptionHandler() {
         };
 
-        HttpStatusCode status = null;
+
+// spring boot 3.0 need
+//        HttpStatusCode status = null;
+//        try {
+//            final ResponseEntity<Object> responseEntity = responseEntityExceptionHandler.handleException(ex, webRequest);
+//            status = responseEntity.getStatusCode();
+//        } catch (Exception e) {
+//        }
+//        if (status == null) {
+//            status = HttpStatus.OK;
+//        }
+
+
+        HttpStatus status = null;
         try {
             final ResponseEntity<Object> responseEntity = responseEntityExceptionHandler.handleException(ex, webRequest);
             status = responseEntity.getStatusCode();
@@ -156,6 +168,7 @@ public class WebExceptionHandler {
         if (status == null) {
             status = HttpStatus.OK;
         }
+
         if (responseBody) {
             return newResponseEntity(unknownExceptionResult, status);
         } else {
@@ -195,7 +208,7 @@ public class WebExceptionHandler {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    private ResponseEntity newResponseEntity(Object result, HttpStatusCode status) {
+    private ResponseEntity newResponseEntity(Object result, HttpStatus status) {
         if (status == null) {
             status = HttpStatus.OK;
         }

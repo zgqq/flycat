@@ -73,9 +73,13 @@ public class SpringBootPlatform {
             started.stop();
             LOGGER.info("Started spring boot application, cost {}", started);
         } catch (Exception e) {
-            if (e instanceof SpringApplication.AbandonedRunException) {
-                throw (SpringApplication.AbandonedRunException)e;
-            }
+
+            // spring boot 3.0 need
+//            if (e instanceof SpringApplication.AbandonedRunException) {
+//                throw (SpringApplication.AbandonedRunException)e;
+//            }
+
+
             boolean equals = e.getClass().getName().equals("org.springframework.boot.devtools." +
                     "restart.SilentExitExceptionHandler$SilentExitException");
             if (!equals) {

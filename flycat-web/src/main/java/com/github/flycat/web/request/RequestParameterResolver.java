@@ -15,7 +15,7 @@
  */
 package com.github.flycat.web.request;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 public interface RequestParameterResolver {
     String resolveParameter(HttpServletRequest request, ParameterRequest parameterRequest);

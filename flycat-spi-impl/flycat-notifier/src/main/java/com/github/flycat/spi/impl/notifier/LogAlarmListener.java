@@ -26,9 +26,9 @@ import com.github.flycat.util.ExceptionUtils;
 import com.github.flycat.util.StringUtils;
 import org.slf4j.Logger;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 @Singleton
 @Named

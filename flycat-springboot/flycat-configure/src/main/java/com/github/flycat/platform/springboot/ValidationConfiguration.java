@@ -24,9 +24,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import java.util.function.Supplier;
 
@@ -35,12 +35,14 @@ import java.util.function.Supplier;
 @ConditionalOnClass(HibernateValidator.class)
 public class ValidationConfiguration {
 
+
     @Bean
     public Validator validator() {
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
                 .configure()
                 .addProperty("hibernate.validator.fail_fast", "false")
                 .buildValidatorFactory();
+
         Validator validator = validatorFactory.getValidator();
         return validator;
     }
@@ -49,7 +51,7 @@ public class ValidationConfiguration {
     public MethodValidationPostProcessor customMethodValidationPostProcessor() {
         final MethodValidationPostProcessor methodValidationPostProcessor =
                 new MethodValidationPostProcessor() {
-            @Override
+
             protected Advice createMethodValidationAdvice(Supplier<Validator> validator) {
                 final OrderedMethodValidationInterceptor orderedMethodValidationInterceptor =
                         new OrderedMethodValidationInterceptor(validator());

@@ -21,9 +21,9 @@ import com.github.flycat.spi.queue.MessageHandler;
 import com.github.flycat.spi.queue.Queue;
 import com.github.flycat.spi.queue.QueueFactory;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 @Singleton
 @Named

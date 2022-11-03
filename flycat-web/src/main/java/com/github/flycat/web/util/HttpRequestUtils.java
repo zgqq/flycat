@@ -17,7 +17,7 @@ package com.github.flycat.web.util;
 
 import com.google.common.primitives.Bytes;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;

@@ -1,9 +1,16 @@
 buildscript {
+    ext.configDir = "${project.rootDir}/config"
+    ext.checkstyleDir = "${configDir}/checkstyle"
+    ext.gradleConfigDir = "${configDir}/gradle"
+//    ext.configDir = "../../lib-flycat/config"
+//    ext.gradleConfigDir = "${configDir}/gradle"
+    apply from: "${gradleConfigDir}/versionManagement.gradle"
     ext {
         dubboVersion = '2.7.1'
-        springBootVersion = '3.0.0-RC1'
-        springManagementVersion = '1.1.0'
+        springBootVersion = FlycatLibVersion.spring_boot_version
+        springManagementVersion = FlycatLibVersion.spring_management_version
     }
+
 
     //https://spring.io/blog/2020/10/29/notice-of-permissions-changes-to-repo-spring-io-fall-and-winter-2020
     repositories {
@@ -38,9 +45,6 @@ plugins {
 ext.flycatVersion = '0.30.0-SNAPSHOT'
 ext.flycatGroup = 'com.github.zgqq'
 
-ext.configDir = "${project.rootDir}/config"
-ext.checkstyleDir = "${configDir}/checkstyle"
-ext.gradleConfigDir = "${configDir}/gradle"
 ext.vJavaLang = '17'
 // wrapper.gradleVersion = '5.4.1'
 

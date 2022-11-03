@@ -37,7 +37,8 @@ dependencies {
 //    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '2.7.5'
 
 // https://mvnrepository.com/artifact/de.codecentric/spring-boot-admin-starter-client
-    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '3.0.0-M5'
+//    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-client', version: '3.0.0-M5'
+    implementation(FlycatLibVersion.spring_boot_admin_client)
 
 //    }
 

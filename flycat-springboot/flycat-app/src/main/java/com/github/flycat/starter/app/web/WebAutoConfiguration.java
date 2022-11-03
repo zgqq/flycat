@@ -22,7 +22,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import jakarta.servlet.Filter;
+import javax.servlet.Filter;
 
 @Configuration
 public class WebAutoConfiguration {

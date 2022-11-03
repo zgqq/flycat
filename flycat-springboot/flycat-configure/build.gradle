@@ -30,14 +30,14 @@ dependencies {
     compileOnly(FlycatLibVersion.jakarta_servlet_api)
 
 
-// https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+// https://mvnrepository.com/artifact/javax.validation/javax.validation-api
 //    implementation(FlycatLibVersion.jakarta_validation_api)
     implementation(FlycatLibVersion.jakarta_validation_api)
 
-//    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '4.0.1'
+//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
-//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
+//    implementation group: 'javax.validation', name: 'validation-implementation ', version: '2.0.1.Final'
 
 //    compileOnly 'org.hibernate.validator:hibernate-validator:6.0.18.Final'
 //    compileOnly 'org.hibernate.validator:hibernate-validator:7.0.5.Final'

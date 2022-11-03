@@ -52,9 +52,9 @@ import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.Filter;
-import jakarta.servlet.Servlet;
+import javax.annotation.PostConstruct;
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;

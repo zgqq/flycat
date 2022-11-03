@@ -7,6 +7,7 @@ buildscript {
         maven { url 'https://repo.spring.io/snapshot' }
     }
 }
+apply from: "${gradleConfigDir}/versionManagement.gradle"
 
 plugins {
 //    id 'org.springframework.boot' version "2.7.4" apply false
@@ -67,7 +68,8 @@ dependencies {
 //    implementation project(':flycat-context')
 //    implementation project(':flycat-spi')
 
-    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.7.5'
+//    implementation group: 'de.codecentric', name: 'spring-boot-admin-starter-server', version: '2.7.5'
+    implementation(FlycatLibVersion.spring_boot_admin_server)
     // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     // implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 

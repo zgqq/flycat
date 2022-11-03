@@ -1,21 +1,16 @@
 package com.github.flycat.starter.app.web;
 
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.UUID;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration(proxyBeanMethods = false)
 public class SecurityConfiguration {
@@ -36,12 +31,23 @@ public class SecurityConfiguration {
 		successHandler.setTargetUrlParameter("redirectTo");
 		successHandler.setDefaultTargetUrl(path("/"));
 		http.authorizeHttpRequests(
-				(authorizeRequests) -> authorizeRequests.requestMatchers(path("/assets/**")).permitAll() // <1>
-						.requestMatchers(path("/actuator/info")).permitAll()
-						.requestMatchers(path("/actuator/health")).permitAll()
-                        .requestMatchers(path("/actuator/**")).authenticated()
-						.requestMatchers(path("/login")).permitAll()
+				(authorizeRequests) -> authorizeRequests
+// spring boot 3.0 need
+//						.requestMatchers(path("/assets/**")).permitAll() // <1>
+//						.requestMatchers(path("/actuator/info")).permitAll()
+//						.requestMatchers(path("/actuator/health")).permitAll()
+//                        .requestMatchers(path("/actuator/**")).authenticated()
+//						.requestMatchers(path("/login")).permitAll()
+//                        .anyRequest().permitAll() // <2>
+
+						.requestMatchers(new AntPathRequestMatcher(path("/assets/**"))).permitAll() // <1>
+						.requestMatchers(new AntPathRequestMatcher(path("/actuator/info"))).permitAll()
+						.requestMatchers(new AntPathRequestMatcher(path("/actuator/health"))).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher(path("/actuator/**"))).authenticated()
+						.requestMatchers(new AntPathRequestMatcher(path("/login"))).permitAll()
                         .anyRequest().permitAll() // <2>
+
+
 		)
                 .formLogin(
 				(formLogin) ->

@@ -8,5 +8,5 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-security")
 
     compileOnly(FlycatLibVersion.jakarta_servlet_api)
-//    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '4.0.1'
+//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }

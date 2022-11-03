@@ -15,7 +15,7 @@
  */
 package com.github.flycat.web.util;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 public class HttpSessionUtils {
 

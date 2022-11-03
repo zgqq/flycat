@@ -1,16 +1,17 @@
 apply from: "${gradleConfigDir}/springbootProject.gradle"
 
 dependencies {
-    implementation(project(':flycat-web')) {
-        exclude group: 'jakarta.validation', module: 'validation-implementation '
-    }
+    implementation(project(':flycat-web')) 
+//            {
+//        exclude group: 'javax.validation', module: 'validation-implementation '
+//    }
 
     implementation project(':flycat-spi')
     implementation project(':flycat-context')
     implementation project(':flycat-util')
 
 
-//    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
+//    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '5.0.0'
 
     implementation("org.springframework.boot:spring-boot-starter-web")
 
@@ -32,11 +33,11 @@ dependencies {
 //    implementation "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
 
 
-// https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+// https://mvnrepository.com/artifact/javax.validation/javax.validation-api
     implementation(FlycatLibVersion.jakarta_validation_api)
-//    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '2.0.2'
-//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
-//    implementation 'jakarta.servlet:jakarta.servlet-api:3.1.0'
+//    implementation group: 'javax.validation', name: 'javax.validation-api', version: '2.0.2'
+//    implementation group: 'javax.validation', name: 'validation-implementation ', version: '2.0.1.Final'
+//    implementation 'javax.servlet:javax.servlet-api:3.1.0'
     compileOnly group: 'com.alibaba', name: 'fastjson', version: '1.2.58'
 
     implementation group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.0'
