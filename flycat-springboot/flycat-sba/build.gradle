@@ -7,7 +7,6 @@ buildscript {
         maven { url 'https://repo.spring.io/snapshot' }
     }
 }
-apply from: "${gradleConfigDir}/versionManagement.gradle"
 
 plugins {
 //    id 'org.springframework.boot' version "2.7.4" apply false
@@ -26,11 +25,13 @@ plugins {
 //    id 'com.google.cloud.tools.jib' version '3.2.0' apply false
 }
 
+
 ext.configDir = "../../config"
 ext.gradleConfigDir = "${configDir}/gradle"
 //ext.env = env
 ext.vJavaLang = '17'
 
+apply from: "${gradleConfigDir}/versionManagement.gradle"
 apply from: "${gradleConfigDir}/env.gradle"
 //apply from: "${gradleConfigDir}/autoConfigure.gradle"
 apply from: "${gradleConfigDir}/readJsonConfig.gradle"
@@ -73,7 +74,7 @@ dependencies {
     // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     // implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 
-    api"org.springframework.boot:spring-boot-starter-web"
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
 }

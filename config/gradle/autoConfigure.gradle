@@ -17,19 +17,6 @@ if (!isStartupOrPackage()) {
 //    return configObj[key]
 //}
 
-if (!hasProperty("profile")) {
-    if (isDockerBuild()) {
-        ext.profile = "docker" + env
-    } else {
-//        println("Check ${isNativeTask()}")
-        if (isNativeTask()) {
-            ext.profile = "native" + env
-        } else {
-            ext.profile = env
-        }
-    }
-}
-logger.info("Use ${profile} profile")
 
 def autoConfigMap = new TreeMap<String, String>();
 if (getSubConfigValue('infra_redis', 'enable', env)) {
@@ -163,7 +150,7 @@ ext.heapJvmArgs = [
 //def executingTasks = project.gradle.startParameter.taskNames
 //if (executingTasks != null && !executingTasks.isEmpty()) {
 //    executeDockerBuild = 'jib' in executingTasks
-//            || 'jibDockerbuild' in executingTasks
+//            || 'jibDockerBuild' in executingTasks
 //}
 
 

@@ -13,8 +13,8 @@ def executeDockerBuildLocal = false
 def executingTasks = project.gradle.startParameter.taskNames
 if (executingTasks != null && !executingTasks.isEmpty()) {
     executeDockerBuild = 'jib' in executingTasks
-            || 'jibDockerbuild' in executingTasks
-    executeDockerBuildLocal = 'jibDockerbuild' in executingTasks
+            || 'jibDockerBuild' in executingTasks
+    executeDockerBuildLocal = 'jibDockerBuild' in executingTasks
 }
 
 //if (executeDockerBuild) {
