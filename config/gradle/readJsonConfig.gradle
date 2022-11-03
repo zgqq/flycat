@@ -17,7 +17,7 @@ def data = jsonSlurper.parse(fileObj)
 ext.configObj = data
 ext.configFileObj = fileObj
 
-println("Read config: ${configObj}")
+logger.debug("Read config: ${configObj}")
 //rootProject.name = configObj['app_name']
 
 
@@ -26,11 +26,14 @@ ext.getConfigValue = { key, env, defaultValue = null ->
         if (project.name in configObj['modules'].keySet()) {
             def configValue = getConfigValueFromObject(configObj['modules'][project.name], key, env, null)
             if (configValue != null) {
+                logger.debug("getConfigValue by modules, ${key}, ${env}, ${defaultValue}, return ${configValue}")
                 return configValue
             }
         }
     }
-    return getConfigValueFromObject(configObj, key, env, defaultValue)
+    def returnValue = getConfigValueFromObject(configObj, key, env, defaultValue)
+    logger.debug("getConfigValue, ${key}, ${env}, ${defaultValue}, return ${returnValue}")
+    return returnValue
 }
 
 
@@ -39,12 +42,18 @@ ext.getConfigValueFromObject = { configData, key, env, defaultValue = null ->
     // Method body here
     logger.debug("getConfigValueFromObject ${key}, ${env}")
     if ('env_overwrite' in configData.keySet() && configData['env_overwrite'].containsKey(env)) {
-        if (key in configData['env_overwrite'][env].keySet())
+        if (key in configData['env_overwrite'][env].keySet()) {
+            logger.debug("getConfigValueFromObject ${key}, ${env}, return by env config ${configData['env_overwrite'][env][key]}")
             return configData['env_overwrite'][env][key]
+        }
     }
+
+    logger.debug("getConfigValueFromObject check key, ${key}, ${configData.keySet()}")
     if (key in configData.keySet()) {
+        logger.debug("getConfigValueFromObject ${key}, ${env}, return by main config ${configData[key]}")
         return configData[key]
     }
+    logger.debug("getConfigValueFromObject ${key}, ${env}, return ${defaultValue}")
     return defaultValue
 }
 

@@ -29,10 +29,14 @@ configurations {
     // testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 //}
 
-
-if (ignoredEnv) {
+if (!isStartupOrPackage()) {
+    logger.info("Not startup or package task, disable auto configure")
     return
 }
+
+//if (ignoredEnv) {
+//    return
+//}
 
 
 //def useProfile = profile

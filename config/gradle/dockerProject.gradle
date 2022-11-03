@@ -1,4 +1,5 @@
-if (ignoredEnv) {
+if (!isJibDockerBuild()) {
+    logger.info("Not docker build, skipping docker configure")
     return
 }
 apply plugin: "com.google.cloud.tools.jib"
