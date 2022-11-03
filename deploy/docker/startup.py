@@ -43,6 +43,12 @@ if jmx_port and jmx_port > 0:
    jmx_port_map = f"""- {jmx_port}:{jmx_port}"""
 JMX_PORT_MAP = jmx_port_map
 
+app_port = get_main_config_value('app_port', env, 0)
+app_port_map = ""
+if app_port and app_port > 0:
+   PORTS = "ports:"
+   app_port_map = f"""- {app_port}:{app_port}"""
+APP_PORT_MAP = app_port_map
 
 ROUTER_DOMAIN=router_domain
 ROUTER_PATH=router_path
@@ -81,6 +87,7 @@ services:
       DEPLOY_TAGS: ${{deploy_tags}}
     {PORTS}
       {JMX_PORT_MAP}
+      {APP_PORT_MAP}
     deploy:
       restart_policy:
         condition: on-failure

@@ -21,6 +21,7 @@ import com.github.flycat.component.datasource.hikari.HikariDataSourceFactory;
 import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.log.ErrorLogFileLogger;
 import com.github.flycat.log.logback.LoggerCreator;
+import com.github.flycat.starter.app.web.SecurityConfiguration;
 import com.github.flycat.starter.app.web.WebAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(WebAutoConfiguration.class)
+@Import({WebAutoConfiguration.class, SecurityConfiguration.class})
 public class AppAutoConfiguration {
     @Bean
     public DataSourceFactory dataSourceFactory() {
