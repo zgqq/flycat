@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 def jsonSlurper = new JsonSlurper()
 
-if (ignoredEnv()) {
+if (!isStartupOrPackage()) {
     logger.info("Ignored env, skipping auto configure")
     return
 }
@@ -19,7 +19,7 @@ if (ignoredEnv()) {
 
 if (!hasProperty("profile")) {
     if (isDockerBuild()) {
-        ext.profile = "docker" + profile
+        ext.profile = "docker" + env
     } else {
 //        println("Check ${isNativeTask()}")
         if (isNativeTask()) {
@@ -72,12 +72,13 @@ if (getSubConfigValue('infra_sba', 'enable', env)) {
     def meta_password = getSubConfigConnectValue('infra_sba', 'meta_password', env)
     def client_url = getSubConfigConnectValue('infra_sba', 'client_url', env)
 
-    autoConfigMap.put("spring.security.user.name", user)
-    autoConfigMap.put("spring.security.user.password", password)
-    autoConfigMap.put("spring.boot.admin.client.username", meta_user)
-    autoConfigMap.put("spring.boot.admin.client.password", meta_password)
-    autoConfigMap.put("spring.boot.admin.client.metadata.user.name", '${spring.security.user.name}')
-    autoConfigMap.put("spring.boot.admin.client.metadata.user.password", '${spring.security.user.password}')
+    autoConfigMap.put("spring.security.user.name", meta_user)
+    autoConfigMap.put("spring.security.user.password", meta_password)
+    autoConfigMap.put("spring.boot.admin.client.username", user)
+    autoConfigMap.put("spring.boot.admin.client.password", password)
+
+    autoConfigMap.put("spring.boot.admin.client.instance.metadata.user.name", '${spring.security.user.name}')
+    autoConfigMap.put("spring.boot.admin.client.instance.metadata.user.password", '${spring.security.user.password}')
 
     autoConfigMap.put("spring.boot.admin.client.url", client_url)
 //"spring.security.user.name": "zgq",
