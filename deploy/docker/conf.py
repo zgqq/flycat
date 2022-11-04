@@ -120,6 +120,7 @@ APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROU
 print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
 
 APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag
+DOCKER_COMPOSE_CMD="docker compose"
 
 if not os.path.exists('./target/'):
   os.makedirs('./target/')

@@ -290,14 +290,15 @@ if need_start:
     deploy_tags = get_image_tags(deploy_image_id)
     print('Preparing deploy, image id %s, app directory %s, tags %s' % (deploy_image_id, app_directory, deploy_tags))
     yml = DOCKER_COMPOSE_APP_YML
-#     execute('cd %s && %s docker-compose -f %s --project-name=%s up -d' % (
+#     execute('cd %s && %s {DOCKER_COMPOSE_CMD} -f %s --project-name=%s up -d' % (
 #         env,
 #         'app_volume=' + app_directory+' deploy_image_id='+deploy_image_id+' deploy_tags='+(','.join(deploy_tags)),
 #         yml,
 #         boot_project))
 
-    execute('%s docker-compose -f %s --project-name=%s up -d' % (
+    execute('%s %s -f %s --project-name=%s up -d' % (
         'app_volume=' + app_directory+' deploy_image_id='+deploy_image_id+' deploy_tags='+(','.join(deploy_tags)),
+        DOCKER_COMPOSE_CMD,
         yml,
         boot_project))
     boot_id = check_output('docker ps -f name=%s -q' % boot_project, shell=True).decode().strip()
