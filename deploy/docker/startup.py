@@ -22,6 +22,8 @@ ROUTER1 =  APP_ROUTER1
 # f = open(env+"/.env", "w")
 # f.write(docker_env)
 # f.close()
+if not os.path.exists(home_dir+'/deploy'):
+   os.makedirs(home_dir+'/deploy')
 
 op = "deploy"
 if len(sys.argv) > 3:

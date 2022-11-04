@@ -6,6 +6,9 @@ from pathlib import Path
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
 
+if not os.path.exists(home_dir+'/deploy'):
+   os.makedirs(home_dir+'/deploy')
+
 if 'infra_mysql' in config_data.keys():
     if not os.path.exists('./common/mysql-initdb'):
        os.makedirs('./common/mysql-initdb')

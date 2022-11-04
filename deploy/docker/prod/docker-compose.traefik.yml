@@ -14,8 +14,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.toml:/traefik.toml
       - ./traefik.config.toml:/etc/traefik/traefik.config.toml # Traefik dynamic config
-      - ~/data/traefik/letsencrypt:/letsencrypt
-      - ~/data/traefik/log:/var/log/traefik
+      - ~/deploy/data/traefik/letsencrypt:/letsencrypt
+      - ~/deploy/data/traefik/log:/var/log/traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`${GATEWAY_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
