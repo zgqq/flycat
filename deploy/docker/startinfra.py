@@ -129,7 +129,7 @@ def execute_sql_files(base_path, sql_files, user, password, root_password, need_
        dst = home_dir+'/deploy/cache/init-mysql/'+basename
        if not os.path.exists(dst):
            if need_wait:
-              print('Waiting mysql started')
+              print('Waiting mysql started...')
               time.sleep(20)
               need_wait = False
            if not granted:
@@ -349,6 +349,8 @@ networks:
 
        log_execute_system(f"MYSQL_PORT={port} MYSQL_DATABASE={database} MYSQL_USER={user}" \
         f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" {DOCKER_COMPOSE_CMD} -f ./target/docker-compose.nacos.yml up -d")
+       print('Waiting nacos started...')
+       time.sleep(15)
 
 
 # if op == "update":
