@@ -45,7 +45,7 @@ JMX_PORT_MAP = jmx_port_map
 
 app_port = get_main_config_value('app_port', env, 0)
 app_port_map = ""
-if app_port and app_port > 0:
+if app_port and app_port > 0 and isLocalEnv():
    PORTS = "ports:"
    app_port_map = f"""- {app_port}:{app_port}"""
 APP_PORT_MAP = app_port_map

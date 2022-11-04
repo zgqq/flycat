@@ -23,6 +23,8 @@ tag = env
 # else:
 #    tag = "dockerprod"
 
+def isLocalEnv():
+    return env == "local"
 
 def get_bool_value(data, key, env):
     config_value = get_config_value(data, key, env)
