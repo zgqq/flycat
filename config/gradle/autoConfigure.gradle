@@ -101,7 +101,9 @@ def appPort= getConfigValue('app_port',env)
 def appName= getConfigValue('app_name',env)
 def dockerRepo= getConfigValue('docker_repo',env)
 def mainClass= getConfigValue('main_class',env)
+def baseImage = getConfigValue('base_image',env)
 
+ext.dockerBaseImage = baseImage
 ext.containerPort = appPort
 ext.dockerImage = dockerRepo
 if (hasProperty('appClassName')) {

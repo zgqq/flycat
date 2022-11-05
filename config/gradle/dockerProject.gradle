@@ -29,12 +29,21 @@ if (hasProperty("platform")) {
     ext.jibPlatform = "$platform"
 }
 
+def dockerImage = 'ibm-semeru-runtimes:open-17-jre-jammy'
+def tag = "default"
+if (hasProperty("dockerBaseImage")) {
+    dockerImage = ext.dockerBaseImage
+    tag = "config"
+}
+println("Using ${dockerImage} image by ${tag}")
+
 jib {
     from {
 //        image = 'amazoncorretto:8u232'
 //        image = 'https://reg.qiniu.com/open-flycat/flycat:latest'
 //        image = 'https://reg.qiniu.com/open-flycat/flycat-openj9:latest'
-        image = 'zgqq/flycat-jdk17:latest'
+//        image = 'zgqq/flycat-jdk17:latest'
+        image = dockerImage
         platforms {
             if (jibPlatform == "linux/amd64") {
                 println("Using docker platform, linux/amd64, specific platform: $jibPlatform")

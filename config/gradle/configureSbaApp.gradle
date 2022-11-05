@@ -41,6 +41,8 @@ if (!isRunUnitTest()) {
 def jvmXmx = getConfigValueFromObject(configObj, 'jvm_xmx', env, '256m')
 def jvmXms= getConfigValueFromObject(configObj, 'jvm_xms', env, '256m')
 def jvmXmn= getConfigValueFromObject(configObj, 'jvm_xmn', env, '128m')
+def baseImage= getConfigValueFromObject(configObj, 'base_image', env, 'ibm-semeru-runtimes:open-17-jre-jammy')
+ext.dockerBaseImage = baseImage
 
 
 ext.heapJvmArgs = [
