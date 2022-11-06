@@ -13,7 +13,12 @@ dependencies {
 
 //    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '5.0.0'
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-tomcat")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+//        exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+//        SmoothTomcatWebServerCustomizer
+    }
 
 //    implementation('org.springframework.boot:spring-boot-starter-web') {
 //        exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-core'

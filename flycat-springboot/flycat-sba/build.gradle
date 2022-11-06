@@ -1,4 +1,11 @@
 buildscript {
+    ext.configDir = "../../config"
+    ext.gradleConfigDir = "${configDir}/gradle"
+    apply from: "${gradleConfigDir}/versionManagement.gradle"
+    ext {
+        springBootVersion = FlycatLibVersion.spring_boot_version
+        springManagementVersion = FlycatLibVersion.spring_management_version
+    }
     repositories {
         mavenCentral()
         gradlePluginPortal()
@@ -6,13 +13,19 @@ buildscript {
         maven { url 'https://repo.spring.io/milestone' }
         maven { url 'https://repo.spring.io/snapshot' }
     }
+
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}" //
+        classpath "io.spring.gradle:dependency-management-plugin:${springManagementVersion}"
+    }
+
 }
 
 plugins {
 //    id 'org.springframework.boot' version "2.7.4" apply false
 //    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply false
-    id 'org.springframework.boot' version "2.7.4" apply true
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply true
+//    id 'org.springframework.boot' version "2.7.4" apply true
+//    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply true
     id 'java'
     id 'idea'
     // id "io.freefair.lombok" version "4.1.0"
@@ -25,13 +38,14 @@ plugins {
 //    id 'com.google.cloud.tools.jib' version '3.2.0' apply false
 }
 
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
 
-ext.configDir = "../../config"
-ext.gradleConfigDir = "${configDir}/gradle"
+//ext.configDir = "../../config"
+//ext.gradleConfigDir = "${configDir}/gradle"
 //ext.env = env
 ext.vJavaLang = '17'
 
-apply from: "${gradleConfigDir}/versionManagement.gradle"
 apply from: "${gradleConfigDir}/env.gradle"
 //apply from: "${gradleConfigDir}/autoConfigure.gradle"
 apply from: "${gradleConfigDir}/readJsonConfig.gradle"
@@ -53,6 +67,7 @@ if (getSubConfigValue('infra_sba', 'enable', env)) {
                       "-Dspring.boot.admin.context-path=${router_path}".toString(),
     ])
 }
+def webServer = getSubConfigValue('infra_sba', 'web_server', env, 'tomcat')
 
 ext.configObj = configObj['infra_sba']
 apply from: "${gradleConfigDir}/configureSbaApp.gradle"
@@ -74,7 +89,16 @@ dependencies {
     // api"org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     // implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    println("Using web server ${webServer}")
+    if (webServer == "underflow") {
+        implementation("org.springframework.boot:spring-boot-starter-web") {
+            exclude group: "org.springframework.boot", module: "spring-boot-starter-tomcat"
+        }
+        implementation "org.springframework.boot:spring-boot-starter-undertow"
+    } else {
+        implementation("org.springframework.boot:spring-boot-starter-web")
+    }
+
     implementation("org.springframework.boot:spring-boot-starter-security")
 
 }

@@ -37,7 +37,7 @@ import java.util.List;
 @Named
 @Singleton
 public class JacksonJsonService implements JsonService {
-    private TypeReference stringListType = new TypeReference<List<String>>() {
+    private TypeReference<List<String>> stringListType = new TypeReference<List<String>>() {
     };
     private final ObjectMapper objectMapper;
 

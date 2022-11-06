@@ -1,8 +1,24 @@
 
+
 dependencies {
     implementation project(':flycat-spi')
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.9'
+//    implementation(FlycatLibVersion.jackson_version)
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'
+
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: FlycatLibVersion.jackson_databind_version
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: FlycatLibVersion.jackson_core_version
+
+
+    implementation(FlycatLibVersion.jackson_databind)
+    implementation(FlycatLibVersion.jackson_core)
+
+//    testImplementation(FlycatLibVersion.jackson_databind)
+//    testImplementation(FlycatLibVersion.jackson_core)
+
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: ' 2.13.4.2'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: ' 2.13.4.2'
 }
 
 
