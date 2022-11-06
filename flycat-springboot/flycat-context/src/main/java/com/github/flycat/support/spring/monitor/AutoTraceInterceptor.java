@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
 package com.github.flycat.support.spring.monitor;
 
 import com.github.flycat.agent.monitor.AgentMain;
@@ -97,3 +98,4 @@ public class AutoTraceInterceptor implements MethodInterceptor {
         return invokeUnderTrace(invocation);
     }
 }
+*/

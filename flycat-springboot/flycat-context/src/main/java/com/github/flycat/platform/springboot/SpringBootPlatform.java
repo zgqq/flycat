@@ -23,20 +23,18 @@ import com.github.flycat.context.RunContext;
 import com.github.flycat.module.Module;
 import com.github.flycat.util.DateTimeUtils;
 import com.github.flycat.util.ExceptionUtils;
-import com.github.flycat.util.StringUtils;
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 
 public class SpringBootPlatform {
 
@@ -58,17 +56,17 @@ public class SpringBootPlatform {
             System.out.println("Preparing spring application run "+ DateTimeUtils.toISO8601DateTimeFormat(new Date()));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
             LOGGER.info("Run env, primarySource:{}, args:{}, jvmArgs:{}, env:{}", primarySource.getName(), args, arguments, env);
-            CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
-                try {
-
-                    AttachAgent.attachAgent();
-                } catch (Throwable e) {
-                    LOGGER.warn("Unable to attach agent", e);
-//                    throw new RuntimeException("Unable to attach agent", e);
-                }
-            });
+//            CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
+//                try {
+//
+//                    AttachAgent.attachAgent();
+//                } catch (Throwable e) {
+//                    LOGGER.warn("Unable to attach agent", e);
+////                    throw new RuntimeException("Unable to attach agent", e);
+//                }
+//            });
+//            attachAgent.get();
             ApplicationContext applicationContext = configurableApplicationContext.getBean(ApplicationContext.class);
-            attachAgent.get();
             ContextManager.afterRun(applicationContext);
             started.stop();
             LOGGER.info("Started spring boot application, cost {}", started);
