@@ -157,6 +157,7 @@ if 'infra_mysql' in config_data.keys():
        password = get_config_value(config_data['infra_mysql'], 'password', env)
        root_password = get_config_value(config_data['infra_mysql'], 'root_password', env)
        database = get_config_value(config_data['infra_mysql'], 'database', env)
+       backup_save_days = get_config_value(config_data['infra_mysql'], 'backup_save_days', env, 7)
        if "db-mysql" not in containers:
            if user == "root":
              print("Unable to set mysql user as root, it was created by default!")
@@ -198,11 +199,14 @@ if 'infra_mysql' in config_data.keys():
           job_list = jobs_str.split("\n")
           new_list = []
           cmd_list  = []
+
+          cmd_list.append(f"find {backup_dir} -type f -mtime + {backup_save_days} -name '*.gz' -execdir rm -- '{{}}' \;")
           for backup_database in backup_databases:
 #                  /usr/bin/mysqldump -h $mysql_host -u $mysql_username -p$mysql_password $mysql_database | gzip -9 -c > $backup_path/$today/$mysql_database-`date +%H%M`.sql.gz
               backup_cmd = f"docker exec db-mysql sh -c 'exec mysqldump -u{user} -p{password} {backup_database} "\
               f"| gzip -9 -c' > {backup_dir}/{backup_database}-`date +'%Y-%m-%d_%H%M%S'`.sql.gz"
               cmd_list.append(backup_cmd)
+              cmd_list.append(f"ln -s {backup_dir}/{backup_database}-`date +'%Y-%m-%d_%H%M%S'`.sql.gz {backup_dir}/{backup_database}-latest.sql.gz")
 #               backup = f"{backup_cron} {backup_cmd}"
 #               new_list.append(backup)
 #               for job in job_list:
