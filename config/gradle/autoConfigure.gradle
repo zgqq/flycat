@@ -127,6 +127,32 @@ if (isProd(env)) {
     autoConfigMap.put("spring.devtools.restart.enabled", false)
 }
 
+def jfrDuration =getConfigValue('jfr_duration',env, '0s')
+if (jfrDuration !== "0s") {
+    def jfrFilename = "${appName}.jfr".toString()
+    if (isDockerBuild()) {
+        jfrFilename = "/userapp/data/${jfrFilename}.jfr".toString()
+    }
+    ext.jfrConfig = [
+        duration: jfrDuration,
+        filename: "${jfrFilename}",
+    ]
+}
+
+def jfrMaxage =getConfigValue('jfr_maxage',env, '0s')
+if (jfrMaxage !== "0s") {
+    def jfrRepo =getConfigValue('jfr_repo',env, "/tmp")
+    if (isDockerBuild()) {
+        jfrRepo = "/userapp/data/".toString()
+    }
+    ext.jfrConfig = [
+            maxage: jfrMaxage,
+            repo: "${jfrRepo}",
+    ]
+}
+
+
+
 ext.debugPort=getConfigValue('debug_port',env, 0)
 ext.jmxPort = getConfigValue('jmx_port', env, 0)
 

@@ -188,10 +188,10 @@ if (hasProperty('jmxPort') && jmxPort > 0) {
                      "-Dcom.sun.management.jmxremote.ssl=false",
                      "-Djava.rmi.server.hostname=localhost",
                      "-Dcom.sun.management.jmxremote.local.only=false",
-                     "-XX:+UnlockCommercialFeatures", // To open flight recorder in java8
-                     "-XX:+FlightRecorder",
-                     "-XX:+UnlockDiagnosticVMOptions",
-                     "-XX:+DebugNonSafepoints"
+//                     "-XX:+UnlockCommercialFeatures", // To open flight recorder in java8
+//                     "-XX:+FlightRecorder",
+//                     "-XX:+UnlockDiagnosticVMOptions",
+//                     "-XX:+DebugNonSafepoints"
     ]
     ext.appJvmArgs += ext.frJvmArgs
 }
@@ -212,14 +212,28 @@ if (isTest(env)) {
 
 
 if (isDockerBuild()) {
-//    ext.logPath = "/userapp/data/logs"
-    ext.logPath = "."
+    ext.logPath = "/userapp/data/logs"
+//    ext.logPath = "."
     ext.gcLog = "${logPath}/gc.log".toString()
     ext.errorLog = "${logPath}/hs_err_pid%p.log".toString()
     ext.appJvmArgs += ["-Djava.library.path=/usr/local/tomcat/lib/native-jni-lib",
                        "-Duser.timezone=Asia/Shanghai",
                        "-XX:HeapDumpPath=${logPath}/dump.hprof".toString()
     ]
+}
+
+
+if (hasProperty('jfrConfig')) {
+    ext.appJvmArgs += ["-XX:+UnlockCommercialFeatures",
+                       "-XX:+FlightRecorder",
+                      ]
+    if ('maxage' in jfrConfig.keySet()) {
+        ext.appJvmArgs += ["-XX:StartFlightRecording.disk=true,maxage=${jfrConfig['maxage']},settings=default".toString(),
+                "-XX:FlightRecorderOptions=repository=${jfrConfig['repo']}".toString()
+        ]
+    } else {
+        ext.appJvmArgs += ["-XX:StartFlightRecording=duration=${jfrConfig['duration']},filename=${jfrConfig['filename']}".toString()]
+    }
 }
 
 if (!hasProperty('heapJvmArgs')) {
