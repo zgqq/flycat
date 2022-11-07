@@ -20,6 +20,7 @@ start_time = time.time()
 green = APP_GREEN
 blue = APP_BLUE
 
+print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
 
 def get_container_ip(blue_id):
     blue_info = check_output('docker inspect ' + blue_id, shell=True).decode().rstrip()

@@ -33,7 +33,7 @@ def get_bool_value(data, key, env):
 def get_config_value(data, key, env, default_value = None):
     global module_name
     if 'modules' in data.keys() and len(data['modules'].keys())>0:
-        if not module_name:
+        if not module_name or module_name == "app":
            module_name = list(data['modules'].keys())[0]
         module_config = data['modules'][module_name]
         conf_value = get_config_value(module_config, key, env, None)
@@ -117,7 +117,6 @@ APP_ROUTER1 =  APP_NAME + '1'
 DOCKER_COMPOSE_APP_YML = './target/docker-compose.app.yml'
 APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 # APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
-print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
 
 APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag
 DOCKER_COMPOSE_CMD="docker compose"
