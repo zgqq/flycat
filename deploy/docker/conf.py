@@ -26,6 +26,9 @@ tag = env
 def isLocalEnv():
     return env == "local"
 
+def isProdEnv():
+    return env == "prod"
+
 def get_bool_value(data, key, env):
     config_value = get_config_value(data, key, env)
     return config_value != None

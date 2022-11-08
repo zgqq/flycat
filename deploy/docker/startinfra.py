@@ -6,8 +6,9 @@ from pathlib import Path
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
 
-if not os.path.exists(home_dir+'/deploy'):
-   os.makedirs(home_dir+'/deploy')
+deploy_dir = home_dir+'/deploy'
+if not os.path.exists(deploy_dir):
+   os.makedirs(deploy_dir)
 
 if 'infra_mysql' in config_data.keys():
     if not os.path.exists('./common/mysql-initdb'):
@@ -30,7 +31,8 @@ containers = execute("docker container ls")
 if "web_traefik" not in containers:
    cmd=f"GATEWAY_DOMAIN={GATEWAY_DOMAIN} AUTH_USERS='{AUTH_USERS}' {DOCKER_COMPOSE_CMD} -f "+env+"/docker-compose.traefik.yml up -d"
    log_execute_system(cmd)
-   time.sleep(2)
+   print('Waiting traefik started...')
+   time.sleep(5)
    print('Started traefik')
 
 if 'infra_redis' in config_data.keys():
@@ -356,6 +358,31 @@ networks:
        print('Waiting nacos started...')
        time.sleep(15)
 
+if "registry" not in containers and isProdEnv():
+   docker_dir = home_dir+'/deploy/docker'
+   if not os.path.exists(docker_dir):
+      os.makedirs(docker_dir)
+      os.makedirs(docker_dir+'/auth')
+
+   registry_user = get_config_value(config_data, 'docker_registry_user', env)
+   registry_password = get_config_value(config_data, 'docker_registry_password', env)
+   log_execute_system(f"docker run \
+      --entrypoint htpasswd \
+      httpd:2 -Bbn {registry_user} {registry_password} > {docker_dir}/auth/htpasswd")
+
+   log_execute_system(f"docker rm registry")
+   log_execute_system(f'docker run -d \
+      -p 5000:5000 \
+      --restart=always \
+      --name registry \
+      -v {docker_dir}/auth:/auth \
+      -e "REGISTRY_AUTH=htpasswd" \
+      -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+      -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+      -v {deploy_dir}/data/traefik/letsencrypt/certs:/certs \
+      -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/certs/{GATEWAY_DOMAIN}.crt \
+      -e REGISTRY_HTTP_TLS_KEY=/certs/private/{GATEWAY_DOMAIN}.key \
+      registry:2')
 
 # if op == "update":
 #     os.system("git fetch")
