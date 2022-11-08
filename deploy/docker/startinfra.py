@@ -375,6 +375,7 @@ if "registry" not in containers and isProdEnv():
       -p 5000:5000 \
       --restart=always \
       --name registry \
+      -v /mnt/registry:/var/lib/registry \
       -v {docker_dir}/auth:/auth \
       -e "REGISTRY_AUTH=htpasswd" \
       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
@@ -383,6 +384,8 @@ if "registry" not in containers and isProdEnv():
       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/certs/{GATEWAY_DOMAIN}.crt \
       -e REGISTRY_HTTP_TLS_KEY=/certs/private/{GATEWAY_DOMAIN}.key \
       registry:2')
+   time.sleep(2)
+   log_execute_system(f'echo {registry_password}  | docker login {GATEWAY_DOMAIN}:5000 --username {registry_user} --password-stdin')
 
 # if op == "update":
 #     os.system("git fetch")

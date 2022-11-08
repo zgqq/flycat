@@ -127,6 +127,15 @@ if (isProd(env)) {
     autoConfigMap.put("spring.devtools.restart.enabled", false)
 }
 
+
+def dockerRegistryUser = getConfigValue('docker_registry_user',env, '')
+def dockerRegistryPassword = getConfigValue('docker_registry_password',env, '')
+if (dockerRegistryUser !== '') {
+    ext.dockerUsername = dockerRegistryUser
+    ext.dockerPassword = dockerRegistryPassword
+}
+
+
 def jfrDuration =getConfigValue('jfr_duration',env, '0s')
 if (jfrDuration !== "0s") {
     def jfrFilename = "${appName}.jfr".toString()
