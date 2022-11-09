@@ -87,8 +87,6 @@ APP_GREEN = "green-"+APP_NAME
 
 APP_TRAEFIK_NETWORK = "flycat_infra"
 
-LAST_DEPLOY_ID = env + '/server/last_deploy_id'
-CURRENT_DEPLOY_ID = env + '/server/current_deploy_id'
 print('Using %s env' % env)
 
 
@@ -126,3 +124,11 @@ DOCKER_COMPOSE_CMD="docker compose"
 
 if not os.path.exists('./target/'):
   os.makedirs('./target/')
+
+# status_dir = f'{home_dir}/deploy/docker-userapp/{APP_NAME}/{env}'
+# status_dir = f'{home_dir}/.{APP_NAME}/env'
+status_dir = f'{home_dir}/deploy/cache/{APP_NAME}/{env}'
+if not os.path.exists(status_dir):
+   os.makedirs(status_dir)
+LAST_DEPLOY_ID = f'{status_dir}/last_deploy_id'
+CURRENT_DEPLOY_ID = f'{status_dir}/current_deploy_id'

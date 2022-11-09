@@ -20,6 +20,8 @@ start_time = time.time()
 green = APP_GREEN
 blue = APP_BLUE
 
+# ~/deploy/docker-userapp/flycat-price
+
 print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))
 
 def get_container_ip(blue_id):
@@ -31,6 +33,7 @@ def get_container_ip(blue_id):
 
 
 def execute(cmd):
+    print('Executing command %s' % cmd)
     return check_output(cmd, shell=True).decode().strip()
 
 

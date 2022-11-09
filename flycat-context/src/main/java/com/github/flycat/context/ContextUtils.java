@@ -20,9 +20,7 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -150,4 +148,27 @@ public final class ContextUtils {
         String[] split = env.split(",");
         return Arrays.asList(split);
     }
+
+
+    public static String getDeployDetail() {
+        StringBuilder deployInfo = ContextUtils.getDeployInfo();
+        String appVersion = System.getProperty("app.version");
+        String gitDiff = System.getProperty("app.git.diff");
+        String deployDetail = "Version: " + appVersion + "\n" + gitDiff + "\n" + deployInfo;
+        return deployDetail;
+    }
+
+    public static StringBuilder getDeployInfo() {
+        Map<String, String> env = System.getenv();
+        Set<Map.Entry<String, String>> entries = env.entrySet();
+        StringBuilder deployInfo = new StringBuilder("Deploy environment: \n");
+        for (Map.Entry<String, String> entry : entries) {
+            if (entry.getKey().startsWith("DEPLOY")) {
+                deployInfo.append(entry.getKey() + "=" + entry.getValue());
+                deployInfo.append("\n");
+            }
+        }
+        return deployInfo.delete(deployInfo.length() - 2, deployInfo.length());
+    }
+
 }

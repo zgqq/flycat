@@ -86,7 +86,7 @@ jib {
         mainClass = mainClassName
 //        ports = [containerPort.toString(), debugServerPort.toString()]
         ports = [containerPort.toString()]
-        volumes = ['/app', '/userapp']
+        volumes = ['/app', '/userapp/data', '/userapp/logs']
 
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }

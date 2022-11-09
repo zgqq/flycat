@@ -212,7 +212,8 @@ if (isTest(env)) {
 
 
 if (isDockerBuild()) {
-    ext.logPath = "/userapp/data/logs"
+    // need to create it ahead of time
+    ext.logPath = "/userapp/logs"
 //    ext.logPath = "."
     ext.gcLog = "${logPath}/gc.log".toString()
     ext.errorLog = "${logPath}/hs_err_pid%p.log".toString()

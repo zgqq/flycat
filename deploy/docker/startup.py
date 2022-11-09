@@ -81,7 +81,8 @@ services:
     image: {APP_DOCKER_IMAGE}
 #    restart: always # prevent other service unavailable yet
     volumes:
-      - ~/deploy/docker-userapp/{APP_NAME}:/userapp
+      - ~/deploy/docker-userapp/{APP_NAME}/data:/userapp/data
+      - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
       - ${{app_volume}}:/app
     environment:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
@@ -121,7 +122,11 @@ networks:
     external:
       name: flycat_infra
 """
+print("Writing docker compose app template")
 write_template("./target/docker-compose.app.yml", template)
+
+if isProdEnv():
+   log_execute_system(f'docker pull {APP_DOCKER_IMAGE}')
 
 if op == "rollback":
    id = ''

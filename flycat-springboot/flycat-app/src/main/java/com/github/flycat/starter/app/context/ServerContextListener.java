@@ -44,7 +44,7 @@ public class ServerContextListener implements ContextListener {
 
         String appVersion = System.getProperty("app.version");
         String gitDiff = System.getProperty("app.git.diff");
-        StringBuilder deployInfo = getDeployInfo();
+        StringBuilder deployInfo = ContextUtils.getDeployInfo();
         String message = "Server[" + contextFreeConfiguration.getApplicationName() + "] starting\n" +
                 "Version: " + appVersion + "\n" + gitDiff + "\n"+ deployInfo;
         LOGGER.info(message);
@@ -53,18 +53,6 @@ public class ServerContextListener implements ContextListener {
         }
     }
 
-    private static StringBuilder getDeployInfo() {
-        Map<String, String> env = System.getenv();
-        Set<Map.Entry<String, String>> entries = env.entrySet();
-        StringBuilder deployInfo = new StringBuilder("Deploy environment: \n");
-        for (Map.Entry<String, String> entry : entries) {
-            if (entry.getKey().startsWith("DEPLOY")) {
-                deployInfo.append(entry.getKey() + "=" + entry.getValue());
-                deployInfo.append("\n");
-            }
-        }
-        return deployInfo.delete(deployInfo.length() - 2, deployInfo.length());
-    }
 
     @Override
     public void afterRun(ApplicationContext applicationContext) {
@@ -78,8 +66,6 @@ public class ServerContextListener implements ContextListener {
         LOGGER.info("Trying to notify started, notifyEnabled:{}, inEnv:{}, currentProfile:{}, defaultProductions:{}," +
                 " configs:{}", booleanValue, inEnv, currentProfile, defaultProductionEnvString, context);
 
-        String appVersion = System.getProperty("app.version");
-        String gitDiff = System.getProperty("app.git.diff");
         String applicationName = applicationConfiguration.getApplicationName();
         String message = "Server[" + applicationName + "] started";
 
@@ -88,8 +74,8 @@ public class ServerContextListener implements ContextListener {
             message = message + "\nStartup cost: " + stopwatch;
         }
 
-        StringBuilder deployInfo = getDeployInfo();
-        message = message + "\nVersion: " + appVersion + "\n" + gitDiff + "\n" + deployInfo;
+
+        message = message + "\n" + ContextUtils.getDeployDetail();
         LOGGER.info(message);
         if (booleanValue && inEnv) {
             NotifierUtils.sendNotification(message);
