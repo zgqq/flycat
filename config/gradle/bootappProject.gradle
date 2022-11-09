@@ -48,6 +48,7 @@ apply from: "${gradleConfigDir}/tasks.gradle"
 processResources.dependsOn copyConfiguration
 
 
+
 if (hasProperty("tag")) {
     ext.tag = "-" + tag
 } else {

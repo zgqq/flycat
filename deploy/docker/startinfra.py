@@ -98,7 +98,7 @@ networks:
       name: flycat_infra
       """
 
-       text_file = open("./target/docker-compose.sba.yml", "w")
+       text_file = open(f"{TARGET_DIR}/docker-compose.sba.yml", "w")
        #write string to file
        text_file.write(template)
        #close file
@@ -179,8 +179,8 @@ if 'infra_mysql' in config_data.keys():
           sql_content = sql_content.replace('{DATABASE}', database)
           sql_content = sql_content.replace('{NACOS_USER}', nacos_user)
           sql_content = sql_content.replace('{NACOS_PASSWORD}', nacos_password)
-          write_template('./target/nacos.sql', sql_content)
-          sql_dir = os.path.abspath('./target')
+          write_template(f'{TARGET_DIR}/nacos.sql', sql_content)
+          sql_dir = os.path.abspath(f'{TARGET_DIR}')
           internal_files = ['nacos.sql']
           execute_sql_files(sql_dir, internal_files, user, password, root_password, need_wait, executed)
 
@@ -347,14 +347,14 @@ networks:
     external:
       name: flycat_infra
 """
-       text_file = open("./target/docker-compose.nacos.yml", "w")
+       text_file = open(f"{TARGET_DIR}/docker-compose.nacos.yml", "w")
        #write string to file
        text_file.write(template)
        #close file
        text_file.close()
 
        log_execute_system(f"MYSQL_PORT={port} MYSQL_DATABASE={database} MYSQL_USER={user}" \
-        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" {DOCKER_COMPOSE_CMD} -f ./target/docker-compose.nacos.yml up -d")
+        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.nacos.yml up -d")
        print('Waiting nacos started...')
        time.sleep(15)
 

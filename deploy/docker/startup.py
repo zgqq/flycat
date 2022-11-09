@@ -22,12 +22,10 @@ ROUTER1 =  APP_ROUTER1
 # f = open(env+"/.env", "w")
 # f.write(docker_env)
 # f.close()
-if not os.path.exists(home_dir+'/deploy'):
-   os.makedirs(home_dir+'/deploy')
 
 op = "deploy"
-if len(sys.argv) > 3:
-    op = sys.argv[3]
+if len(sys.argv) > 4:
+    op = sys.argv[4]
 
 print('Executing operation, op:%s, env:%s' %(op, env))
 
@@ -123,7 +121,7 @@ networks:
       name: flycat_infra
 """
 print("Writing docker compose app template")
-write_template("./target/docker-compose.app.yml", template)
+write_template(f"{TARGET_DIR}/docker-compose.app.yml", template)
 
 if isProdEnv():
    log_execute_system(f'docker pull {APP_DOCKER_IMAGE}')
@@ -140,8 +138,8 @@ if op == "rollback":
 
    print('Trying to rollback previous container %s' % id)
    if id:
-       os.system('docker tag %s %s' % (id, APP_DOCKER_REPO))
-       os.system('python3 ./deploy.py %s' % (env, conf_path))
+       os.system('docker tag %s %s' % (id, APP_DOCKER_IMAGE))
+       os.system('python3 ./deploy.py %s %s' % (env, conf_path))
    else:
        print('Not found previous container')
 else:

@@ -115,20 +115,26 @@ config_dir = os.path.dirname(os.path.abspath(conf_path)) ## directory of file
 
 APP_ROUTER0 =  APP_NAME + '0'
 APP_ROUTER1 =  APP_NAME + '1'
-DOCKER_COMPOSE_APP_YML = './target/docker-compose.app.yml'
 APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 # APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 
 APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag
 DOCKER_COMPOSE_CMD="docker compose"
 
-if not os.path.exists('./target/'):
-  os.makedirs('./target/')
+# if not os.path.exists(home_dir+'/deploy'):
+#    os.makedirs(home_dir+'/deploy')
 
 # status_dir = f'{home_dir}/deploy/docker-userapp/{APP_NAME}/{env}'
 # status_dir = f'{home_dir}/.{APP_NAME}/env'
 status_dir = f'{home_dir}/deploy/cache/{APP_NAME}/{env}'
 if not os.path.exists(status_dir):
    os.makedirs(status_dir)
+
+TARGET_DIR = status_dir + '/target'
+if not os.path.exists(TARGET_DIR):
+  os.makedirs(TARGET_DIR)
+
 LAST_DEPLOY_ID = f'{status_dir}/last_deploy_id'
 CURRENT_DEPLOY_ID = f'{status_dir}/current_deploy_id'
+
+DOCKER_COMPOSE_APP_YML = f'{TARGET_DIR}/docker-compose.app.yml'
