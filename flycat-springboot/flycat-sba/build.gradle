@@ -66,8 +66,27 @@ if (getSubConfigValue('infra_sba', 'enable', env)) {
                       "-Dserver.port=${port}".toString(),
                       "-Dspring.boot.admin.context-path=${router_path}".toString(),
     ])
+    def public_url = getSubConfigValue('infra_sba','public_url',env, '')
+//    server.use-forward-headers=true
+//    spring.boot.admin.ui.public-url=https://xxx.com
+    if (public_url !== '') {
+        addCustomJvmArgs(["-Dserver.use-forward-headers=true".toString(),
+                "-Dspring.boot.admin.ui.public-url=${public_url}".toString()
+        ])
+    }
 }
+
+def dockerRegistryUser = getSubOrMainConfigValue('infra_sba','docker_registry_user',env, '')
+def dockerRegistryPassword = getSubOrMainConfigValue('infra_sba','docker_registry_password',env, '')
+if (dockerRegistryUser !== '') {
+    ext.dockerUsername = dockerRegistryUser
+    ext.dockerPassword = dockerRegistryPassword
+}
+
+
 def webServer = getSubConfigValue('infra_sba', 'web_server', env, 'tomcat')
+
+
 
 ext.configObj = configObj['infra_sba']
 apply from: "${gradleConfigDir}/configureSbaApp.gradle"

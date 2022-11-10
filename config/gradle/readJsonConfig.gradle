@@ -123,6 +123,23 @@ ext.getSubConfigValue = { name, key, env, defaultValue = null ->
 }
 
 
+ext.getSubOrMainConfigValue = { name, key, env, defaultValue = null ->
+    env = env.toString()
+    logger.debug("getSubConfigValue ${name}, ${key}, ${env} ")
+    if (name in configObj.keySet()) {
+        def configData = configObj[name]
+//        def arr = ['local', 'dev']
+//        println("get env_overwrite ${name}, ${key}, env:${env}, ${configData['env_overwrite'].keySet()}," +
+//                "${'env_overwrite' in configData.keySet()},env in env_overwrite:${env.toString() in configData['env_overwrite'].keySet()}, " +
+//                "${'local' in arr}, ${arr}, ss${configData['env_overwrite'].containsKey(env)}")
+        def returnValue = getConfigValueFromObject(configData, key, env, defaultValue)
+        if (defaultValue !== returnValue) {
+            return returnValue
+        }
+    }
+    return getConfigValueFromObject(configObj, key, env, defaultValue)
+}
+
 ext.addCustomJvmArgs = { argsArr ->
     if (project.hasProperty('customJvmArgs')) {
         ext.customJvmArgs += argsArr

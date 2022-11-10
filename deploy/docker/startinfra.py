@@ -80,11 +80,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
-      - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
       - traefik.http.routers.{ROUTER_SBA0}.tls=true
-      - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
+      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
       - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
+      - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
+      - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
       - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
       - traefik.docker.network=flycat_infra
@@ -103,8 +104,9 @@ networks:
        text_file.write(template)
        #close file
        text_file.close()
-
-       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f target/docker-compose.sba.yml up -d"
+       if isProdEnv():
+          os.system('docker pull %s' % (SBA_DOCKER_IMAGE))
+       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.sba.yml up -d"
        print('Executing system command: %s' % cmd)
        log_execute_system(cmd)
        time.sleep(2)
@@ -328,11 +330,12 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.{ROUTER_NACOS0}.rule=PathPrefix(`/nacos`)
-      - traefik.http.routers.{ROUTER_NACOS1}.rule=PathPrefix(`/nacos`)
       - traefik.http.routers.{ROUTER_NACOS0}.entrypoints=https
       - traefik.http.routers.{ROUTER_NACOS0}.tls=true
-      - traefik.http.services.{ROUTER_NACOS0}-service.loadbalancer.server.port={NACOS_PORT}
+      - traefik.http.routers.{ROUTER_NACOS0}.tls.certResolver=certer
       - traefik.http.routers.{ROUTER_NACOS0}.service={ROUTER_NACOS0}-service
+      - traefik.http.services.{ROUTER_NACOS0}-service.loadbalancer.server.port={NACOS_PORT}
+      - traefik.http.routers.{ROUTER_NACOS1}.rule=PathPrefix(`/nacos`)
       - traefik.http.routers.{ROUTER_NACOS1}.entrypoints=http
       - traefik.http.routers.{ROUTER_NACOS1}.service={ROUTER_NACOS0}-service
       - traefik.docker.network=flycat_infra
