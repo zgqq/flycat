@@ -6,11 +6,23 @@ from pathlib import Path
 # AUTH_USERS='{AUTH_USERS}'
 # GATEWAY_DOMAIN={GATEWAY_DOMAIN}
 
+
+if (target == None):
+   target = "all"
+
+start_all = target == "all"
+start_traefik = (target == "traefik" or start_all)
+start_mysql = (target == "mysql" or start_all)
+start_sba = (target == "sba" or start_all)
+start_nacos = (target == "nacos" or start_all)
+start_redis = (target == "redis" or start_all)
+start_registry = (target == "registry" or start_all)
+
 deploy_dir = home_dir+'/deploy'
 if not os.path.exists(deploy_dir):
    os.makedirs(deploy_dir)
 
-if 'infra_mysql' in config_data.keys():
+if 'infra_mysql' in config_data.keys() and start_mysql:
     if not os.path.exists('./common/mysql-initdb'):
        os.makedirs('./common/mysql-initdb')
 
@@ -28,14 +40,14 @@ containers = execute("docker container ls")
 # if "db_mysql" not in containers:
 #    log_execute_system("{DOCKER_COMPOSE_CMD} -f docker-compose.mysql.yml up -d")
 
-if "web_traefik" not in containers:
+if "web_traefik" not in containers and start_traefik:
    cmd=f"GATEWAY_DOMAIN={GATEWAY_DOMAIN} AUTH_USERS='{AUTH_USERS}' {DOCKER_COMPOSE_CMD} -f "+env+"/docker-compose.traefik.yml up -d"
    log_execute_system(cmd)
    print('Waiting traefik started...')
    time.sleep(5)
    print('Started traefik')
 
-if 'infra_redis' in config_data.keys():
+if 'infra_redis' in config_data.keys() and start_redis:
     enable = get_bool_value(config_data['infra_redis'], 'enable', env)
     if enable:
 #         if "db_redis" not in all_networks:
@@ -45,7 +57,7 @@ if 'infra_redis' in config_data.keys():
            password = get_config_value(config_data['infra_redis'], 'password', env)
            log_execute_system(f"REDIS_PORT={app_port} REDIS_PASSWORD={password} {DOCKER_COMPOSE_CMD} -f common/docker-compose.redis.yml up -d")
 
-if 'infra_sba' in config_data.keys():
+if 'infra_sba' in config_data.keys() and start_sba:
     enable = get_config_value(config_data['infra_sba'], 'enable', env)
     if enable and "web-sba" not in containers:
        app_port = get_config_value(config_data['infra_sba'], 'app_port', env)
@@ -82,11 +94,14 @@ services:
       - traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
       - traefik.http.routers.{ROUTER_SBA0}.tls=true
+      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
       - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
       - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
       - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
       - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.{ROUTER_SBA1}.middlewares=https-redirect
       - traefik.docker.network=flycat_infra
     networks:
 #      - traefik
@@ -151,7 +166,7 @@ def execute_sql_files(base_path, sql_files, user, password, root_password, need_
            executed = True
    return executed
 
-if 'infra_mysql' in config_data.keys():
+if 'infra_mysql' in config_data.keys() and start_mysql:
     enable = get_config_value(config_data['infra_mysql'], 'enable', env)
     if enable:
        need_wait = False
@@ -252,7 +267,7 @@ if 'infra_mysql' in config_data.keys():
 #            crontab
 
 
-if 'infra_nacos' in config_data.keys():
+if 'infra_nacos' in config_data.keys() and start_nacos:
     enable = get_config_value(config_data['infra_nacos'], 'enable', env)
     if enable and "config-nacos" not in containers:
        nacos_port = get_config_value(config_data['infra_nacos'], 'port', env, 8848)
@@ -338,7 +353,7 @@ services:
       - traefik.http.routers.{ROUTER_NACOS1}.entrypoints=http
       - traefik.http.routers.{ROUTER_NACOS1}.service={ROUTER_NACOS0}-service
       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.{ROUTER_NACOS1}.middlewares=https-redirect,compress
+      - traefik.http.routers.{ROUTER_NACOS1}.middlewares=https-redirect
       - traefik.docker.network=flycat_infra
     ports:
       - "9848:9848"
@@ -362,7 +377,7 @@ networks:
        print('Waiting nacos started...')
        time.sleep(15)
 
-if "registry" not in containers and isProdEnv():
+if "registry" not in containers and isProdEnv() and start_registry:
    docker_dir = home_dir+'/deploy/docker'
    if not os.path.exists(docker_dir):
       os.makedirs(docker_dir)

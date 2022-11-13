@@ -14,8 +14,11 @@ if len(sys.argv) > 1:
     conf_path = sys.argv[2]
 
 module_name = None
+target =  None
 if len(sys.argv) > 3:
-    module_name = sys.argv[3]
+    if sys.argv[3]!= "all":
+       module_name = sys.argv[3]
+    target = sys.argv[3]
 
 tag = env
 # if env == "local":
@@ -115,7 +118,10 @@ config_dir = os.path.dirname(os.path.abspath(conf_path)) ## directory of file
 
 APP_ROUTER0 =  APP_NAME + '0'
 APP_ROUTER1 =  APP_NAME + '1'
-APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
+if (isProdEnv()):
+   APP_TRAEFIK_SERVICE_URL = "https://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
+else:
+   APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 # APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 
 APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag
