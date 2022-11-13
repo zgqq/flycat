@@ -24,7 +24,6 @@ include 'flycat-springboot-context'
 project(':flycat-springboot-context').projectDir = new File('./flycat-springboot/flycat-context')
 
 
-
 include 'flycat-springboot-task'
 project(':flycat-springboot-task').projectDir = new File('./flycat-springboot/flycat-task')
 
@@ -35,3 +34,5 @@ project(':flycat-springboot-mybatis').projectDir = new File('./flycat-springboot
 
 include 'flycat-springboot-mybatisplus'
 project(':flycat-springboot-mybatisplus').projectDir = new File('./flycat-springboot/flycat-mybatisplus')
+
+
