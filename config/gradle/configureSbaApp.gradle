@@ -5,7 +5,8 @@ if (!hasProperty('configObj')) {
 
 def appPort= configObj['app_port'].toString()
 def appName= configObj['app_name'].toString()
-def dockerRepo= configObj['docker_repo'].toString()
+//def dockerRepo= configObj['docker_repo'].toString()
+def dockerRepo = getConfigValueFromObject(configObj, 'docker_repo', env)
 def mainClass= configObj['main_class'].toString()
 
 ext.containerPort = appPort

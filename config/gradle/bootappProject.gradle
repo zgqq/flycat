@@ -43,9 +43,8 @@ if (!isStartupOrPackage()) {
 
 apply plugin: "java"
 apply plugin: 'application'
-apply from: "${gradleConfigDir}/tasks.gradle"
-
-processResources.dependsOn copyConfiguration
+//apply from: "${gradleConfigDir}/tasks.gradle"
+//processResources.dependsOn copyConfiguration
 
 
 

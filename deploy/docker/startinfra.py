@@ -60,8 +60,8 @@ if 'infra_sba' in config_data.keys():
        SBA_DOCKER_IMAGE=docker_image
        SBA_APP_PORT=app_port
 
-       ROUTER_SBA0='flycat-sba0'
-       ROUTER_SBA1='flycat-sba1'
+       ROUTER_SBA0='flycat_sba0'
+       ROUTER_SBA1='flycat_sba1'
        template = f"""
 version: '3'
 services:
@@ -82,9 +82,8 @@ services:
       - traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
       - traefik.http.routers.{ROUTER_SBA0}.tls=true
-      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
-      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
       - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
+      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
       - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
       - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
@@ -338,6 +337,8 @@ services:
       - traefik.http.routers.{ROUTER_NACOS1}.rule=PathPrefix(`/nacos`)
       - traefik.http.routers.{ROUTER_NACOS1}.entrypoints=http
       - traefik.http.routers.{ROUTER_NACOS1}.service={ROUTER_NACOS0}-service
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.{ROUTER_NACOS1}.middlewares=https-redirect,compress
       - traefik.docker.network=flycat_infra
     ports:
       - "9848:9848"
