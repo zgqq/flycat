@@ -86,8 +86,8 @@ jib {
         mainClass = mainClassName
 //        ports = [containerPort.toString(), debugServerPort.toString()]
         ports = [containerPort.toString()]
-        volumes = ['/app', '/userapp/data', '/userapp/logs']
-
+//        volumes = ['/userapp/data', '/userapp/logs', '/app/classes', '/app/resources', '/app/libs']
+        volumes = ['/userapp',  '/app/']
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 //    allowInsecureRegistries = true
