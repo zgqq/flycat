@@ -15,9 +15,13 @@
  */
 package com.github.flycat.web.spring;
 
+import com.google.common.collect.Lists;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class WebCorsFilter extends CorsFilter {
 
@@ -28,7 +32,8 @@ public class WebCorsFilter extends CorsFilter {
     private static UrlBasedCorsConfigurationSource configurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("*");
+//        config.addAllowedOrigin("*");
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
