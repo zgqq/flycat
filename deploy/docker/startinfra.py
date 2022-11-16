@@ -74,6 +74,20 @@ if 'infra_sba' in config_data.keys() and start_sba:
 
        ROUTER_SBA0='flycat_sba0'
        ROUTER_SBA1='flycat_sba1'
+
+       HTTPS_TEMPLATE = ""
+       if isProdEnv():
+          HTTPS_TEMPLATE = f"""
+- traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
+- traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
+- traefik.http.routers.{ROUTER_SBA0}.tls=true
+- traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
+- traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
+- traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+- traefik.http.routers.{ROUTER_SBA1}.middlewares=https-redirect
+          """
+
+
        template = f"""
 version: '3'
 services:
@@ -91,17 +105,11 @@ services:
         max_attempts: 2
     labels:
       - traefik.enable=true
-      - traefik.http.routers.{ROUTER_SBA0}.rule=PathPrefix(`/sba-admin`)
-      - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
-      - traefik.http.routers.{ROUTER_SBA0}.tls=true
-      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
+      {HTTPS_TEMPLATE}
       - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
-      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
       - traefik.http.routers.{ROUTER_SBA1}.rule=PathPrefix(`/sba-admin`)
       - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
       - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.{ROUTER_SBA1}.middlewares=https-redirect
       - traefik.docker.network=flycat_infra
     networks:
 #      - traefik
@@ -311,8 +319,21 @@ if 'infra_nacos' in config_data.keys() and start_nacos:
        JAVA_OPT=java_opt
        NACOS_PORT = nacos_port
 
-       ROUTER_NACOS0='flycat-nacos0'
-       ROUTER_NACOS1='flycat-nacos1'
+       ROUTER_NACOS0='flycat_nacos0'
+       ROUTER_NACOS1='flycat_nacos1'
+
+       HTTPS_TEMPLATE = ""
+
+       if isProdEnv():
+           HTTPS_TEMPLATE = f"""
+- traefik.http.routers.{ROUTER_NACOS0}.rule=PathPrefix(`/nacos`)
+- traefik.http.routers.{ROUTER_NACOS0}.entrypoints=https
+- traefik.http.routers.{ROUTER_NACOS0}.tls=true
+- traefik.http.routers.{ROUTER_NACOS0}.tls.certResolver=certer
+- traefik.http.routers.{ROUTER_NACOS0}.service={ROUTER_NACOS0}-service
+- traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+- traefik.http.routers.{ROUTER_NACOS1}.middlewares=https-redirect
+              """
 
        template = f"""
 version: '3'
@@ -343,17 +364,11 @@ services:
       - NACOS_APPLICATION_PORT={NACOS_PORT}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.{ROUTER_NACOS0}.rule=PathPrefix(`/nacos`)
-      - traefik.http.routers.{ROUTER_NACOS0}.entrypoints=https
-      - traefik.http.routers.{ROUTER_NACOS0}.tls=true
-      - traefik.http.routers.{ROUTER_NACOS0}.tls.certResolver=certer
-      - traefik.http.routers.{ROUTER_NACOS0}.service={ROUTER_NACOS0}-service
+      {HTTPS_TEMPLATE}
       - traefik.http.services.{ROUTER_NACOS0}-service.loadbalancer.server.port={NACOS_PORT}
       - traefik.http.routers.{ROUTER_NACOS1}.rule=PathPrefix(`/nacos`)
       - traefik.http.routers.{ROUTER_NACOS1}.entrypoints=http
       - traefik.http.routers.{ROUTER_NACOS1}.service={ROUTER_NACOS0}-service
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.{ROUTER_NACOS1}.middlewares=https-redirect
       - traefik.docker.network=flycat_infra
     ports:
       - "9848:9848"

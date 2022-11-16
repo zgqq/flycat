@@ -15,13 +15,11 @@
  */
 package com.github.flycat.web.spring;
 
-import com.google.common.collect.Lists;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class WebCorsFilter extends CorsFilter {
 
