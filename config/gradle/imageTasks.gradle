@@ -72,11 +72,11 @@ ext.applyImageProject = { mainProject, tt ->
         if (registryBuildTask != null) {
             mainProject.tasks.buildRegistryImages.dependsOn registryBuildTask
         }
-        if (firstLocalBuildTask == null) {
+        if (firstLocalBuildTask == null && localBuildTask!=null) {
             firstLocalBuildTask = localBuildTask
             mainProject.tasks.buildLocalImage.dependsOn firstLocalBuildTask
         }
-        if (firstRegisteryBuildTask == null) {
+        if (firstRegisteryBuildTask == null && registryBuildTask!=null) {
             firstRegisteryBuildTask = registryBuildTask
             mainProject.tasks.buildRegistryImage.dependsOn firstRegisteryBuildTask
         }

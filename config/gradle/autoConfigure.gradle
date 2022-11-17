@@ -245,6 +245,14 @@ if (isDockerBuild()) {
     handleConf(configMap, dockerConfig)
 }
 
+if ("modules" in profileConf.keySet()) {
+    profileConf['modules'].each { module ->
+        if (project.name in module['names']) {
+            handleConf(configMap, module['config'])
+        }
+    }
+}
+
 configMap.each { key, value ->
     common += (key + "=" + value + "\n")
 }
@@ -254,6 +262,7 @@ configMap.each { key, value ->
 println("Handling resource")
 println(common)
 def applicationConfigFile = new File(resourcesDir, "application-" + profile + ".properties")
+applicationConfigFile.createNewFile()
 println("Write config to file "+ applicationConfigFile.getAbsolutePath())
 applicationConfigFile.text = common
 
