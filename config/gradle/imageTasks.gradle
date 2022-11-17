@@ -1,0 +1,84 @@
+def getBuildImageTaskByProject = { tt, taskName ->
+    def executeTasks = new ArrayList()
+    if (tt.tasks.findByName(taskName) != null) {
+        def executeTask = tt.tasks.named(taskName)
+        executeTasks.add(executeTask)
+        println("Build image task, append ${tt.name}")
+    } else {
+        println("Not found build image task, skipping, ${tt.name}")
+    }
+    return executeTasks.size() > 0 ? executeTasks.get(0) : null
+}
+
+def getBuildImageTasks = { taskName ->
+    def executeTasks = new ArrayList()
+    if (project.subprojects.size() > 0) {
+        println("Found ${project.subprojects.size()} projects, preparing build image")
+        project.subprojects { t ->
+//                if (t.tasks.findByName(":${t.name}:jibDockerBuild".toString()) != null) {
+            if (t.tasks.findByName(taskName) != null) {
+                def executeTask = t.tasks.named(taskName)
+                executeTasks.add(executeTask)
+                println("Build image task, append ${t.name}")
+            } else {
+                println("Not found build image task, skipping, ${t.name}")
+            }
+        }
+    } else {
+        println("Single module project, preparing build image")
+        def executeTask = tasks.named('jibDockerBuild')
+        executeTasks.add(executeTask)
+    }
+    return executeTasks
+}
+
+task buildLocalImage {
+    doLast {
+
+    }
+}
+
+task buildLocalImages {
+    doLast {
+    }
+}
+
+
+task buildRegistryImage {
+    doLast {
+
+    }
+}
+
+task buildRegistryImages {
+    doLast {
+    }
+}
+
+
+def firstLocalBuildTask = null
+def firstRegisteryBuildTask = null
+
+
+ext.applyImageProject = { mainProject, tt ->
+    //        def executeTasks = getBuildImageTasks('jibDockerBuild')
+    //
+    tt.afterEvaluate {
+        def localBuildTask = getBuildImageTaskByProject(tt, "jibDockerBuild")
+        def registryBuildTask = getBuildImageTaskByProject(tt, "jib")
+        if (localBuildTask != null) {
+            mainProject.tasks.buildLocalImages.dependsOn localBuildTask
+        }
+        if (registryBuildTask != null) {
+            mainProject.tasks.buildRegistryImages.dependsOn registryBuildTask
+        }
+        if (firstLocalBuildTask == null) {
+            firstLocalBuildTask = localBuildTask
+            mainProject.tasks.buildLocalImage.dependsOn firstLocalBuildTask
+        }
+        if (firstRegisteryBuildTask == null) {
+            firstRegisteryBuildTask = registryBuildTask
+            mainProject.tasks.buildRegistryImage.dependsOn firstRegisteryBuildTask
+        }
+    }
+}
