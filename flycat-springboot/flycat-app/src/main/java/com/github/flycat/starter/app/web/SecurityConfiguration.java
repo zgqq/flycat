@@ -59,14 +59,16 @@ public class SecurityConfiguration {
 				)
 //				.logout((logout) -> logout.logoutUrl(path("/logout")))
 				.httpBasic(Customizer.withDefaults()) // <4>
-				.csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // <5>
-						.ignoringRequestMatchers(
-								new AntPathRequestMatcher(path("/instances"),
-										HttpMethod.POST.toString()), // <6>
-								new AntPathRequestMatcher(path("/instances/*"),
-										HttpMethod.DELETE.toString()), // <6>
-								new AntPathRequestMatcher(path("/actuator/**")) // <7>
-						))
+				.csrf()
+				.disable()
+//				.csrf((csrf) -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // <5>
+//						.ignoringRequestMatchers(
+//								new AntPathRequestMatcher(path("/instances"),
+//										HttpMethod.POST.toString()), // <6>
+//								new AntPathRequestMatcher(path("/instances/*"),
+//										HttpMethod.DELETE.toString()), // <6>
+//								new AntPathRequestMatcher(path("/actuator/**")) // <7>
+//						))
 				.rememberMe((rememberMe) -> rememberMe.key(UUID.randomUUID().toString()).tokenValiditySeconds(1209600));
         return http.build();
     }

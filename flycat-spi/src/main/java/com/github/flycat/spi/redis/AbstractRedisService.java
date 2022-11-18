@@ -119,6 +119,11 @@ public class AbstractRedisService implements RedisService {
         return provider.incr(key);
     }
 
+    @Override
+    public Long incr(String key, long delta) {
+        return provider.incr(key, delta);
+    }
+
 
     public RedisService getProvider() {
         return provider;

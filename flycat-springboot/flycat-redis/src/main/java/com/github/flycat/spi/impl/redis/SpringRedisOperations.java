@@ -99,4 +99,9 @@ public class SpringRedisOperations implements RedisOperations {
     public Long incr(String key) {
         return redisTemplate.boundValueOps(key).increment();
     }
+
+    @Override
+    public Long incr(String key, long delta) {
+        return redisTemplate.boundValueOps(key).increment(delta);
+    }
 }
