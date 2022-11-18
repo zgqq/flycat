@@ -17,14 +17,13 @@ public class PropertiesEnvironmentPostProcessor implements EnvironmentPostProces
     public static final String SERVER_TOMCAT_ACCESSLOG_DIRECTORY = "server.tomcat.accesslog.directory";
     public static final String SPRING_MAIN_LAZY_INITIALIZATION = "spring.main.lazy-initialization";
 
-
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         PropertySource<?> propertySource = new MapPropertySource("flycat-default",
                 new DefaultPropertyHandler(environment)
                         .apply(SERVER_TOMCAT_ACCESSLOG_ENABLED, true)
                         .applyOther(SERVER_TOMCAT_ACCESSLOG_DIRECTORY, "logging.file.path")
-                        .apply(SPRING_MAIN_LAZY_INITIALIZATION, !ContextUtils.isProd())
+                        .apply(SPRING_MAIN_LAZY_INITIALIZATION, false)
                         .getProperties()
         );
         environment.getPropertySources().addLast(propertySource);
