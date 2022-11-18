@@ -20,6 +20,8 @@ start_time = time.time()
 green = APP_GREEN
 blue = APP_BLUE
 
+print('Preparing deploy, app:%s' % APP_NAME)
+
 # ~/deploy/docker-userapp/flycat-price
 
 print('Get service url %s' % (APP_TRAEFIK_SERVICE_URL))

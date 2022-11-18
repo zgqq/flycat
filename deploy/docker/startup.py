@@ -139,8 +139,9 @@ if op == "rollback":
    print('Trying to rollback previous container %s' % id)
    if id:
        os.system('docker tag %s %s' % (id, APP_DOCKER_IMAGE))
-       os.system('python3 ./deploy.py %s %s' % (env, conf_path))
+       os.system('python3 ./deploy.py --env %s --conf %s --module %s' % (env, conf_path, module_name))
    else:
        print('Not found previous container')
 else:
-    os.system('python3 ./deploy.py %s %s' % (env, conf_path))
+#     os.system('python3 ./deploy.py %s %s' % (env, conf_path))
+    os.system('python3 ./deploy.py --env %s --conf %s --module %s' % (env, conf_path, module_name))

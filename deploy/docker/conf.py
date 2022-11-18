@@ -3,22 +3,40 @@ import json
 from subprocess import check_output
 import os
 from pathlib import Path
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--env", default=None, help="", required=True)
+parser.add_argument("--conf",
+                      default=None,
+                      help="", required=True)
+parser.add_argument("--module", default=None, help="",  required=False)
+parser.add_argument("--target", default=None, help="",  required=False)
+conf_args = parser.parse_args()
+env = conf_args.env
+conf_path = conf_args.conf
+module_name = conf_args.module
+target = conf_args.target
+
+print('Got args, args:%s' % (conf_args))
 home_dir = str(Path.home())
 
-env = "local"
-conf_path = "../../../config.json"
-if len(sys.argv) > 1:
-    print('Command args %s' % sys.argv)
-    env = sys.argv[1]
-    conf_path = sys.argv[2]
+# env = "local"
+# conf_path = "../../../config.json"
+# if len(sys.argv) > 1:
+#     print('Command args %s' % sys.argv)
+#     env = sys.argv[1]
+#     conf_path = sys.argv[2]
+#
+# module_name = None
+# target =  None
+# if len(sys.argv) > 3:
+#     if sys.argv[3]!= "all":
+#        module_name = sys.argv[3]
+#     target = sys.argv[3]
 
-module_name = None
-target =  None
-if len(sys.argv) > 3:
-    if sys.argv[3]!= "all":
-       module_name = sys.argv[3]
-    target = sys.argv[3]
+
+
 
 tag = env
 # if env == "local":
@@ -36,12 +54,19 @@ def get_bool_value(data, key, env):
     config_value = get_config_value(data, key, env)
     return config_value != None
 
+isDebug = True
+
 def get_config_value(data, key, env, default_value = None):
-    global module_name
+    global module_name,isDebug
     if 'modules' in data.keys() and len(data['modules'].keys())>0:
+        config_name = module_name
         if not module_name or module_name == "app":
-           module_name = list(data['modules'].keys())[0]
-        module_config = data['modules'][module_name]
+           config_name = list(data['modules'].keys())[0]
+        if isDebug:
+           print('modules: %s, module_name:%s, read config module:%s, key:%s, env:%s' % (data['modules'].keys(), module_name,
+           config_name,
+           key, env))
+        module_config = data['modules'][config_name]
         conf_value = get_config_value(module_config, key, env, None)
         if conf_value != None:
            return conf_value
