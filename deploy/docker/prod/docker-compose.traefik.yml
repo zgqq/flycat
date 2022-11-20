@@ -32,7 +32,6 @@ services:
       - "traefik.http.routers.dashboard1.middlewares=auth"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.dashboard1.middlewares=https-redirect"
-
       - "traefik.http.middlewares.auth.basicauth.users=${AUTH_USERS}"
 
   traefik-certs-dumper:
