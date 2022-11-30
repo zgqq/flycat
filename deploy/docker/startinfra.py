@@ -226,13 +226,19 @@ if 'infra_mysql' in config_data.keys() and start_mysql:
           new_list = []
           cmd_list  = []
 
-          cmd_list.append(f"find {backup_dir} -type f -mtime + {backup_save_days} -name '*.gz' -execdir rm -- '{{}}' \;")
+#           cmd_list.append(f"find {backup_dir} -type f -mtime + {backup_save_days} -name '*.gz' -execdir rm -- '{{}}' \;")
+          # find /home/zgqq/backup/databases -name "*.sql.gz" -type f -mtime +15 -delete
+          cmd_list.append(f"find {backup_dir} -name '*.sql.gz' -type f -mtime +{backup_save_days} -delete")
+
           for backup_database in backup_databases:
 #                  /usr/bin/mysqldump -h $mysql_host -u $mysql_username -p$mysql_password $mysql_database | gzip -9 -c > $backup_path/$today/$mysql_database-`date +%H%M`.sql.gz
+              time_var="backup_time=`date +'%Y-%m-%d_%H%M%S'`"
               backup_cmd = f"docker exec db-mysql sh -c 'exec mysqldump -u{user} -p{password} {backup_database} "\
-              f"| gzip -9 -c' > {backup_dir}/{backup_database}-`date +'%Y-%m-%d_%H%M%S'`.sql.gz"
+              f"| gzip -9 -c' > {backup_dir}/{backup_database}-$backup_time.sql.gz"
+              cmd_list.append(time_var)
               cmd_list.append(backup_cmd)
-              cmd_list.append(f"ln -s {backup_dir}/{backup_database}-`date +'%Y-%m-%d_%H%M%S'`.sql.gz {backup_dir}/{backup_database}-latest.sql.gz")
+              cmd_list.append(f"rm {backup_dir}/{backup_database}-latest.sql.gz")
+              cmd_list.append(f"ln -s {backup_dir}/{backup_database}-$backup_time.sql.gz {backup_dir}/{backup_database}-latest.sql.gz")
 #               backup = f"{backup_cron} {backup_cmd}"
 #               new_list.append(backup)
 #               for job in job_list:
