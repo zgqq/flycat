@@ -4,7 +4,7 @@ import com.github.flycat.context.ApplicationConfiguration;
 import com.github.flycat.context.ApplicationContext;
 import com.github.flycat.spi.notifier.AbstractNotificationSender;
 import com.github.flycat.spi.notifier.Message;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,7 +16,7 @@
 package com.github.flycat.web.request;
 
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class RequestBodyHolder {
 

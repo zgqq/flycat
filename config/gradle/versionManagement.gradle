@@ -14,31 +14,35 @@
 //ext.FlycatLibVersion = FlycatLib
 
 
+
+// spring boot 3.x
+// javax.servlet to jakarta.servlet
+// javax.validation to jakarta.validation
+// javax.inject to jakarta.inject
+// jakarta.annotation to jakarta.annotation
 class FlycatLib {
 
-    public static String spring_boot_version = '2.7.5'
+    public static String spring_boot_version = '3.0.0'
     public static String spring_management_version = '1.1.0'
 
-    public static String mybatis_starter = 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
-    public static String mybatis_plus_starter = 'com.baomidou:mybatis-plus-boot-starter:3.1.2'
+    public static String mybatis_starter = 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+    public static String mybatis_plus_starter = 'com.baomidou:mybatis-plus-boot-starter:3.5.2'
     public static String mysql_driver = 'mysql:mysql-connector-java:8.0.30'
-    public static String slf4j_api = 'org.slf4j:slf4j-api:1.7.36'
+    public static String slf4j_api = 'org.slf4j:slf4j-api:2.0.6'
     public static String jackson_databind_version = "2.13.4.2"
     public static String jackson_core_version = "2.13.4"
 
     public static String jackson_databind = 'com.fasterxml.jackson.core:jackson-databind:' + jackson_databind_version
     public static String jackson_core = 'com.fasterxml.jackson.core:jackson-core:'+jackson_core_version
 
-    // spring boot 2.x
-    public static String hibernate_validator = 'org.hibernate.validator:hibernate-validator:6.0.18.Final'
-    public static String jakarta_inject_api = 'javax.inject:javax.inject:1'
-    // https://mvnrepository.com/artifact/javax.validation/validation-api
-//  public   implementation 'javax.validation:validation-api:2.0.1.Final'
-    public static String jakarta_validation_api = 'javax.validation:validation-api:2.0.1.Final'
-    public static String jakarta_servlet_api = 'javax.servlet:javax.servlet-api:4.0.1'
-    public static String spring_boot_admin_client = 'de.codecentric:spring-boot-admin-starter-client:2.7.7'
-    public static String spring_boot_admin_server = 'de.codecentric:spring-boot-admin-starter-server:2.7.7'
-
+    public static String hibernate_validator = 'org.hibernate.validator:hibernate-validator:7.0.5.Final'
+    public static String jakarta_inject_api = 'jakarta.inject:jakarta.inject-api:2.0.1'
+    public static String jakarta_validation_api = 'jakarta.validation:jakarta.validation-api:3.0.2'
+    public static String jakarta_servlet_api = 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+    public static String spring_boot_admin_client = 'de.codecentric:spring-boot-admin-starter-client:3.0.0-M5'
+    public static String spring_boot_admin_server = 'de.codecentric:spring-boot-admin-starter-server:3.0.0-M5'
 }
+
+
 
 ext.FlycatLibVersion = FlycatLib

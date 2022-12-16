@@ -1,7 +1,7 @@
 
 dependencies {
     implementation project(':flycat-context')
-//    implementation group: 'javax.validation', name: 'validation-implementation ', version: '2.0.1.Final'
+//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
 }
 
 

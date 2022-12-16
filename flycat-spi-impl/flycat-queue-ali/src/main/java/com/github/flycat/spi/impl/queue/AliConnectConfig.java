@@ -17,9 +17,9 @@ package com.github.flycat.spi.impl.queue;
 
 import com.github.flycat.context.ApplicationConfiguration;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 
 @Singleton
 @Named

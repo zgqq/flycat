@@ -10,7 +10,7 @@ import com.github.flycat.spi.notifier.Message;
 import com.github.flycat.util.http.HttpUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

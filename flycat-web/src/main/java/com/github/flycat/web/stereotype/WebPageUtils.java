@@ -15,8 +15,8 @@
  */
 package com.github.flycat.web.stereotype;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class WebPageUtils {
 

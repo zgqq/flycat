@@ -18,7 +18,7 @@ package com.github.flycat.spi.notifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
+//import jakarta.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -66,7 +66,6 @@ public class NotifierUtils {
         }
     }
 
-    @Nullable
     public static NotificationSender getDefaultNotificationSender() {
         NotificationSender notificationSender = null;
         if (NotifierUtils.defaultSender != null) {

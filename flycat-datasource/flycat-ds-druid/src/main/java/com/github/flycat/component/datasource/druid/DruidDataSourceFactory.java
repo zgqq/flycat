@@ -24,8 +24,8 @@ import com.github.flycat.component.datasource.DataSourceConfig;
 import com.github.flycat.component.datasource.DataSourceFactory;
 import com.google.common.collect.Lists;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import javax.sql.DataSource;
 
 @Named

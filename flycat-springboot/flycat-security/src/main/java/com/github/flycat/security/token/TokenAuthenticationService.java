@@ -15,7 +15,7 @@
  */
 package com.github.flycat.security.token;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface TokenAuthenticationService {
     TokenAuthentication requireToken(HttpServletRequest httpServletRequest);

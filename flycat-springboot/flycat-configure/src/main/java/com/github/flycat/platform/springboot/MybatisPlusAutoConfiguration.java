@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.github.flycat.util.StringUtils;
+import com.google.common.collect.Lists;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MybatisPlusAutoConfiguration {
@@ -110,8 +112,10 @@ public class MybatisPlusAutoConfiguration {
             // TODO 注入主键生成器
             if (this.applicationContext.getBeanNamesForType(IKeyGenerator.class, false,
                     false).length > 0) {
-                IKeyGenerator keyGenerator = this.applicationContext.getBean(IKeyGenerator.class);
-                globalConfig.getDbConfig().setKeyGenerator(keyGenerator);
+//                IKeyGenerator keyGenerator = this.applicationContext.getBean(IKeyGenerator.class);
+                ObjectProvider<IKeyGenerator> beanProvider = this.applicationContext.getBeanProvider(IKeyGenerator.class);
+                ArrayList<IKeyGenerator> iKeyGenerators = Lists.newArrayList(beanProvider.iterator());
+                globalConfig.getDbConfig().setKeyGenerators(iKeyGenerators);
             }
             // TODO 注入sql注入器
             if (this.applicationContext.getBeanNamesForType(ISqlInjector.class, false,

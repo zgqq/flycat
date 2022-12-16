@@ -3,11 +3,11 @@ dependencies {
     implementation project(':flycat-context')
     implementation project(':flycat-spi')
     implementation project(':flycat-util')
-//    implementation group: 'javax.validation', name: 'validation-implementation ', version: '2.0.1.Final'
-    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+//    implementation group: 'jakarta.validation', name: 'validation-implementation ', version: '2.0.1.Final'
+    // https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
     compileOnly(FlycatLibVersion.jakarta_servlet_api)
 
     implementation(FlycatLibVersion.jakarta_validation_api)
 
-//    implementation 'javax.servlet:javax.servlet-api:3.1.0'
+//    implementation 'jakarta.servlet:jakarta.servlet-api:3.1.0'
 }

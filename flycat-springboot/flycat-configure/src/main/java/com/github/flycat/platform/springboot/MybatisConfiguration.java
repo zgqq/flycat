@@ -79,8 +79,7 @@ public class MybatisConfiguration {
                     resourceLoader,
                     databaseIdProvider,
                     configurationCustomizersProvider,
-                    sqlSessionFactoryBeanCustomizers,
-                    applicationContext);
+                    sqlSessionFactoryBeanCustomizers);
         }
 
         // http://www.importnew.com/25940.html
@@ -140,8 +139,7 @@ public class MybatisConfiguration {
                     resourceLoader,
                     databaseIdProvider,
                     configurationCustomizersProvider,
-                    sqlSessionFactoryBeanCustomizers,
-                    applicationContext);
+                    sqlSessionFactoryBeanCustomizers);
         }
 
 
