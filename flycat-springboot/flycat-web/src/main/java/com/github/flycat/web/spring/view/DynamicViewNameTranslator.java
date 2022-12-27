@@ -15,10 +15,9 @@
  */
 package com.github.flycat.web.spring.view;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 public class DynamicViewNameTranslator implements RequestToViewNameTranslator {
 

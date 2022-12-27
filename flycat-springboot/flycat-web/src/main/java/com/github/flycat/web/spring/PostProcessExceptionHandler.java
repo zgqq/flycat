@@ -36,14 +36,15 @@ public class PostProcessExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostProcessExceptionHandler.class);
 
     private final HandlerMappingContext handlerMappingContext;
-    private final String errorHtml;
+    private String errorHtml;
 
     public PostProcessExceptionHandler(HandlerMappingContext handlerMappingContext) {
         this.handlerMappingContext = handlerMappingContext;
         try {
             this.errorHtml = IOUtils.getFileContentByClasspath("500.html");
-        } catch (IOException e) {
-            throw new WebException("Unable to load 500 html", e);
+        } catch (Exception e) {
+            LOGGER.error("Unable to load 500 html", e);
+//            throw new WebException("Unable to load 500 html", e);
         }
     }
 

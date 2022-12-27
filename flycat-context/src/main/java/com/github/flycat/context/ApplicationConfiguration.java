@@ -15,6 +15,7 @@
  */
 package com.github.flycat.context;
 
+import com.github.flycat.util.ObjectUtils;
 import com.github.flycat.util.StringUtils;
 import com.google.common.base.CaseFormat;
 
@@ -88,9 +89,10 @@ public interface ApplicationConfiguration {
         if (value == null) {
             return null;
         }
-        PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
-        editor.setAsText(value);
-        return (T) editor.getValue();
+        return ObjectUtils.convertObject(value, clazz);
+//        PropertyEditor editor = PropertyEditorManager.findEditor(clazz);
+//        editor.setAsText(value);
+//        return (T) editor.getValue();
     }
 
     default <T> T retryGet(String key, Class<T> clazz) {

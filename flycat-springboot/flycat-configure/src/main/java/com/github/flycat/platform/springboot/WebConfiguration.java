@@ -63,10 +63,10 @@ import java.util.Set;
 //@ConditionalOnClass(WebFactoryConfiguration.class)
 public class WebConfiguration {
 
-    @Bean(name = DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
-    public static DynamicViewNameTranslator requestToViewNameTranslator() {
-        return new DynamicViewNameTranslator();
-    }
+//    @Bean(name = DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
+//    public static DynamicViewNameTranslator requestToViewNameTranslator() {
+//        return new DynamicViewNameTranslator();
+//    }
 
     @Bean
     public FilterRegistrationBean cacheRequestFilter(HandlerMappingContext handlerMappingContext) {

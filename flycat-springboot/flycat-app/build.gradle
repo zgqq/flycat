@@ -10,7 +10,9 @@ dependencies {
     implementation project(':flycat-springboot-context')
     implementation project(':flycat-springboot-configure')
     implementation project(':flycat-springboot-redis')
-    implementation project(':flycat-springboot-mybatis')
+//    implementation project(':flycat-springboot-mybatis')
+    implementation(FlycatLibVersion.mysql_driver)
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     implementation project(':flycat-springboot-security')
     implementation project(':flycat-springboot-web')
     implementation project(':flycat-springboot-task')
