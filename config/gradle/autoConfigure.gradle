@@ -262,6 +262,7 @@ configMap.each { key, value ->
 println("Handling resource")
 println(common)
 def applicationConfigFile = new File(resourcesDir, "application-" + profile + ".properties")
+//def applicationConfigFile = new File(resourcesDir, "application.properties")
 applicationConfigFile.createNewFile()
 println("Write config to file "+ applicationConfigFile.getAbsolutePath())
 applicationConfigFile.text = common

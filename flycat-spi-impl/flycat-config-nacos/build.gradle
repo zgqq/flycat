@@ -4,6 +4,7 @@ dependencies {
     implementation project(':flycat-context')
 //    implementation project(':flycat-util')
 //    implementation group: 'com.alibaba.nacos', name: 'nacos-client', version: '0.9.1'
-    implementation group: 'com.alibaba.nacos', name: 'nacos-client', version: '2.1.2'
+//    implementation group: 'com.alibaba.nacos', name: 'nacos-client', version: '2.1.2'
+    implementation(FlycatLibVersion.nacos_client)
 }
 

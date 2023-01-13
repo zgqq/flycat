@@ -253,14 +253,14 @@ appJvmArgs += heapJvmArgs
 if (vJavaVersion >= 17) {
     appJvmArgs += [
             "-XX:ErrorFile=${errorLog}".toString(),
-            "-Xlog:gc:${gcLog}".toString(),
+//            "-Xlog:gc:${gcLog}".toString(),
             "-Dapp.version=" + version,
             "-Dapp.git.diff=${gitDiffNameStatus}".toString()
     ]
 } else {
     appJvmArgs += [
             "-XX:ErrorFile=${errorLog}".toString(),
-            "-Xloggc:${gcLog}".toString(),
+//            "-Xloggc:${gcLog}".toString(),
             "-Dapp.version=" + version,
             "-Dapp.git.diff=${gitDiffNameStatus}".toString()
     ]

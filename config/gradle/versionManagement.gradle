@@ -41,6 +41,9 @@ class FlycatLib {
     public static String jakarta_servlet_api = 'jakarta.servlet:jakarta.servlet-api:5.0.0'
     public static String spring_boot_admin_client = 'de.codecentric:spring-boot-admin-starter-client:3.0.0-M5'
     public static String spring_boot_admin_server = 'de.codecentric:spring-boot-admin-starter-server:3.0.0-M5'
+
+//    implementation group: 'com.alibaba.nacos', name: 'nacos-client', version: '2.1.2'
+    public static String nacos_client = 'com.alibaba.nacos:nacos-client:2.2.1-RC'
 }
 
 

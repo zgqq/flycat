@@ -50,12 +50,12 @@ public class SpringBootPlatform {
             RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
             List<String> arguments = runtimeMxBean.getInputArguments();
             Map<String, String> env = System.getenv();
+            LOGGER.info("Run env, primarySource:{}, args:{}, jvmArgs:{}, env:{}", primarySource.getName(), args, arguments, env);
             Stopwatch started = Stopwatch.createStarted();
             SpringBootPlatform.primarySource = primarySource;
             ContextManager.beforeRun(new RunContext(modules));
             System.out.println("Preparing spring application run "+ DateTimeUtils.toISO8601DateTimeFormat(new Date()));
             ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(primarySource, args);
-            LOGGER.info("Run env, primarySource:{}, args:{}, jvmArgs:{}, env:{}", primarySource.getName(), args, arguments, env);
 //            CompletableFuture<Void> attachAgent = CompletableFuture.runAsync(() -> {
 //                try {
 //

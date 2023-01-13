@@ -346,7 +346,7 @@ version: '3'
 services:
   config:
     container_name: "config-nacos"
-    image: nacos/nacos-server:v2.1.1-slim
+    image: nacos/nacos-server:v2.2.0-slim
     restart: always
     volumes:
       - ~/deploy/logs/nacos/standalone-logs/:/home/nacos/logs
