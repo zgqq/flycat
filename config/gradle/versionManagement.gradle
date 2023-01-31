@@ -22,10 +22,10 @@
 // jakarta.annotation to jakarta.annotation
 class FlycatLib {
 
-    public static String spring_boot_version = '3.0.1'
+    public static String spring_boot_version = '3.0.2'
     public static String spring_management_version = '1.1.0'
 
-    public static String mybatis_starter = 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.0'
+    public static String mybatis_starter = 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1'
     public static String mybatis_plus_starter = 'com.baomidou:mybatis-plus-boot-starter:3.5.2'
     public static String mysql_driver = 'mysql:mysql-connector-java:8.0.31'
     public static String slf4j_api = 'org.slf4j:slf4j-api:2.0.6'
