@@ -79,8 +79,9 @@ services:
     image: {APP_DOCKER_IMAGE}
 #    restart: always # prevent other service unavailable yet
     volumes:
-      - ~/deploy/docker-userapp/{APP_NAME}/data:/userapp/data
-      - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
+#       - ~/deploy/docker-userapp/{APP_NAME}/data:/userapp/data
+#       - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
+      - ~/deploy/docker-userapp/{APP_NAME}:/userapp/
       - ${{app_volume}}:/app
     environment:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}

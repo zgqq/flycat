@@ -192,6 +192,10 @@ def contain_tag(image_id, str):
     return False
 
 
+def makedirs_notexist(directory):
+    if not os.path.exists(directory):
+       os.makedirs(directory)
+
 def stop_down_servers():
     first_check, service_ok = get_service_info()
     print("Service detail %s" % first_check)
@@ -284,6 +288,11 @@ if need_start:
 
     directory = "%s/deploy/docker-container/%s/%s" % (Path.home(), APP_NAME, boot_status)
     current_deploy = "%s/deploy/docker-container/%s/current" % (Path.home(), APP_NAME)
+
+    makedirs_notexist("%s/deploy/docker-userapp/%s/data" % (Path.home(), APP_NAME))
+    makedirs_notexist("%s/deploy/docker-userapp/%s/files" % (Path.home(), APP_NAME))
+    makedirs_notexist("%s/deploy/docker-userapp/%s/logs" % (Path.home(), APP_NAME))
+
     if not os.path.exists(directory):
         os.makedirs(directory)
     else:
