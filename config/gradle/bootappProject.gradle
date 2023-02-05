@@ -16,10 +16,14 @@ configurations {
 //apply plugin: 'io.spring.dependency-management'
 //apply plugin: 'org.springframework.boot'
 
-//dependencies {
-//    if (!isProd(env)) {
-//        developmentOnly("org.springframework.boot:spring-boot-devtools")
-//    }
+
+
+
+dependencies {
+    if (!isProd(env)) {
+        developmentOnly("org.springframework.boot:spring-boot-devtools")
+    }
+}
 
 //        testImplementation "org.springframework:spring-test"
 //        testImplementation "org.springframework.boot:spring-boot-test"

@@ -81,8 +81,8 @@ if (getConfigValue('router_path', env)) {
     autoConfigMap.put("server.servlet.context-path", getConfigValue('router_path', env))
 }
 
-
-if (getSubConfigValue('infra_mysql', 'enable', env)) {
+def mysql_enabled = getConfigValue('mysql_enabled',env, true)
+if (getSubConfigValue('infra_mysql', 'enable', env) && mysql_enabled) {
     def host = getSubConfigConnectValue('infra_mysql', 'host', env)
     def port = getSubConfigConnectValue('infra_mysql', 'port', env)
     def user = getSubConfigConnectValue('infra_mysql', 'user', env)

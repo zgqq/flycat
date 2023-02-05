@@ -112,6 +112,7 @@ idea {
     module {
         inheritOutputDirs = false
         outputDir = file("$buildDir/classes/java/main")
+//        resourceDirs = [file("$buildDir/resources")]
         downloadJavadoc = false
         downloadSources = true
     }
