@@ -37,6 +37,8 @@ public class MybatisUtils {
             throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(dataSource);
-        return sqlSessionFactoryBean.getObject();
+        SqlSessionFactory object = sqlSessionFactoryBean.getObject();
+        object.getConfiguration().setMapUnderscoreToCamelCase(true);
+        return object;
     }
 }

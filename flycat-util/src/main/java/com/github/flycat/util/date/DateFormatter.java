@@ -13,6 +13,7 @@ public class DateFormatter {
     public static final DateFormatter YYYY_MM_DD_HH_MM_SS_SSS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss.SSS");
     public static final DateFormatter YYYY_MM_DD_HH_MM_SS = DateFormatter.getInstance("yyyy-MM-dd HH:mm:ss");
     public static final DateFormatter YYYYMMDD_HHMMSS = DateFormatter.getInstance("yyyyMMdd_HHmmss");
+    public static final DateFormatter YYYY_MM_DD = DateFormatter.getInstance("yyyy-MM-dd");
 
     public DateFormatter() {
         this("yyyy-MM-dd HH:mm:ss");
@@ -44,7 +45,11 @@ public class DateFormatter {
         return getDateFormat().format(date);
     }
 
-    public Date parse(String dateStr) throws ParseException {
-        return getDateFormat().parse(dateStr);
+    public Date parse(String dateStr) {
+        try {
+            return getDateFormat().parse(dateStr);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

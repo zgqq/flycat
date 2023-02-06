@@ -204,11 +204,18 @@ public class MybatisAutoConfiguration implements InitializingBean {
         throw new RuntimeException(exception);
       }
     }
+
+    // default configuration
+    if (configuration != null) {
+      configuration.setMapUnderscoreToCamelCase(true);
+    }
+
     if (configuration != null && !CollectionUtils.isEmpty(this.configurationCustomizers)) {
       for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
         customizer.customize(configuration);
       }
     }
+
     factory.setConfiguration(configuration);
   }
 
