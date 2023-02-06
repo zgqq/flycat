@@ -72,6 +72,12 @@ if router_domain and router_path:
                     """
 ROUTER_LABEL = router_label
 
+volumes_conf = get_main_config_value("volumes", env, [])
+VOLUMES = ""
+if volumes_conf:
+   for volume in volumes_conf:
+       VOLUMES = VOLUMES + '- ' + volume + '\n'
+
 template = f"""
 version: '3'
 services:
@@ -83,6 +89,7 @@ services:
 #       - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
       - ~/deploy/docker-userapp/{APP_NAME}:/userapp/
       - ${{app_volume}}:/app
+      {VOLUMES}
     environment:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
       DEPLOY_APP_DIR: ${{app_volume}}
