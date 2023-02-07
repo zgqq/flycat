@@ -35,7 +35,8 @@ if (getSubConfigValue('infra_redis', 'enable', env)) {
 //                      "-Dflycat.redis.primary.password=${password}".toString()])
 }
 
-if (getSubConfigValue('infra_nacos', 'enable', env)) {
+def nacos_enabled = getConfigValue('nacos_enabled',env, true)
+if (getSubConfigValue('infra_nacos', 'enable', env) && nacos_enabled) {
     def host = getSubConfigConnectValue('infra_nacos', 'host', env)
     def port = getSubConfigConnectValue('infra_nacos', 'port', env)
 
@@ -50,7 +51,6 @@ if (getSubConfigValue('infra_nacos', 'enable', env)) {
 //                      "-Dflycat.nacos.config.password=${nacosPassword}".toString()
 //    ])
 }
-
 
 if (getSubConfigValue('infra_sba', 'enable', env)) {
     def user = getSubConfigConnectValue('infra_sba', 'sba_user', env)
