@@ -9,7 +9,7 @@ if (hasProperty("config")) {
 
 def fileObj = new File(configFile)
 if (!fileObj.isFile()) {
-    logger.error("Not found config file " + configFile)
+    throw new RuntimeException("Not found config file " + configFile)
     return
 }
 

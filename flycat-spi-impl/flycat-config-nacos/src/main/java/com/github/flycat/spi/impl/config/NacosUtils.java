@@ -34,11 +34,12 @@ public class NacosUtils {
             // Initialize the configuration service,
             // and the console automatically obtains the following parameters
             // through the sample code.
+            System.out.println("Creating config service, serverAddr " + serverAddr);
+            LOGGER.info("Creating config service, {}, {}, {}", serverAddr, username, password);
             Properties properties = new Properties();
             properties.put(PropertyKeyConst.SERVER_ADDR, serverAddr);
             properties.put(PropertyKeyConst.USERNAME, username);
             properties.put(PropertyKeyConst.PASSWORD, password);
-            LOGGER.info("Creating config service, {}, {}, {}", serverAddr, username, password);
             ConfigService configService = NacosFactory.createConfigService(properties);
             // Actively get the configuration.
             return configService;
