@@ -35,7 +35,7 @@ if (getSubConfigValue('infra_redis', 'enable', env)) {
 //                      "-Dflycat.redis.primary.password=${password}".toString()])
 }
 
-def nacos_enabled = getConfigValue('nacos_enabled',env, true)
+def nacos_enabled = getConfigValue('nacos_enabled',env, false)
 if (getSubConfigValue('infra_nacos', 'enable', env) && nacos_enabled) {
     def host = getSubConfigConnectValue('infra_nacos', 'host', env)
     def port = getSubConfigConnectValue('infra_nacos', 'port', env)
@@ -81,7 +81,7 @@ if (getConfigValue('router_path', env)) {
     autoConfigMap.put("server.servlet.context-path", getConfigValue('router_path', env))
 }
 
-def mysql_enabled = getConfigValue('mysql_enabled',env, true)
+def mysql_enabled = getConfigValue('mysql_enabled',env, false)
 if (getSubConfigValue('infra_mysql', 'enable', env) && mysql_enabled) {
     def host = getSubConfigConnectValue('infra_mysql', 'host', env)
     def port = getSubConfigConnectValue('infra_mysql', 'port', env)
@@ -256,12 +256,12 @@ if ("modules" in profileConf.keySet()) {
 configMap.each { key, value ->
     common += (key + "=" + value + "\n")
 }
-
-
+common += "spring.profiles.active="+profile
 
 println("Handling resource")
 println(common)
-def applicationConfigFile = new File(resourcesDir, "application-" + profile + ".properties")
+//def applicationConfigFile = new File(resourcesDir, "application-" + profile + ".properties")
+def applicationConfigFile = new File(resourcesDir, "application.properties")
 //def applicationConfigFile = new File(resourcesDir, "application.properties")
 applicationConfigFile.createNewFile()
 println("Write config to file "+ applicationConfigFile.getAbsolutePath())

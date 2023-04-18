@@ -15,6 +15,7 @@
  */
 package com.github.flycat.context;
 
+import com.github.flycat.context.util.ServerEnvUtils;
 import com.github.flycat.util.io.FileUtils;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public final class ContextUtils {
     }
 
     public static String getCurrentProfile() {
-        return System.getProperty("spring.profiles.active");
+        return ServerEnvUtils.getCurrentProfile();
     }
 
     static final List<String> STRING_ARRAY_LIST = Lists.newArrayList(PRODUCT_ENV_WORDS);

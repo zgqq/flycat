@@ -15,22 +15,38 @@
  */
 package com.github.flycat.context.util;
 
+import com.github.flycat.util.ArrayUtils;
 import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.properties.PropertiesUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class ServerEnvUtils {
 
+    private static volatile WeakReference<Map<String, Properties>> propertiesMapRef;
     private static volatile WeakReference<List<Properties>> propertiesRef;
 
+    private static volatile WeakReference<List<Properties>> propertiesMainRef;
+
     public static String getCurrentProfile() {
-        return System.getProperty("spring.profiles.active");
+        String property = System.getProperty("spring.profiles.active");
+        if (StringUtils.isNotBlank(property)) {
+            return property;
+        }
+        List<Properties> configMainProperties = getConfigMainProperties();
+        return getProperty(configMainProperties, "spring.profiles.active", null);
     }
+
+
+    public static List<String> getCurrentPossibleMainConfigProperties() {
+        return Arrays.asList(
+                "config/application.properties",
+                "application.properties");
+    }
+
 
     public static List<String> getCurrentPossibleConfigProperties() {
         final String currentProfile = getCurrentProfile();
@@ -84,14 +100,62 @@ public class ServerEnvUtils {
             propertiesList = propertiesRef.get();
             reload = propertiesList == null;
         }
-
         if (reload) {
             final List<String> currentPossibleConfigProperties = getCurrentPossibleConfigProperties();
-            propertiesList = currentPossibleConfigProperties.stream().map(PropertiesUtils::loadProperties)
-                    .filter(properties -> properties != null)
-                    .collect(Collectors.toList());
-            propertiesRef = new WeakReference<>(propertiesList);
+//            propertiesList = currentPossibleConfigProperties.stream().map(PropertiesUtils::loadProperties)
+//                    .filter(properties -> properties != null)
+//                    .collect(Collectors.toList());
+//            propertiesRef = new WeakReference<>(propertiesList);
+            List<Properties> configProperties = getConfigProperties(currentPossibleConfigProperties);
+            propertiesRef = new WeakReference<>(configProperties);
+            return configProperties;
         }
         return propertiesList;
     }
+
+
+    public static List<Properties> getConfigMainProperties() {
+        boolean reload = true;
+        List<Properties> propertiesList = null;
+        if (propertiesMainRef != null) {
+            propertiesList = propertiesMainRef.get();
+            reload = propertiesList == null;
+        }
+        if (reload) {
+            final List<String> currentPossibleConfigProperties = getCurrentPossibleMainConfigProperties();
+            List<Properties> configProperties = getConfigProperties(currentPossibleConfigProperties);
+            propertiesMainRef = new WeakReference<>(configProperties);
+            return configProperties;
+        }
+        return propertiesList;
+    }
+
+
+    public static List<Properties> getConfigProperties(List<String> profiles) {
+        boolean reload = true;
+        Map<String, Properties> propertiesMap = null;
+        ArrayList<Properties> objects = new ArrayList<>();
+        if (propertiesMapRef != null && propertiesMapRef.get() != null) {
+            propertiesMap = propertiesMapRef.get();
+            for (String profile : profiles) {
+                Properties properties = propertiesMap.computeIfAbsent(profile,
+                        PropertiesUtils::loadProperties);
+                if (properties != null) {
+                    objects.add(properties);
+                }
+            }
+        } else {
+            propertiesMap = new ConcurrentHashMap<>();
+            for (String profile : profiles) {
+                Properties properties = propertiesMap.computeIfAbsent(profile,
+                        PropertiesUtils::loadProperties);
+                if (properties != null) {
+                    objects.add(properties);
+                }
+            }
+            propertiesMapRef = new WeakReference<>(propertiesMap);
+        }
+        return objects;
+    }
+
 }
