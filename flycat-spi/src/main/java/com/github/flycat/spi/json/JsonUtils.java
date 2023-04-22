@@ -38,6 +38,12 @@ public class JsonUtils {
         return jsonService.parseObject(json, clazz);
     }
 
+    public static JsonService getJsonServiceBean() {
+        jsonService = ContextUtils.getBean(JsonService.class);
+        return jsonService;
+    }
+
+
     private static JsonService getJsonService() {
         if (jsonService == null) {
             jsonService = ContextUtils.getBean(JsonService.class);

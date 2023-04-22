@@ -20,6 +20,8 @@ import java.util.List;
 
 public interface JsonService {
 
+    SerializationConfig getSerializationConfig();
+
     boolean isJsonArray(String value);
 
     Type createStringListReference();

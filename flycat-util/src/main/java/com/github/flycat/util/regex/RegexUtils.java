@@ -12,6 +12,14 @@ public class RegexUtils {
     }
 
 
+    public static String group(String value, String regex) {
+        Matcher matcher = matcher(value, regex);
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return null;
+    }
+
     public static String group(String value, String regex, int group) {
         Matcher matcher = matcher(value, regex);
         if (matcher.find()) {

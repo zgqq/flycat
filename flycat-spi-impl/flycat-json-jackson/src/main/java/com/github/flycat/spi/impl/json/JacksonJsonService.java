@@ -26,6 +26,7 @@ import com.github.flycat.spi.json.JsonException;
 import com.github.flycat.spi.json.JsonObject;
 import com.github.flycat.spi.json.JsonService;
 
+import com.github.flycat.spi.json.SerializationConfig;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -48,6 +49,11 @@ public class JacksonJsonService implements JsonService {
 
     public static JsonService newInstance() {
         return new JacksonJsonService(new ObjectMapper());
+    }
+
+    @Override
+    public SerializationConfig getSerializationConfig() {
+        return new JacksonSerializationConfig(objectMapper, objectMapper.getSerializationConfig());
     }
 
     @Override

@@ -21,6 +21,7 @@ configurations {
 
 dependencies {
     if (!isProd(env)) {
+        println("Adding spring-boot-devtools dependancy")
         developmentOnly("org.springframework.boot:spring-boot-devtools")
     }
 }
