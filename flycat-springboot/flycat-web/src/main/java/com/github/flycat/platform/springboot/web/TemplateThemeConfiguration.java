@@ -25,6 +25,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+//@ConditionalOnClass(TemplateManager.class)
 public class TemplateThemeConfiguration {
 
     @Bean

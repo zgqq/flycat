@@ -30,18 +30,22 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.UpgradeProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.system.SystemProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -55,6 +59,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.Filter;
 import jakarta.servlet.Servlet;
+
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
@@ -127,8 +132,8 @@ public class WebConfiguration {
     }
 
     @Configuration
-    @ConditionalOnClass(ObjectMapper.class)
-    @ConditionalOnBean(Jackson2ObjectMapperBuilder.class)
+    @ConditionalOnClass(Jackson2ObjectMapperBuilder.class)
+//    @ConditionalOnBean(Jackson2ObjectMapperBuilder.class)
     public static class JacksonConfiguration {
 
         @Bean
@@ -164,9 +169,9 @@ public class WebConfiguration {
     @Bean
     @ConditionalOnProperty(value = "flycat.web.rest-prefix")
     public WebMvcRegistrations webMvcRegistrationsHandlerMapping(@Value("${flycat.web.rest-prefix}")
-                                                                         String restPrefix,
+                                                                 String restPrefix,
                                                                  @Value("${flycat.web.rest-prefix-required:false}")
-                                                                         boolean required) {
+                                                                 boolean required) {
         return new WebMvcRegistrations() {
             @Override
             public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {

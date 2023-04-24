@@ -36,6 +36,8 @@ dependencies {
     // implementation "org.springframework.boot:spring-boot-starter-undertow:$springBootVersion"
 
 //    implementation "org.springframework.boot:spring-boot-starter-jetty:$springBootVersion"
+//    compileOnly "org.springframework.boot:spring-boot-starter-thymeleaf"
+
 
 
 // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api

@@ -17,20 +17,21 @@ package com.github.flycat.starter.app.web.api;
 
 import com.github.flycat.util.page.Page;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Result<T> {
     private int code;
-    private String message;
+    private String msg;
 
     private Object data;
 
     public Result() {
     }
 
-    public Result(int code, String message) {
+    public Result(int code, String msg) {
         this.code = code;
-        this.message = message;
+        this.msg = msg;
     }
 
     public static <R> Result<R> success() {
@@ -44,7 +45,7 @@ public class Result<T> {
         return r;
     }
 
-    public static <R> Result<R> success(R list) {
+    public static <R> Result<R> success(List<R> list) {
         Result<R> r = new Result<>(ResultCode.OK, "");
         r.putToMap("list", list);
         return r;
@@ -56,13 +57,21 @@ public class Result<T> {
         return r;
     }
 
+
+    public static <R> Result<R> success(R data) {
+        Result<R> r = new Result<>(ResultCode.OK, null);
+        r.data = data;
+        return r;
+    }
+
+
     public static <R> Result<R> error(int code, String m) {
         Result<R> r = new Result<>(code, m);
         return r;
     }
 
     public static <F, T> Result<T> error(Result<F> s) {
-        Result<T> r = new Result<>(s.getCode(), s.getMessage());
+        Result<T> r = new Result<>(s.getCode(), s.getMsg());
         return r;
     }
 
@@ -103,12 +112,12 @@ public class Result<T> {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public Result setData(Object data) {
