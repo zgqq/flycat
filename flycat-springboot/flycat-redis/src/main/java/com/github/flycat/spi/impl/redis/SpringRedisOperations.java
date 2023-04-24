@@ -17,7 +17,9 @@ package com.github.flycat.spi.impl.redis;
 
 import com.github.flycat.spi.redis.RedisOperations;
 import com.google.common.collect.Lists;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +32,6 @@ public class SpringRedisOperations implements RedisOperations {
     public SpringRedisOperations(org.springframework.data.redis.core.RedisOperations redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-
 
     @Override
     public String hGet(String redisKey, String key) {
@@ -103,5 +104,27 @@ public class SpringRedisOperations implements RedisOperations {
     @Override
     public Long incr(String key, long delta) {
         return redisTemplate.boundValueOps(key).increment(delta);
+    }
+
+    @Override
+    public boolean exists(String key) {
+        return redisTemplate.hasKey(key);
+    }
+    public static String setNxAndPirScript;
+
+    static {
+        setNxAndPirScript = String.join("\n", "--rld.start()",
+                "local res = redis.call('SETNX',KEYS[1],ARGV[1]) " ,
+                "if res == 1 then " ,
+                "redis.call('expire',KEYS[1],ARGV[2]) ",
+                "end ",
+                "return res");
+    }
+
+    @Override
+    public Boolean setNxAndExpire(String key, String value, Integer expireSeconds) {
+        Long execute = redisTemplate.execute(new DefaultRedisScript<Long>(setNxAndPirScript,Long.class),
+                Arrays.asList(key), value, expireSeconds + "");
+        return execute.intValue() > 0;
     }
 }

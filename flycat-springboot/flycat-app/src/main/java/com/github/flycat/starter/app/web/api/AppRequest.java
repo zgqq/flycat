@@ -36,7 +36,7 @@ public class AppRequest {
     private String udid;
     private Integer uid;
     private String version;
-    private String openid;
+    private String openId;
 
     public String getApp() {
         return app;
@@ -128,12 +128,12 @@ public class AppRequest {
         this.version = version;
     }
 
-    public String getOpenid() {
-        return openid;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setOpenid(String openid) {
-        this.openid = openid;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
     public <T> T resolveParameter(String name, Class<T> clazz) {
@@ -216,7 +216,7 @@ public class AppRequest {
                 .add("udid='" + udid + "'")
                 .add("uid=" + uid)
                 .add("version='" + version + "'")
-                .add("openid='" + openid + "'")
+                .add("openid='" + openId + "'")
                 .toString();
     }
 }

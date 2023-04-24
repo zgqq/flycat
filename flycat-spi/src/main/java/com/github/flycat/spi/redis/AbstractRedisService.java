@@ -124,6 +124,16 @@ public class AbstractRedisService implements RedisService {
         return provider.incr(key, delta);
     }
 
+    @Override
+    public boolean exists(String key) {
+        return provider.exists(key);
+    }
+
+    @Override
+    public Boolean setNxAndExpire(String key, String value, Integer expireSeconds) {
+        return provider.setNxAndExpire(key, value, expireSeconds);
+    }
+
 
     public RedisService getProvider() {
         return provider;

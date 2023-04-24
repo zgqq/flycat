@@ -26,6 +26,8 @@ public class Result<T> {
 
     private Object data;
 
+    private String status;
+
     public Result() {
     }
 
@@ -123,6 +125,14 @@ public class Result<T> {
     public Result setData(Object data) {
         this.data = data;
         return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public static <R> Result<R> successWithDesc(String desc) {

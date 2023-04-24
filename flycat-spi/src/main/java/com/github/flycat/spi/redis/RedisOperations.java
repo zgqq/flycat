@@ -48,4 +48,8 @@ public interface RedisOperations {
     Long incr(String key);
 
     Long incr(String key, long delta);
+
+    boolean exists(String key);
+
+    Boolean setNxAndExpire(String key, String value, Integer expireSeconds);
 }
