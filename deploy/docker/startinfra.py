@@ -184,11 +184,13 @@ if 'infra_mysql' in config_data.keys() and start_mysql:
        root_password = get_config_value(config_data['infra_mysql'], 'root_password', env)
        database = get_config_value(config_data['infra_mysql'], 'database', env)
        backup_save_days = get_config_value(config_data['infra_mysql'], 'backup_save_days', env, 7)
+       time_zone = get_config_value(config_data['infra_mysql'], 'time_zone', env, 'Asia/Shanghai')
+
        if "db-mysql" not in containers:
            if user == "root":
              print("Unable to set mysql user as root, it was created by default!")
              exit(0)
-           log_execute_system(f"MYSQL_PORT={app_port} MYSQL_DATABASE={database} MYSQL_USER={user} "\
+           log_execute_system(f"TIME_ZONE={time_zone} MYSQL_PORT={app_port} MYSQL_DATABASE={database} MYSQL_USER={user} "\
            f"MYSQL_PASSWORD={password} MYSQL_ROOT_PASSWORD={root_password} {DOCKER_COMPOSE_CMD} -f common/docker-compose.mysql.yml up -d")
            need_wait = True
 
