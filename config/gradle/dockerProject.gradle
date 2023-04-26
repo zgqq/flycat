@@ -37,6 +37,39 @@ if (hasProperty("dockerBaseImage")) {
 }
 println("Using ${dockerBaseImage} image by ${tag}")
 
+
+
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+
+
+def processTemplateFile(className, jvmArgsString) {
+    def inputFile = file('docker_entrypoint.sh')
+    println("Repalce file, exists:"+ inputFile.exists())
+    if (inputFile.exists()) {
+        def outputFile = file("${buildDir}/generated/docker_entrypoint.sh")
+        println("To file, exists:"+ outputFile.getAbsolutePath())
+        def content = inputFile.text
+        // Replace placeholder variables with actual values
+        content = content.replace('${className}', className)
+        content = content.replace('${jvmFlags}', jvmArgsString)
+        // Write the updated content to a new file in the build directory
+        Files.write(Paths.get(outputFile.toURI()), content.getBytes())
+        // Set the file permissions to 0755
+        Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxr-xr-x");
+        Files.setPosixFilePermissions(outputFile.toPath(), permissions);
+        println "Processed template file: ${outputFile}"
+        return true
+    } else {
+        println "Template file not found"
+        return false
+    }
+}
+
+processTemplateFile(mainClassName, jvmArgs.join(" "))
+
 jib {
     from {
 //        image = 'amazoncorretto:8u232'
@@ -59,10 +92,22 @@ jib {
                 }
             }
         }
+
+        if (project.hasProperty('getDockerRegisteryAuth')) {
+            def authInfo = getDockerRegisteryAuth(dockerBaseImage)
+            println "Base image auth $dockerBaseImage username $authInfo"
+            if (authInfo) {
+                auth {
+                    username = authInfo.user
+                    password = authInfo.password
+                }
+            }
+        }
     }
 
     extraDirectories {
         paths = [file('build/jib')]
+        permissions = ['/docker_entrypoint.sh':'755']
     }
 
     to {
@@ -81,6 +126,9 @@ jib {
         }
     }
 
+
+
+
     container {
         jvmFlags = jvmArgs
         mainClass = mainClassName
@@ -89,8 +137,12 @@ jib {
 //        volumes = ['/userapp/data', '/userapp/logs', '/app/classes', '/app/resources', '/app/libs']
         volumes = ['/userapp',  '/app/']
         creationTime = 'USE_CURRENT_TIMESTAMP'
+//      ENTRYPOINT ["java", jib.container.jvmFlags, "-cp", "/app/resources:/app/classes:/app/libs/*", jib.container.mainClass]
+        if (file('docker_entrypoint.sh').exists()) {
+            entrypoint = ['/bin/sh', '-c', '/docker_entrypoint.sh']
+        }
     }
-//    allowInsecureRegistries = true
+    allowInsecureRegistries = true
 }
 
 
@@ -182,6 +234,10 @@ task setupExtraDir {
         copy {
             from file('build.gradle'), file('settings.gradle'), file('deploy')
             into file('build/jib/project/')
+        }
+        copy {
+            from file('build/generated/docker_entrypoint.sh')
+            into file('build/jib/')
         }
     }
 }

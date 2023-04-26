@@ -136,6 +136,19 @@ if (dockerRegistryUser !== '') {
 }
 
 
+ext.getDockerRegisteryAuth = { repo  ->
+    def dockerRegistryAuths = getConfigValue('docker_registry_auth',env)
+    def auth;
+    dockerRegistryAuths.each { key, value ->
+        if (repo.contains(key)) {
+            auth = value
+        }
+    }
+    return auth
+}
+
+
+
 def jfrDuration =getConfigValue('jfr_duration',env, '0s')
 if (jfrDuration !== "0s") {
     def jfrFilename = "${appName}.jfr".toString()

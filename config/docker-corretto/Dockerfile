@@ -66,6 +66,7 @@ COPY --from=build /usr/local/bat /usr/local/bat
 #make && \
 #make install && \
 #rm -rf goaccess-1.3
+
 COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
 
 RUN yum update -y && \
@@ -74,29 +75,43 @@ RUN yum update -y && \
  zsh \
  wget \
  git \
+ openssl \
+ lsof \
+ procps-ng \
  && \
 yum clean all && \
 yum autoremove -y
 
-COPY zshrc /opt/zshrc_
-COPY zsh_history /opt/zsh_history_
 
 # RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true && \
 # curl -L git.io/antigen > $HOME/antigen.zsh && \
-RUN wget https://raw.fastgit.org/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | zsh || true && \
-curl -L https://raw.fastgit.org/zsh-users/antigen/master/bin/antigen.zsh > $HOME/antigen.zsh && \
-cp -f /opt/zshrc_ $HOME/.zshrc && \
-cp -f /opt/zsh_history_ $HOME/.zsh_history && \
-/bin/zsh $HOME/.zshrc
-
-RUN yum update -y && \
- yum -y install \
- tar  && \
-git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && \
-yes | bash $HOME/.fzf/install && \
-yum clean all && \
-yum autoremove -y
 
 
+# 开启zsh
+# COPY zshrc /opt/zshrc_
+# COPY zsh_history /opt/zsh_history_
+# RUN wget https://raw.fastgit.org/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | zsh || true && \
+# curl -L https://raw.fastgit.org/zsh-users/antigen/master/bin/antigen.zsh > $HOME/antigen.zsh && \
+# cp -f /opt/zshrc_ $HOME/.zshrc && \
+# cp -f /opt/zsh_history_ $HOME/.zsh_history && \
+# /bin/zsh $HOME/.zshrc
 
 
+# 开启fzf
+# RUN yum update -y && \
+#  yum -y install \
+#  tar  && \
+# git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf && \
+# yes | bash $HOME/.fzf/install && \
+# yum clean all && \
+# yum autoremove -y
+
+RUN git clone https://github.com/wanhebin/clash-for-linux.git $HOME/clash-for-linux && \
+cd $HOME/clash-for-linux
+
+# Copy the entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+# Set the script as executable
+RUN chmod +x /entrypoint.sh
+# Set the ENTRYPOINT
+ENTRYPOINT ["/entrypoint.sh"]

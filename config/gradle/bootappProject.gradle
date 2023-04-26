@@ -260,14 +260,14 @@ if (vJavaVersion >= 17) {
             "-XX:ErrorFile=${errorLog}".toString(),
 //            "-Xlog:gc:${gcLog}".toString(),
             "-Dapp.version=" + version,
-            "-Dapp.git.diff=${gitDiffNameStatus}".toString()
+            "-Dapp.git.diff=\"${gitDiffNameStatus}\"".toString()
     ]
 } else {
     appJvmArgs += [
             "-XX:ErrorFile=${errorLog}".toString(),
 //            "-Xloggc:${gcLog}".toString(),
             "-Dapp.version=" + version,
-            "-Dapp.git.diff=${gitDiffNameStatus}".toString()
+            "-Dapp.git.diff=\"${gitDiffNameStatus}\"".toString()
     ]
 }
 

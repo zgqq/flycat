@@ -3,6 +3,7 @@ import sys
 import os
 from conf import *
 import time
+import re
 
 # env = "local"
 # if len(sys.argv) > 1:
@@ -72,6 +73,16 @@ if router_domain and router_path:
                     """
 ROUTER_LABEL = router_label
 
+
+ENVS = ""
+envs_conf = get_main_config_value("docker_envs", env, [])
+if envs_conf:
+   for env_string in envs_conf:
+       match = re.match(r"(\w+)=([^ ]+)", env_string)
+       env_name = match.group(1)
+       env_value = match.group(2)
+       ENVS = ENVS + f"{env_name}: {env_value}\n"
+
 volumes_conf = get_main_config_value("volumes", env, [])
 VOLUMES = ""
 if volumes_conf:
@@ -94,6 +105,7 @@ services:
       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
       DEPLOY_APP_DIR: ${{app_volume}}
       DEPLOY_TAGS: ${{deploy_tags}}
+      {ENVS}
     {PORTS}
       {JMX_PORT_MAP}
       {APP_PORT_MAP}

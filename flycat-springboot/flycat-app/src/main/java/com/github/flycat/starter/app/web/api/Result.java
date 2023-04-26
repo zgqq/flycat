@@ -77,7 +77,6 @@ public class Result<T> {
         return r;
     }
 
-
     public boolean isSuccess() {
         return code == ResultCode.OK;
     }
@@ -88,7 +87,7 @@ public class Result<T> {
             Map map = (Map) data;
             map.put(key, value);
         } else {
-            throw new RuntimeException("Object type error");
+            throw new RuntimeException("Object type error, data is " + data.getClass());
         }
         return this;
     }
