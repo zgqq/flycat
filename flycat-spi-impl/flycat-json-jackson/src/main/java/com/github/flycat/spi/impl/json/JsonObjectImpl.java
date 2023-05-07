@@ -79,4 +79,14 @@ public class JsonObjectImpl implements JsonObject {
         }
         return new JsonArrayImpl(jsonNode, jsonService);
     }
+
+    @Override
+    public <T> T toObject(Class<T> clazz) {
+        ObjectMapper objectMapper = jsonService.getObjectMapper();
+        try {
+            return objectMapper.treeToValue(jsonNode, clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

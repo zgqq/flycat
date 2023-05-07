@@ -48,7 +48,7 @@ def createRepoChangeFile = { ->
         diff = execCmdWithRawOut(['git', 'diff', 'HEAD^', 'HEAD', '--color'])
     }
 
-    def directoryName = "${buildDir}/build/generated/git"
+    def directoryName = "${buildDir}/generated/git"
     File directory = new File(directoryName);
     if (! directory.exists()){
         directory.mkdirs();

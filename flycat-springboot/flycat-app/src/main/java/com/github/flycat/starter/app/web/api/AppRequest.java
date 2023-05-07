@@ -16,6 +16,7 @@
 package com.github.flycat.starter.app.web.api;
 
 import com.github.flycat.spi.json.JsonUtils;
+import com.github.flycat.util.StringUtils;
 import com.github.flycat.util.bean.CommonParameters;
 
 import java.util.Map;
@@ -200,6 +201,13 @@ public class AppRequest {
 
     public DataWrapper dataWrapper() {
         return new DataWrapper(data);
+    }
+
+    public Integer getVersionAsInteger() {
+        if (StringUtils.isBlank(version)) {
+            return null;
+        }
+        return Integer.valueOf(version);
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.github.flycat.util;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,5 +105,9 @@ public class DateTimeUtils {
             state = 0;
         }
         return state;
+    }
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        return DateUtils.isSameDay(date1, date2);
     }
 }

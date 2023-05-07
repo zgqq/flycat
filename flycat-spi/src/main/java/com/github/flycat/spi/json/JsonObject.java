@@ -23,4 +23,5 @@ public interface JsonObject {
 
     JsonArray getJsonArray(String key);
 
+    <T> T toObject(Class<T> clazz);
 }
