@@ -149,7 +149,18 @@ else:
    APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 # APP_TRAEFIK_SERVICE_URL = "http://"+GATEWAY_DOMAIN+"/api/http/services/"+APP_ROUTER0+"-service@docker"
 
-APP_DOCKER_IMAGE = get_main_config_value("docker_repo", env) +":"+tag
+
+docker_repo_conf = get_main_config_value("docker_repo", env)
+
+if ':' not in docker_repo_conf:
+   image_type = get_main_config_value("image_type", env)
+   if not image_type:
+      APP_DOCKER_IMAGE = docker_repo_conf +":"+tag
+   else:
+      APP_DOCKER_IMAGE = docker_repo_conf
+else:
+   APP_DOCKER_IMAGE = docker_repo_conf
+
 DOCKER_COMPOSE_CMD="docker compose"
 
 # if not os.path.exists(home_dir+'/deploy'):

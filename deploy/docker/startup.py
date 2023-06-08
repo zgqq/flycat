@@ -5,6 +5,11 @@ from conf import *
 import time
 import re
 
+
+def execute(cmd):
+    print('Executing command %s' % cmd)
+    return check_output(cmd, shell=True).decode().strip()
+
 # env = "local"
 # if len(sys.argv) > 1:
 #     env = sys.argv[1]
@@ -32,6 +37,9 @@ print('Executing operation, op:%s, env:%s' %(op, env))
 
 router_domain = get_main_config_value("router_domain", env)
 router_path = get_main_config_value("router_path", env)
+
+image_type = get_main_config_value("image_type", env)
+
 
 
 
@@ -75,19 +83,107 @@ ROUTER_LABEL = router_label
 
 
 ENVS = ""
-envs_conf = get_main_config_value("docker_envs", env, [])
-if envs_conf:
-   for env_string in envs_conf:
+docker_envs = get_main_config_value("docker_envs", env, [])
+if docker_envs:
+   for env_string in docker_envs:
        match = re.match(r"(\w+)=([^ ]+)", env_string)
        env_name = match.group(1)
        env_value = match.group(2)
        ENVS = ENVS + f"{env_name}: {env_value}\n"
 
-volumes_conf = get_main_config_value("volumes", env, [])
+docker_volumes = get_main_config_value("volumes", env, [])
 VOLUMES = ""
-if volumes_conf:
-   for volume in volumes_conf:
+if docker_volumes:
+   for volume in docker_volumes:
        VOLUMES = VOLUMES + '- ' + volume + '\n'
+
+
+
+def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port_map, router_labels, commands, router0, router1):
+    volumes_str = 'volumes:\n' + '\n'.join([f'          - {volume}' for volume in volumes]) if volumes else ''
+    ports_str = 'ports:\n' + '\n'.join([f'          - {port}' for port in ports]) if ports else ''
+    envs_str = 'environment:\n' + '\n'.join([f'          - {env}' for env in envs]) if envs else ''
+    router_labels_str = ''
+    if router_labels:
+        router_labels_str = f'- {router_labels[0]}' + '\n' + '\n'.join([f'          - {label}' for label in router_labels[1:]]) if len(router_labels) > 1 else f'- {router_labels[0]}'
+
+    if commands:
+        commands_str = 'command:\n' + '\n'.join([f'          - {cmd}' for cmd in commands])
+    else:
+        commands_str = ''
+
+    template = f"""
+    version: '3'
+    services:
+      web:
+        image: {app_image}
+        {volumes_str}
+        {envs_str}
+        {ports_str}
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 2
+        labels:
+          - traefik.enable=true
+          {router_labels_str}
+          - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+          - traefik.http.routers.{router0}.entrypoints=https
+          - traefik.http.routers.{router0}.tls=true
+          - traefik.http.routers.{router0}.tls.certResolver=certer
+          - traefik.http.routers.{router0}.service={router0}-service
+          - traefik.http.services.{router0}-service.loadbalancer.server.port={app_port_map}
+          - traefik.http.routers.{router1}.middlewares=https-redirect,compress
+          - traefik.http.routers.{router1}.entrypoints=http
+          - traefik.http.routers.{router1}.service={router0}-service
+          - traefik.docker.network=flycat_infra
+          - traefik.http.middlewares.compress.compress=true
+        {commands_str}
+        networks:
+          - infra
+
+    networks:
+      infra:
+        external:
+          name: flycat_infra
+    """
+
+    with open(docker_file, 'w') as file:
+        file.write(template)
+
+
+router_labels = ""
+if router_domain:
+   router_labels= [f"traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`)",
+        f"traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`)"]
+
+if router_path:
+   router_labels=[f"traefik.http.routers.{ROUTER0}.rule=PathPrefix(`{ROUTER_PATH}`)",
+                   f"traefik.http.routers.{ROUTER1}.rule=PathPrefix(`{ROUTER_PATH}`)"]
+
+if router_domain and router_path:
+   router_labels = [f"traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)",
+      f"traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)"]
+
+
+docker_commands = get_main_config_value("docker_commands", env, [])
+if image_type == "external":
+    # 将变量替换为实际的值
+    app_image = APP_DOCKER_IMAGE
+    volumes = docker_volumes
+    envs = docker_envs
+    ports = [f"{app_port}:{app_port}"]
+    app_port_map = app_port
+    router_labels = router_labels
+    commands = docker_commands
+    create_docker_compose(DOCKER_COMPOSE_APP_YML, app_image, volumes, envs, ports, app_port_map, router_labels, commands, ROUTER0, ROUTER1)
+    execute(
+        "%s -f %s --project-name=%s up -d"
+        % (DOCKER_COMPOSE_CMD, DOCKER_COMPOSE_APP_YML, APP_NAME)
+    )
+    exit()
+
 
 template = f"""
 version: '3'
@@ -141,7 +237,7 @@ networks:
       name: flycat_infra
 """
 print("Writing docker compose app template")
-write_template(f"{TARGET_DIR}/docker-compose.app.yml", template)
+write_template(f"{DOCKER_COMPOSE_APP_YML}", template)
 
 if isProdEnv():
    log_execute_system(f'docker pull {APP_DOCKER_IMAGE}')
