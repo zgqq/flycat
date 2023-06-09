@@ -76,8 +76,8 @@ if router_path:
 
 if router_domain and router_path:
    router_label=f"""
-      - traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)
-      - traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)
+      - traefik.http.routers.{ROUTER0}.rule=(Host(`{ROUTER_DOMAIN}`)) && PathPrefix(`{ROUTER_PATH}`)
+      - traefik.http.routers.{ROUTER1}.rule=(Host(`{ROUTER_DOMAIN}`)) && PathPrefix(`{ROUTER_PATH}`)
                     """
 ROUTER_LABEL = router_label
 
@@ -102,7 +102,7 @@ if docker_volumes:
 def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port_map, router_labels, commands, router0, router1):
     volumes_str = 'volumes:\n' + '\n'.join([f'          - {volume}' for volume in volumes]) if volumes else ''
     ports_str = 'ports:\n' + '\n'.join([f'          - {port}' for port in ports]) if ports else ''
-    envs_str = 'environment:\n' + '\n'.join([f'          - {env}' for env in envs]) if envs else ''
+    envs_str = 'environment:\n' + '\n'.join([f'          {env}' for env in envs]) if envs else ''
     router_labels_str = ''
     if router_labels:
         router_labels_str = f'- {router_labels[0]}' + '\n' + '\n'.join([f'          - {label}' for label in router_labels[1:]]) if len(router_labels) > 1 else f'- {router_labels[0]}'
@@ -202,59 +202,86 @@ if image_type == "external":
     exit()
 
 
-template = f"""
-version: '3'
-services:
-  web:
-    image: {APP_DOCKER_IMAGE}
-#    restart: always # prevent other service unavailable yet
-    volumes:
-#       - ~/deploy/docker-userapp/{APP_NAME}/data:/userapp/data
-#       - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
-      - ~/deploy/docker-userapp/{APP_NAME}:/userapp/
-      - ${{app_volume}}:/app
-      {VOLUMES}
-    environment:
-      DEPLOY_IMAGE_ID: ${{deploy_image_id}}
-      DEPLOY_APP_DIR: ${{app_volume}}
-      DEPLOY_TAGS: ${{deploy_tags}}
-      {ENVS}
-    {PORTS}
-      {JMX_PORT_MAP}
-      {APP_PORT_MAP}
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 2
-    labels:
-      - traefik.enable=true
-      {ROUTER_LABEL}
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.{ROUTER0}.entrypoints=https
-      - traefik.http.routers.{ROUTER0}.tls=true
-      - traefik.http.routers.{ROUTER0}.tls.certResolver=certer
-      - traefik.http.routers.{ROUTER0}.service={ROUTER0}-service
-      - traefik.http.services.{ROUTER0}-service.loadbalancer.server.port={APP_PORT}
-      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.path={HEALTHCHECK_PATH}
-      - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.interval=5s
-      - traefik.http.routers.{ROUTER1}.middlewares=https-redirect,compress
-      - traefik.http.routers.{ROUTER1}.entrypoints=http
-      - traefik.http.routers.{ROUTER1}.service={ROUTER0}-service
-      - traefik.docker.network=flycat_infra
-      - traefik.http.middlewares.compress.compress=true
+# template = f"""
+# version: '3'
+# services:
+#   web:
+#     image: {APP_DOCKER_IMAGE}
+# #    restart: always # prevent other service unavailable yet
+#     volumes:
+# #       - ~/deploy/docker-userapp/{APP_NAME}/data:/userapp/data
+# #       - ~/deploy/docker-userapp/{APP_NAME}/logs:/userapp/logs
+#       - ~/deploy/docker-userapp/{APP_NAME}:/userapp/
+#       - ${{app_volume}}:/app
+#       {VOLUMES}
+#     environment:
+#       DEPLOY_IMAGE_ID: ${{deploy_image_id}}
+#       DEPLOY_APP_DIR: ${{app_volume}}
+#       DEPLOY_TAGS: ${{deploy_tags}}
+#       {ENVS}
+#     {PORTS}
+#       {JMX_PORT_MAP}
+#       {APP_PORT_MAP}
+#     deploy:
+#       restart_policy:
+#         condition: on-failure
+#         delay: 5s
+#         max_attempts: 2
+#     labels:
+#       - traefik.enable=true
+#       {ROUTER_LABEL}
+#       - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+#       - traefik.http.routers.{ROUTER0}.entrypoints=https
+#       - traefik.http.routers.{ROUTER0}.tls=true
+#       - traefik.http.routers.{ROUTER0}.tls.certResolver=certer
+#       - traefik.http.routers.{ROUTER0}.service={ROUTER0}-service
+#       - traefik.http.services.{ROUTER0}-service.loadbalancer.server.port={APP_PORT}
+#       - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.path={HEALTHCHECK_PATH}
+#       - traefik.http.services.{ROUTER0}-service.loadbalancer.healthcheck.interval=5s
+#       - traefik.http.routers.{ROUTER1}.middlewares=https-redirect,compress
+#       - traefik.http.routers.{ROUTER1}.entrypoints=http
+#       - traefik.http.routers.{ROUTER1}.service={ROUTER0}-service
+#       - traefik.docker.network=flycat_infra
+#       - traefik.http.middlewares.compress.compress=true
+#
+#     networks:
+# #      - traefik
+#       - infra
+#
+# networks:
+#   infra:
+#     external:
+#       name: flycat_infra
+# """
+# print("Writing docker compose app template")
+# write_template(f"{DOCKER_COMPOSE_APP_YML}", template)
 
-    networks:
-#      - traefik
-      - infra
+volumes = docker_volumes + [
+    f"~/deploy/docker-userapp/{APP_NAME}:/userapp/",
+    "${app_volume}:/app"
+]
 
-networks:
-  infra:
-    external:
-      name: flycat_infra
-"""
-print("Writing docker compose app template")
-write_template(f"{DOCKER_COMPOSE_APP_YML}", template)
+envs = docker_envs + [
+    "DEPLOY_IMAGE_ID: ${deploy_image_id}",
+    "DEPLOY_APP_DIR: ${app_volume}",
+    "DEPLOY_TAGS: ${deploy_tags}"
+]
+
+ports = []
+if app_port and app_port> 0:
+    ports = ports + [f"{app_port}:{app_port}"]
+
+if jmx_port and jmx_port > 0:
+    ports = ports + [f"{app_port}:{app_port}"]
+
+router_labels = router_labels + [
+    f"traefik.http.services.my_app-service.loadbalancer.healthcheck.path={HEALTHCHECK_PATH}",
+    "traefik.http.services.my_app-service.loadbalancer.healthcheck.interval=5s"
+]
+
+app_image = APP_DOCKER_IMAGE
+commands = docker_commands
+create_docker_compose(DOCKER_COMPOSE_APP_YML, app_image, volumes, envs, ports, app_port_map, router_labels, commands, ROUTER0, ROUTER1)
 
 if isProdEnv():
    log_execute_system(f'docker pull {APP_DOCKER_IMAGE}')

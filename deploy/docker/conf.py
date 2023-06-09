@@ -100,7 +100,7 @@ def get_sub_config_value(main_key, key, env):
     return None
 
 def get_main_config_value(key, env, default_value = None):
-    return get_config_value(data, key, env)
+    return get_config_value(data, key, env, default_value)
 
 # APP_DOCKER_REPO = "zgqq/flycat-price:"+tag
 # APP_NAME = "flycat-price"

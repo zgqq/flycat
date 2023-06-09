@@ -323,7 +323,7 @@ if need_start:
         id_name[boot_id] = boot_project
         name_id[boot_project] = boot_id
         cur_img_id = get_image_id(boot_id)
-        print('Deployed image id %s' % cur_img_id)
+        print('Deployed image id %s, boot_id %s' % (cur_img_id, boot_id))
         try:
             execute('docker exec ' + boot_id + ' rm ' + APP_STOP)
         except subprocess.CalledProcessError as e:
