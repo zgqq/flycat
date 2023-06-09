@@ -153,6 +153,7 @@ def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port
         file.write(template)
 
 
+
 router_labels = ""
 if router_domain:
    router_labels= [f"traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`)",
@@ -165,6 +166,22 @@ if router_path:
 if router_domain and router_path:
    router_labels = [f"traefik.http.routers.{ROUTER0}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)",
       f"traefik.http.routers.{ROUTER1}.rule=Host(`{ROUTER_DOMAIN}`) && PathPrefix(`{ROUTER_PATH}`)"]
+
+
+router_domains = get_main_config_value("router_domains", env, [])
+if router_domains:
+    router_domains_str = " || ".join([f"Host(`{domain}`)" for domain in router_domains])
+    router_domains_str = f"({router_domains_str})"  # Wrap the entire string in parentheses
+    if router_path:
+        router_labels = [
+            f"traefik.http.routers.{ROUTER0}.rule={router_domains_str} && PathPrefix(`{router_path}`)",
+            f"traefik.http.routers.{ROUTER1}.rule={router_domains_str} && PathPrefix(`{router_path}`)"
+        ]
+    else:
+        router_labels = [
+            f"traefik.http.routers.{ROUTER0}.rule={router_domains_str}",
+            f"traefik.http.routers.{ROUTER1}.rule={router_domains_str}"
+        ]
 
 
 docker_commands = get_main_config_value("docker_commands", env, [])
