@@ -52,6 +52,7 @@ if jmx_port and jmx_port > 0:
    jmx_port_map = f"""- {jmx_port}:{jmx_port}"""
 JMX_PORT_MAP = jmx_port_map
 
+
 app_port = get_main_config_value('app_port', env, 0)
 app_port_map = ""
 if app_port and app_port > 0 and isLocalEnv():
@@ -61,6 +62,11 @@ APP_PORT_MAP = app_port_map
 
 ROUTER_DOMAIN=router_domain
 ROUTER_PATH=router_path
+
+
+host_port = get_main_config_value('host_port', env, 0)
+if not host_port or host_port == 0:
+   host_port = app_port
 
 router_label = ""
 if router_domain:
@@ -190,7 +196,7 @@ if image_type == "external":
     app_image = APP_DOCKER_IMAGE
     volumes = docker_volumes
     envs = docker_envs
-    ports = [f"{app_port}:{app_port}"]
+    ports = [f"{host_port}:{app_port}"]
     app_port_map = app_port
     router_labels = router_labels
     commands = docker_commands
