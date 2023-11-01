@@ -119,7 +119,7 @@ autoConfigMap.put("spring.application.name", "${appName}".toString())
 //autoConfigMap.put("spring.profiles.active", "${useProfile}".toString())
 if (isProd(env)) {
     autoConfigMap.put("spring.devtools.restart.enabled", false)
-} else if(isDockerBuild() || isNativeTask()) {
+} else if(isBuildImage() || isNativeTask()) {
     autoConfigMap.put("spring.devtools.restart.enabled", false)
 }  else if (isLocal(env) || isDev(env)) {
     autoConfigMap.put("spring.devtools.restart.enabled", true)
@@ -152,7 +152,7 @@ ext.getDockerRegisteryAuth = { repo  ->
 def jfrDuration =getConfigValue('jfr_duration',env, '0s')
 if (jfrDuration !== "0s") {
     def jfrFilename = "${appName}.jfr".toString()
-    if (isDockerBuild()) {
+    if (isBuildImage()) {
         jfrFilename = "/userapp/data/${jfrFilename}.jfr".toString()
     }
     ext.jfrConfig = [
@@ -164,7 +164,7 @@ if (jfrDuration !== "0s") {
 def jfrMaxage =getConfigValue('jfr_maxage',env, '0s')
 if (jfrMaxage !== "0s") {
     def jfrRepo =getConfigValue('jfr_repo',env, "/tmp")
-    if (isDockerBuild()) {
+    if (isBuildImage()) {
         jfrRepo = "/userapp/data/".toString()
     }
     ext.jfrConfig = [
@@ -206,7 +206,7 @@ ext.heapJvmArgs = [
 
 
 //println("Executing docker build, ${executeDockerBuild}, ${executingTasks}")
-//if (isDockerBuild()) {
+//if (isBuildImage()) {
 //    ext.profile = getSubConfigValue('docker_profiles', env.toString(), env)
 //    println("Executing docker build, use profile:${profile}")
 //}
@@ -253,7 +253,7 @@ def common = ""
 def commonConfig = profileConf['common']
 handleConf(configMap, commonConfig)
 
-if (isDockerBuild()) {
+if (isBuildImage()) {
     def dockerConfig = profileConf['docker']
     handleConf(configMap, dockerConfig)
 }

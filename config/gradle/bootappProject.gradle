@@ -87,7 +87,7 @@ if (hasProperty("appClassName")) {
 //ext.springJvmArgs = ["-Dspring.profiles.active=${useProfile}".toString()]
 //if (isProd(env)) {
 //    ext.appJvmArgs += ['-Dspring.devtools.restart.enabled=false']
-//} else if(isDockerBuild() || isNativeBuild()) {
+//} else if(isBuildImage() || isNativeBuild()) {
 //    ext.appJvmArgs += [
 //            '-Dspring.devtools.restart.enabled=false']
 //}  else if (isTest(env) || isDev(env)) {
@@ -216,7 +216,7 @@ if (isTest(env)) {
 }
 
 
-if (isDockerBuild()) {
+if (isBuildImage()) {
     // need to create it ahead of time
     ext.logPath = "/userapp/logs"
 //    ext.logPath = "."
@@ -301,7 +301,7 @@ distZip.enabled = false
 bootDistTar.enabled = false
 bootDistZip.enabled = false
 
-if (!isDockerBuild())
+if (!isBuildImage())
     distTar.enabled = true
 else
     distTar.enabled = false

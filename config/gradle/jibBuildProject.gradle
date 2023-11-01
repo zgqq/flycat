@@ -1,4 +1,4 @@
-if (!isJibDockerBuild()) {
+if (!isJibBuildImage() && !isSkaffoldBuild()) {
     logger.info("Not docker build, skipping docker configure")
     return
 }

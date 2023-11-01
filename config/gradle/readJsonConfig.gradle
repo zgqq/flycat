@@ -61,10 +61,14 @@ ext.getConfigValueFromObject = { configData, key, env, defaultValue = null ->
 ext.getConfigConnectValue = { configData, key, env, defaultValue = null ->
     env = env.toString()
     def connectKey
-    if (!isDockerBuild()) {
-        connectKey = env + "_not_docker"
+    if (isSkaffoldBuild()){
+        connectKey = env + "_k8s"
+    } else if (isBuildImage()) {
+        connectKey = env + "_docker"
+    } else if (isStartupOrPackagingExcludingImageBuild()){
+        connectKey = env + "_baremetal"
     } else {
-        connectKey = env
+        connectKey = env 
     }
     // Method body here
     if ('connected' in configData.keySet() && configData['connected'].containsKey(connectKey)) {
