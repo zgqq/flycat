@@ -78,16 +78,16 @@ jib {
 //        image = 'zgqq/flycat-jdk17:latest'
         image = dockerBaseImage
         platforms {
-            if (jibPlatform == "linux/amd64") {
-                println("Using docker platform, linux/amd64, specific platform: $jibPlatform")
-                platform {
-                    architecture = 'amd64'
-                    os = 'linux'
-                }
-            } else {
+            if (jibPlatform == "linux/arm64") {
                 println("Using docker platform, linux/arm64, specific platform: $jibPlatform")
                 platform {
                     architecture = 'arm64'
+                    os = 'linux'
+                }
+            } else {
+                println("Using docker platform, linux/amd64, specific platform: $jibPlatform")
+                platform {
+                    architecture = 'amd64'
                     os = 'linux'
                 }
             }

@@ -241,6 +241,15 @@ def handleConf = { configMap, profileConfig ->
                 configMap.put(skey, svalue)
             }
         }
+
+        if (deployEnv.toString() in profileConfig['env_overwrite'].keySet()) {
+            profileConfig['env_overwrite'][deployEnv.toString()].each { skey, svalue ->
+                if (skey in configMap.keySet()) {
+                    configMap.remove(skey)
+                }
+                configMap.put(skey, svalue)
+            }
+        }
     }
 }
 
