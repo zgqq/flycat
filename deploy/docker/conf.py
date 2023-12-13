@@ -94,6 +94,8 @@ GATEWAY_PASS = get_config_value(data, "gateway_pass", env)
 AUTH_USERS = get_config_value(data, "gateway_auths", env)
 
 GATEWAY_DOMAIN = get_config_value(data, "gateway_domain", env)
+DOCKER_REGISTRY_DOMAIN = get_config_value(data, "docker_registry_domain", env)
+
 config_data = data
 
 

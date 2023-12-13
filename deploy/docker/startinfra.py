@@ -57,82 +57,6 @@ if 'infra_redis' in config_data.keys() and start_redis:
            password = get_config_value(config_data['infra_redis'], 'password', env)
            log_execute_system(f"REDIS_PORT={app_port} REDIS_PASSWORD={password} {DOCKER_COMPOSE_CMD} -f common/docker-compose.redis.yml up -d")
 
-if 'infra_sba' in config_data.keys() and start_sba:
-    enable = get_config_value(config_data['infra_sba'], 'enable', env)
-    if enable and "web-sba" not in containers:
-       app_port = get_config_value(config_data['infra_sba'], 'app_port', env)
-       docker_repo = get_config_value(config_data['infra_sba'], 'docker_repo', env)
-       jmx_port = get_config_value(config_data['infra_sba'], 'jmx_port', env)
-       docker_image = docker_repo + ':' + tag
-
-       JMX_PORT_MAP = ""
-       if jmx_port and jmx_port > 0:
-           JMX_PORT_MAP = f"- {jmx_port}:{jmx_port}"
-
-       SBA_DOCKER_IMAGE=docker_image
-       SBA_APP_PORT=app_port
-
-       ROUTER_SBA0='flycat_sba0'
-       ROUTER_SBA1='flycat_sba1'
-
-       HTTPS_TEMPLATE = ""
-       if isProdEnv():
-          HTTPS_TEMPLATE = f"""
-      - traefik.http.routers.{ROUTER_SBA0}.rule=Host(`{GATEWAY_DOMAIN}`) && PathPrefix(`/sba-admin`)
-      - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
-      - traefik.http.routers.{ROUTER_SBA0}.tls=true
-      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
-      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.{ROUTER_SBA1}.middlewares=https-redirect
-          """
-
-
-       template = f"""
-version: '3'
-services:
-  monitor:
-    image: {SBA_DOCKER_IMAGE}
-    container_name: "web-sba"
-    #    restart: always # prevent other service unavailable yet
-    ports:
-      - {SBA_APP_PORT}:{SBA_APP_PORT}
-      {JMX_PORT_MAP}
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 2
-    labels:
-      - traefik.enable=true
-      {HTTPS_TEMPLATE}
-      - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
-      - traefik.http.routers.{ROUTER_SBA1}.rule=Host(`{GATEWAY_DOMAIN}`) && PathPrefix(`/sba-admin`)
-      - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
-      - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
-      - traefik.docker.network=flycat_infra
-    networks:
-#      - traefik
-      - infra
-
-networks:
-  infra:
-    external:
-      name: flycat_infra
-      """
-
-       text_file = open(f"{TARGET_DIR}/docker-compose.sba.yml", "w")
-       #write string to file
-       text_file.write(template)
-       #close file
-       text_file.close()
-       if isProdEnv():
-          os.system('docker pull %s' % (SBA_DOCKER_IMAGE))
-       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.sba.yml up -d"
-       print('Executing system command: %s' % cmd)
-       log_execute_system(cmd)
-       time.sleep(2)
-       print('Started sba')
 
 def infra_enabled(infra):
     enable = get_config_value(config_data[infra], 'enable', env)
@@ -423,13 +347,91 @@ if "registry" not in containers and isProdEnv() and start_registry:
       -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
       -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
       -v {deploy_dir}/data/traefik/letsencrypt/certs:/certs \
-      -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/certs/{GATEWAY_DOMAIN}.crt \
-      -e REGISTRY_HTTP_TLS_KEY=/certs/private/{GATEWAY_DOMAIN}.key \
+      -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/certs/{DOCKER_REGISTRY_DOMAIN}.crt \
+      -e REGISTRY_HTTP_TLS_KEY=/certs/private/{DOCKER_REGISTRY_DOMAIN}.key \
       registry:2')
    time.sleep(2)
-   log_execute_system(f'echo {registry_password}  | docker login {GATEWAY_DOMAIN}:5000 --username {registry_user} --password-stdin')
+   log_execute_system(f'echo {registry_password}  | docker login {DOCKER_REGISTRY_DOMAIN}:5000 --username {registry_user} --password-stdin')
 
 # if op == "update":
 #     os.system("git fetch")
 #     os.system("git reset --hard remotes/origin/master")
 #     os.system('docker pull %s' % (APP_DOCKER_REPO))
+
+
+if 'infra_sba' in config_data.keys() and start_sba:
+    enable = get_config_value(config_data['infra_sba'], 'enable', env)
+    if enable and "web-sba" not in containers:
+       app_port = get_config_value(config_data['infra_sba'], 'app_port', env)
+       docker_repo = get_config_value(config_data['infra_sba'], 'docker_repo', env)
+       jmx_port = get_config_value(config_data['infra_sba'], 'jmx_port', env)
+       docker_image = docker_repo + ':' + tag
+
+       JMX_PORT_MAP = ""
+       if jmx_port and jmx_port > 0:
+           JMX_PORT_MAP = f"- {jmx_port}:{jmx_port}"
+
+       SBA_DOCKER_IMAGE=docker_image
+       SBA_APP_PORT=app_port
+
+       ROUTER_SBA0='flycat_sba0'
+       ROUTER_SBA1='flycat_sba1'
+
+       HTTPS_TEMPLATE = ""
+       if isProdEnv():
+          HTTPS_TEMPLATE = f"""
+      - traefik.http.routers.{ROUTER_SBA0}.rule=Host(`{GATEWAY_DOMAIN}`) && PathPrefix(`/sba-admin`)
+      - traefik.http.routers.{ROUTER_SBA0}.entrypoints=https
+      - traefik.http.routers.{ROUTER_SBA0}.tls=true
+      - traefik.http.routers.{ROUTER_SBA0}.tls.certResolver=certer
+      - traefik.http.routers.{ROUTER_SBA0}.service={ROUTER_SBA0}-service
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.{ROUTER_SBA1}.middlewares=https-redirect
+          """
+
+
+       template = f"""
+version: '3'
+services:
+  monitor:
+    image: {SBA_DOCKER_IMAGE}
+    container_name: "web-sba"
+    #    restart: always # prevent other service unavailable yet
+    ports:
+      - {SBA_APP_PORT}:{SBA_APP_PORT}
+      {JMX_PORT_MAP}
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 2
+    labels:
+      - traefik.enable=true
+      {HTTPS_TEMPLATE}
+      - traefik.http.services.{ROUTER_SBA0}-service.loadbalancer.server.port={SBA_APP_PORT}
+      - traefik.http.routers.{ROUTER_SBA1}.rule=Host(`{GATEWAY_DOMAIN}`) && PathPrefix(`/sba-admin`)
+      - traefik.http.routers.{ROUTER_SBA1}.entrypoints=http
+      - traefik.http.routers.{ROUTER_SBA1}.service={ROUTER_SBA0}-service
+      - traefik.docker.network=flycat_infra
+    networks:
+#      - traefik
+      - infra
+
+networks:
+  infra:
+    external:
+      name: flycat_infra
+      """
+
+       text_file = open(f"{TARGET_DIR}/docker-compose.sba.yml", "w")
+       #write string to file
+       text_file.write(template)
+       #close file
+       text_file.close()
+       if isProdEnv():
+          os.system('docker pull %s' % (SBA_DOCKER_IMAGE))
+       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.sba.yml up -d"
+       print('Executing system command: %s' % cmd)
+       log_execute_system(cmd)
+       time.sleep(2)
+       print('Started sba')
