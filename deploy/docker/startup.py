@@ -114,11 +114,13 @@ def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port
       envs_string = ""
       for env_string in envs:
           match = re.match(r"(\w+)=([^ ]+)", env_string)
-          env_name = match.group(1)
-          env_value = match.group(2)
-          envs_string = envs_string + f"          {env_name}: {env_value}\n"
+          if match:
+              env_name = match.group(1)
+              env_value = match.group(2)
+              envs_string = envs_string + f"          {env_name}: {env_value}\n"
 
-      envs_str = f"environment:\n{envs_string}"
+      if envs_string:
+         envs_str = f"environment:\n{envs_string}"
 
     router_labels_str = ''
     if router_labels:
