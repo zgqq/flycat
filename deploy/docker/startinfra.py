@@ -324,20 +324,28 @@ networks:
        print('Waiting nacos started...')
        time.sleep(15)
 
-if "registry" not in containers and isProdEnv() and start_registry:
-   docker_dir = home_dir+'/deploy/docker'
-   if not os.path.exists(docker_dir):
-      os.makedirs(docker_dir)
-      os.makedirs(docker_dir+'/auth')
+       
+def container_exists(name):
+    result = os.system(f"docker ps -a --filter 'name={name}' --format '{{{{.Names}}}}' | grep -w {name}")
+    return result == 0
 
-   registry_user = get_config_value(config_data, 'docker_registry_user', env)
-   registry_password = get_config_value(config_data, 'docker_registry_password', env)
-   log_execute_system(f"docker run \
+if "registry" not in containers and isProdEnv() and start_registry:
+    docker_dir = home_dir+'/deploy/docker'
+    if not os.path.exists(docker_dir):
+        os.makedirs(docker_dir)
+        os.makedirs(docker_dir+'/auth')
+
+    registry_user = get_config_value(config_data, 'docker_registry_user', env)
+    registry_password = get_config_value(config_data, 'docker_registry_password', env)
+    log_execute_system(f"docker run \
       --entrypoint htpasswd \
       httpd:2 -Bbn {registry_user} {registry_password} > {docker_dir}/auth/htpasswd")
 
-   log_execute_system(f"docker rm registry")
-   log_execute_system(f'docker run -d \
+    if container_exists("registry"):
+        log_execute_system(f"docker rm registry")
+        
+    log_execute_system(
+        f'docker run -d \
       -p 5000:5000 \
       --restart=always \
       --name registry \
@@ -349,9 +357,10 @@ if "registry" not in containers and isProdEnv() and start_registry:
       -v {deploy_dir}/data/traefik/letsencrypt/certs:/certs \
       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/certs/{DOCKER_REGISTRY_DOMAIN}.crt \
       -e REGISTRY_HTTP_TLS_KEY=/certs/private/{DOCKER_REGISTRY_DOMAIN}.key \
-      registry:2')
-   time.sleep(2)
-   log_execute_system(f'echo {registry_password}  | docker login {DOCKER_REGISTRY_DOMAIN}:5000 --username {registry_user} --password-stdin')
+      registry:2'
+    )
+    time.sleep(2)
+    log_execute_system(f'echo {registry_password}  | docker login {DOCKER_REGISTRY_DOMAIN}:5000 --username {registry_user} --password-stdin')
 
 # if op == "update":
 #     os.system("git fetch")
