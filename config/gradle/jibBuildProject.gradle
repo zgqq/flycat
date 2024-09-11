@@ -116,11 +116,21 @@ jib {
         credHelper = 'docker-credential-osxkeychain'
         tags = [env.toString() + '-' + (new Date().format("yyyyMMdd_HHmmss")).toString(), env.toString()]
         if (!executeDockerBuildLocal) {
-            if (project.hasProperty('dockerUsername')) {
-                auth {
-                    println "image  $dockerImage username $dockerUsername"
-                    username = dockerUsername
-                    password = dockerPassword
+            // if (project.hasProperty('dockerUsername')) {
+            //     auth {
+            //         println "image  $dockerImage username $dockerUsername"
+            //         username = dockerUsername
+            //         password = dockerPassword
+            //     }
+            // }
+            if (project.hasProperty('getDockerRegisteryAuth')) {
+                def authInfo = getDockerRegisteryAuth(dockerImage)
+                println "Image auth $dockerImage username $authInfo"
+                if (authInfo) {
+                    auth {
+                        username = authInfo.user
+                        password = authInfo.password
+                    }
                 }
             }
         }

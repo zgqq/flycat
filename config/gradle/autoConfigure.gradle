@@ -128,18 +128,19 @@ if (isProd(env)) {
 }
 
 
-def dockerRegistryUser = getConfigValue('docker_registry_user',env, '')
-def dockerRegistryPassword = getConfigValue('docker_registry_password',env, '')
-if (dockerRegistryUser !== '') {
-    ext.dockerUsername = dockerRegistryUser
-    ext.dockerPassword = dockerRegistryPassword
-}
+// def dockerRegistryUser = getConfigValue('docker_registry_user',env, '')
+// def dockerRegistryPassword = getConfigValue('docker_registry_password',env, '')
+// if (dockerRegistryUser !== '') {
+//     ext.dockerUsername = dockerRegistryUser
+//     ext.dockerPassword = dockerRegistryPassword
+// }
 
 
 ext.getDockerRegisteryAuth = { repo  ->
     def dockerRegistryAuths = getConfigValue('docker_registry_auth',env)
     def auth;
     dockerRegistryAuths.each { key, value ->
+        println("Checking auth for ${key}, ${repo}")
         if (repo.contains(key)) {
             auth = value
         }

@@ -335,8 +335,10 @@ if "registry" not in containers and isProdEnv() and start_registry:
         os.makedirs(docker_dir)
         os.makedirs(docker_dir+'/auth')
 
-    registry_user = get_config_value(config_data, 'docker_registry_user', env)
-    registry_password = get_config_value(config_data, 'docker_registry_password', env)
+    infra_docker_registry = get_config_value(config_data, 'infra_docker_registry', env)
+    registry_user = infra_docker_registry['user']
+    registry_password = infra_docker_registry['password']
+    # registry_password = get_config_value(config_data, 'docker_registry_password', env)
     log_execute_system(f"docker run \
       --entrypoint htpasswd \
       httpd:2 -Bbn {registry_user} {registry_password} > {docker_dir}/auth/htpasswd")
