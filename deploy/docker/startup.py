@@ -2,7 +2,6 @@ from subprocess import check_output
 import sys
 import os
 from conf import *
-import time
 import re
 
 
@@ -39,8 +38,6 @@ router_domain = get_main_config_value("router_domain", env)
 router_path = get_main_config_value("router_path", env)
 
 image_type = get_main_config_value("image_type", env)
-
-
 
 
 jmx_port = get_main_config_value('jmx_port', env, 0)
@@ -104,23 +101,22 @@ if docker_volumes:
        VOLUMES = VOLUMES + '- ' + volume + '\n'
 
 
-
 def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port_map, router_labels, commands, router0, router1):
     volumes_str = 'volumes:\n' + '\n'.join([f'          - {volume}' for volume in volumes]) if volumes else ''
     ports_str = 'ports:\n' + '\n'.join([f'          - {port}' for port in ports]) if ports else ''
     envs_str = 'environment:\n' + '\n'.join([f'          {env}' for env in envs]) if envs else ''
 
     if envs:
-      envs_string = ""
-      for env_string in envs:
-          match = re.match(r"(\w+)=([^ ]+)", env_string)
-          if match:
-              env_name = match.group(1)
-              env_value = match.group(2)
-              envs_string = envs_string + f"          {env_name}: {env_value}\n"
+        envs_string = ""
+        for env_string in envs:
+            match = re.match(r"(\w+)=([^ ]+)", env_string)
+            if match:
+                env_name = match.group(1)
+                env_value = match.group(2)
+                envs_string = envs_string + f"          {env_name}: {env_value}\n"
 
-      if envs_string:
-         envs_str = f"environment:\n{envs_string}"
+        if envs_string:
+            envs_str = f"environment:\n{envs_string}"
 
     router_labels_str = ''
     if router_labels:
@@ -132,7 +128,6 @@ def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port
         commands_str = ''
 
     template = f"""
-    version: '3'
     services:
       web:
         image: {app_image}
@@ -164,13 +159,12 @@ def create_docker_compose(docker_file, app_image, volumes, envs, ports, app_port
 
     networks:
       infra:
-        external:
-          name: flycat_infra
+        name: flycat_infra
+        external: true
     """
 
     with open(docker_file, 'w') as file:
         file.write(template)
-
 
 
 router_labels = ""
