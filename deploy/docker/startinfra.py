@@ -129,8 +129,8 @@ if 'infra_mysql' in config_data.keys() and start_mysql:
           sql_content = sql_content.replace('{DATABASE}', database)
           sql_content = sql_content.replace('{NACOS_USER}', nacos_user)
           sql_content = sql_content.replace('{NACOS_PASSWORD}', nacos_password)
-          write_template(f'{TARGET_DIR}/nacos.sql', sql_content)
-          sql_dir = os.path.abspath(f'{TARGET_DIR}')
+          write_template(f'{INFRAR_DIR}/nacos.sql', sql_content)
+          sql_dir = os.path.abspath(f'{INFRAR_DIR}')
           internal_files = ['nacos.sql']
           execute_sql_files(sql_dir, internal_files, user, password, root_password, need_wait, executed)
 
@@ -313,14 +313,14 @@ networks:
     external:
       name: flycat_infra
 """
-       text_file = open(f"{TARGET_DIR}/docker-compose.nacos.yml", "w")
+       text_file = open(f"{INFRAR_DIR}/docker-compose.nacos.yml", "w")
        #write string to file
        text_file.write(template)
        #close file
        text_file.close()
 
        log_execute_system(f"MYSQL_PORT={port} MYSQL_DATABASE={database} MYSQL_USER={user}" \
-        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.nacos.yml up -d")
+        f" MYSQL_PASSWORD={password} MYSQL_HOST={host} JAVA_OPT=\"{java_opt}\" {DOCKER_COMPOSE_CMD} -f {INFRAR_DIR}/docker-compose.nacos.yml up -d")
        print('Waiting nacos started...')
        time.sleep(15)
 
@@ -432,14 +432,14 @@ networks:
       name: flycat_infra
       """
 
-       text_file = open(f"{TARGET_DIR}/docker-compose.sba.yml", "w")
+       text_file = open(f"{INFRAR_DIR}/docker-compose.sba.yml", "w")
        #write string to file
        text_file.write(template)
        #close file
        text_file.close()
        if isProdEnv():
           os.system('docker pull %s' % (SBA_DOCKER_IMAGE))
-       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f {TARGET_DIR}/docker-compose.sba.yml up -d"
+       cmd=f"ROUTER_SBA0=flycat-sba0 ROUTER_SBA1=flycat-sba1 SBA_DOCKER_IMAGE={docker_image} SBA_APP_PORT={app_port} {DOCKER_COMPOSE_CMD} -f {INFRAR_DIR}/docker-compose.sba.yml up -d"
        print('Executing system command: %s' % cmd)
        log_execute_system(cmd)
        time.sleep(2)

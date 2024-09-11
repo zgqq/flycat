@@ -199,6 +199,10 @@ TARGET_DIR = status_dir + "/target"
 if not os.path.exists(TARGET_DIR):
     os.makedirs(TARGET_DIR)
 
+INFRAR_DIR = f"{home_dir}/deploy/cache/infra/{env}"
+if not os.path.exists(INFRAR_DIR):
+    os.makedirs(INFRAR_DIR)
+
 LAST_DEPLOY_ID = f"{status_dir}/last_deploy_id"
 CURRENT_DEPLOY_ID = f"{status_dir}/current_deploy_id"
 
